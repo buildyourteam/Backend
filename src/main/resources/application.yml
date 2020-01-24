@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://192.168.0.100:3307/Eskimo
+    username: eskimo
+    password: Eskimo2020Dev!
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      format_sql: true
+      ddl-auto: create
+
+  jackson:
+    deserialization:
+      fail-on-unknown-properties : true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
