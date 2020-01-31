@@ -1,5 +1,6 @@
 package com.eskiiimo.api.projects;
 
+import com.eskiiimo.api.people.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +24,9 @@ public class ProjectMember {
     @Lob
     private String selfDescription;
 
-
+    @ManyToOne
+    @JoinColumn(name="memberId")
+    private Member member;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectMemberId")
