@@ -32,4 +32,19 @@ public class ProjectMember {
     @JoinColumn(name = "projectMemberId")
     private List<ProjectAnswer> answers = new ArrayList<ProjectAnswer>();
 
+    @ManyToOne
+    @JoinColumn(name = "projectId")
+    private Project project;
+
+    public void setMember(Member member){
+        this.member = member;
+        if(!member.getProjects().contains(this))
+        member.getProjects().add(this);
+    }
+
+    public void setProject(Project project){
+        this.project = project;
+        if(!project.getProjectMembers().contains(this))
+            project.getProjectMembers().add(this);
+    }
 }

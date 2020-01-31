@@ -30,4 +30,11 @@ public class Member {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<ProjectMember> projects = new ArrayList<ProjectMember>();
+
+    public void addProjects(ProjectMember projectMember){
+        this.projects.add(projectMember);
+        if(projectMember.getMember() != this)
+            projectMember.setMember(this);
+    }
+
 }

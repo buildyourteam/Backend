@@ -38,9 +38,14 @@ public class Project{
     @JoinColumn(name = "projectId")
     private List<ProjectQuestion> questions = new ArrayList<ProjectQuestion>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "projectId")
-    private List<ProjectMember> members = new ArrayList<ProjectMember>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
+
+    public void addMember(ProjectMember member){
+        this.projectMembers.add(member);
+        if(member.getProject() != this)
+            member.setProject(this);
+    }
 
 }
 
