@@ -1,6 +1,6 @@
-package com.restful.api.people;
+package com.eskiiimo.api.people;
 
-import com.restful.api.projects.ProjectMember;
+import com.eskiiimo.api.projects.ProjectMember;
 import lombok.*;
 
 import javax.persistence.*;

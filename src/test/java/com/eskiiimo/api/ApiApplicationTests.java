@@ -1,4 +1,4 @@
-package com.restful.api;
+package com.eskiiimo.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

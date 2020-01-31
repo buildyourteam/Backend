@@ -1,4 +1,4 @@
-package com.restful.api.projects;
+package com.eskiiimo.api.projects;
 
 import lombok.*;
 
