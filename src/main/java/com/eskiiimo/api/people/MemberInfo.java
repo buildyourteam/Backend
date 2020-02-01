@@ -14,7 +14,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="memberId")
 @Entity
 public class MemberInfo {
     @Id

@@ -1,24 +1,17 @@
 package com.eskiiimo.api.files.projectimage;
 
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode(of="id")
+@Getter @Setter @EqualsAndHashCode(of="id")
 @Entity
 public class ProjectImage {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long projectid;
     private String filePath;

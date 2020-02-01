@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 public class ProfileImage {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long memberid;
     private String filePath;
