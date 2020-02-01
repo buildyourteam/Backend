@@ -2,6 +2,7 @@ package com.eskiiimo.api.files.profileimage;
 
 
 import com.eskiiimo.api.files.FileService;
+import com.eskiiimo.api.files.FileUploadDto;
 import com.eskiiimo.api.files.FileUploadProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -41,14 +42,20 @@ public class ProfileImageService {
 
 
 
-    public String storeProfileImage(Long memberid, MultipartFile file){
+    public FileUploadDto storeProfileImage(Long memberid, MultipartFile file){
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         fileService.storeFile(file,this.profileImageLocation);
         ProfileImage profileImage = new ProfileImage(memberid,this.profileImageLocation.resolve(fileName).toString());
         profileImageRepository.save(profileImage);
-        return fileName;
-    }
+        FileUploadDto fileUploadDto= FileUploadDto.builder()
+                .fileName(fileName)
+                .fileType(file.getContentType())
+                .size(file.getSize())
+                .build()
+        ;
 
+        return fileUploadDto;
+    }
 
 
     public Resource getProfileImage(Long memberid){

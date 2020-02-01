@@ -9,10 +9,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+@Controller
+@RequestMapping("/projects/image/{projectid}")
 public class ProjectImageController {
     private static final Logger logger = LoggerFactory.getLogger(ProjectImageController.class);
 
@@ -30,19 +30,17 @@ public class ProjectImageController {
     Upload Image
      */
 
-    @PostMapping("/projects/image/{projectid}")
+    @PostMapping
     public ResponseEntity uploadProjectImage(@PathVariable Long projectid, @RequestParam("image") MultipartFile file) {
-        String fileName = projectImageService.storeProjectImage(projectid,file);
+        FileUploadDto fileUploadDto = projectImageService.storeProjectImage(projectid,file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/projects/image/")
                 .path(projectid.toString())
                 .toUriString();
-        FileUploadDto fileUploadDto = new FileUploadDto(fileName, fileDownloadUri, file.getContentType(), file.getSize());
-        System.out.println(fileUploadDto.getFileDownloadUri());
-        return ResponseEntity.created(Paths.get(fileDownloadUri).toUri()).body(fileUploadDto);
+        fileUploadDto.setFileDownloadUri(fileDownloadUri);
+        return ResponseEntity.ok().body(fileUploadDto);
     }
-
 
 
 
@@ -51,7 +49,7 @@ public class ProjectImageController {
      */
 
 
-    @GetMapping("/projects/image/{projectid}")
+    @GetMapping
     public ResponseEntity<Resource> downloadProjectImage(@PathVariable Long projectid, HttpServletRequest request){
         // Load file as Resource
         Resource resource = projectImageService.getProjectImage(projectid);

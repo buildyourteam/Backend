@@ -2,7 +2,9 @@ package com.eskiiimo.api.files.projectimage;
 
 
 import com.eskiiimo.api.files.FileService;
+import com.eskiiimo.api.files.FileUploadDto;
 import com.eskiiimo.api.files.FileUploadProperties;
+import com.eskiiimo.api.files.profileimage.ProfileImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -39,12 +41,18 @@ public class ProjectImageService {
     }
 
 
-    public String storeProjectImage(Long projectid, MultipartFile file){
+    public FileUploadDto storeProjectImage(Long projectid, MultipartFile file){
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         fileService.storeFile(file,this.projectImageLocation);
         ProjectImage projectImage = new ProjectImage(projectid,this.projectImageLocation.resolve(fileName).toString());
         projectImageRepository.save(projectImage);
-        return fileName;
+        FileUploadDto fileUploadDto= FileUploadDto.builder()
+                .fileName(fileName)
+                .fileType(file.getContentType())
+                .size(file.getSize())
+                .build()
+                ;
+        return fileUploadDto;
     }
 
 

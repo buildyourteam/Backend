@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,16 +32,18 @@ public class ProfileImageController {
      */
 
     @PostMapping
-    public FileUploadDto uploadProfileImage(@PathVariable Long memberid, @RequestParam("image") MultipartFile file) {
-        String fileName = profileImageService.storeProfileImage(memberid,file);
+    public ResponseEntity uploadProfileImage(@PathVariable Long memberid, @RequestParam("image") MultipartFile file) {
+
+        FileUploadDto fileUploadDto =  profileImageService.storeProfileImage(memberid,file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/profile/image/")
                 .path(memberid.toString())
                 .toUriString();
-        FileUploadDto fileUploadDto = new FileUploadDto(fileName, fileDownloadUri, file.getContentType(), file.getSize());
-        System.out.println(fileUploadDto);
-        return fileUploadDto;
+
+        fileUploadDto.setFileDownloadUri(fileDownloadUri);
+
+        return ResponseEntity.ok().body(fileUploadDto);
     }
     @GetMapping
     public ResponseEntity<Resource> downloadProfileImage(@PathVariable Long memberid, HttpServletRequest request){
@@ -64,4 +67,5 @@ public class ProfileImageController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
 }
