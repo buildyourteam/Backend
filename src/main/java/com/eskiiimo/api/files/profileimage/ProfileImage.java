@@ -1,23 +1,16 @@
 package com.eskiiimo.api.files.profileimage;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 
 @NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode(of="id")
+@Getter @Setter @EqualsAndHashCode(of="id")
 @Entity
 public class ProfileImage {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long id;
     private Long memberid;
     private String filePath;
