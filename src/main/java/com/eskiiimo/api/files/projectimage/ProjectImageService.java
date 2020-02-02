@@ -4,7 +4,6 @@ package com.eskiiimo.api.files.projectimage;
 import com.eskiiimo.api.files.FileService;
 import com.eskiiimo.api.files.FileUploadDto;
 import com.eskiiimo.api.files.FileUploadProperties;
-import com.eskiiimo.api.files.profileimage.ProfileImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class ProjectImageService {
 
             Files.createDirectories(this.projectImageLocation);
         }catch(Exception e) {
-            throw new com.restful.api.files.Exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
+            throw new com.eskiiimo.api.files.exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
         }
     }
 

@@ -28,7 +28,7 @@ public class FileService {
             Files.createDirectories(this.fileLocation);
 
         }catch(Exception e) {
-            throw new com.restful.api.files.Exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
+            throw new com.eskiiimo.api.files.exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
         }
     }
 
@@ -38,7 +38,7 @@ public class FileService {
         try {
             // 파일명에 부적합 문자가 있는지 확인한다.
             if(fileName.contains(".."))
-                throw new com.restful.api.files.Exception.FileUploadException("파일명에 부적합 문자가 포함되어 있습니다. " + fileName);
+                throw new com.eskiiimo.api.files.exception.FileUploadException("파일명에 부적합 문자가 포함되어 있습니다. " + fileName);
 
             Path targetLocation = location.resolve(fileName);
 
@@ -46,7 +46,7 @@ public class FileService {
 
             return fileName;
         }catch(Exception e) {
-            throw new com.restful.api.files.Exception.FileUploadException("["+fileName+"] 파일 업로드에 실패하였습니다. 다시 시도하십시오.",e);
+            throw new com.eskiiimo.api.files.exception.FileUploadException("["+fileName+"] 파일 업로드에 실패하였습니다. 다시 시도하십시오.",e);
         }
     }
 
@@ -57,10 +57,10 @@ public class FileService {
             if(resource.exists()) {
                 return resource;
             }else {
-                throw new com.restful.api.files.Exception.FileDownloadException(filePath.getFileName() + " 파일을 찾을 수 없습니다.");
+                throw new com.eskiiimo.api.files.exception.FileDownloadException(filePath.getFileName() + " 파일을 찾을 수 없습니다.");
             }
         }catch(MalformedURLException e) {
-            throw new com.restful.api.files.Exception.FileDownloadException(filePath.getFileName() + " 파일을 찾을 수 없습니다.", e);
+            throw new com.eskiiimo.api.files.exception.FileDownloadException(filePath.getFileName() + " 파일을 찾을 수 없습니다.", e);
         }
     }
 

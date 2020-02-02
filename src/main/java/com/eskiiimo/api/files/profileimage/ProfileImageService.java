@@ -35,7 +35,7 @@ public class ProfileImageService {
 
             Files.createDirectories(this.profileImageLocation);
         }catch(Exception e) {
-            throw new com.restful.api.files.Exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
+            throw new com.eskiiimo.api.files.exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
         }
     }
 

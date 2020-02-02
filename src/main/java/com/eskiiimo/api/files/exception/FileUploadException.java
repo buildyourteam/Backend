@@ -1,4 +1,4 @@
-package com.restful.api.files.Exception;
+package com.eskiiimo.api.files.exception;
 
 public class FileUploadException extends RuntimeException {
     public FileUploadException(String message) {
