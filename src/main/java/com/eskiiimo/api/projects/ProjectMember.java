@@ -28,6 +28,7 @@ public class ProjectMember {
     @JoinColumn(name="memberId")
     private Member member;
 
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectMemberId")
     private List<ProjectAnswer> answers = new ArrayList<ProjectAnswer>();

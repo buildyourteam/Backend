@@ -33,11 +33,12 @@ public class Project{
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
     private ProjectMemberSet needMembers;
-
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectId")
     private List<ProjectQuestion> questions = new ArrayList<ProjectQuestion>();
 
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 

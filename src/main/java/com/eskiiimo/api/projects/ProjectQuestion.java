@@ -19,7 +19,7 @@ public class ProjectQuestion {
     private Long projectQuestionId;
     @Column(name="question")
     private String question;
-
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectQuestionId")
     private List<ProjectAnswer> answers = new ArrayList<ProjectAnswer>();

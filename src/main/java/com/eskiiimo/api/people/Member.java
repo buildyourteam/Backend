@@ -27,7 +27,7 @@ public class Member {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="memberId")
     private MemberInfo memberInfo;
-
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<ProjectMember> projects = new ArrayList<ProjectMember>();
 
