@@ -44,11 +44,14 @@ public class ProfileImageController {
 
         return ResponseEntity.ok().body(fileUploadDto);
     }
+
+
     @GetMapping
     public ResponseEntity<Resource> downloadProfileImage(@PathVariable Long memberid, HttpServletRequest request){
         // Load file as Resource
         Resource resource = profileImageService.getProfileImage(memberid);
-
+        if(resource==null)
+            return ResponseEntity.notFound().build();
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());

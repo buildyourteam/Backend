@@ -1,5 +1,6 @@
 package com.eskiiimo.api.files.projectimage;
 
+import com.eskiiimo.api.common.RestDocsConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -15,6 +20,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.File;
 import java.io.FileInputStream;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com",uriPort = 443)
+@Import(RestDocsConfiguration.class)
 class ProjectImageControllerTest {
     @Autowired
     protected MockMvc mockMvc;
@@ -40,14 +53,33 @@ class ProjectImageControllerTest {
         MockMultipartFile image = new MockMultipartFile(
                 "image", targetFile.getName(), "image/jpeg", new FileInputStream(targetFile));
 
-       this.mockMvc.perform(multipart("/projects/image/1").file(image))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("fileName").value(targetFile.getName()))
-                .andExpect(jsonPath("fileDownloadUri").value("http://localhost:8080/projects/image/1"))
-                .andExpect(jsonPath("fileType").value("image/jpeg"))
-                .andExpect(jsonPath("size").value(585219))
-                .andDo(print())
-        ;
+       this.mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/projects/image/{projectid}",1).file(image)                .accept(MediaTypes.HAL_JSON)
+       )
+               .andExpect(MockMvcResultMatchers.status().isOk())
+               .andExpect(jsonPath("fileName").value(targetFile.getName()))
+               .andExpect(jsonPath("fileDownloadUri").value("https://api.eskiiimo.com/projects/image/1"))
+               .andExpect(jsonPath("fileType").value("image/jpeg"))
+               .andExpect(jsonPath("size").value(585219))
+               .andDo(print())
+               .andDo(document("upload-project-image",
+                       pathParameters(
+                         parameterWithName("projectid").description("Project Id")
+                       ),
+                       requestHeaders(
+                               headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                               headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                       ),
+                       responseHeaders(
+                               headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
+                       ),
+                       responseFields(
+                               fieldWithPath("fileName").description("image file name"),
+                               fieldWithPath("fileDownloadUri").description("image file uri"),
+                               fieldWithPath("fileType").description("image file type"),
+                               fieldWithPath("size").description("image file size")
+                       )
+               ))
+       ;
     }
 
 

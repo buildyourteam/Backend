@@ -1,0 +1,18 @@
+= File Service RestApi Guide
+
+
+[[resources-profile-image-upload]]
+=== 프로필 이미지 업로드
+
+`POST` 요청을 사용해서 프로필 이미지를 업로드 할 수 있다.
+
+operation::upload-profile-image[snippets='path-parameters,curl-request,request-headers,http-response,response-headers,response-fields']
+
+
+[[resources-project-image-upload]]
+=== 프로젝트 이미지 업로드
+
+`POST` 요청을 사용해서 프로젝트 이미지를 업로드 할 수 있다.
+
+operation::upload-project-image[snippets='path-parameters,curl-request,request-headers,http-response,response-headers,response-fields']
+
