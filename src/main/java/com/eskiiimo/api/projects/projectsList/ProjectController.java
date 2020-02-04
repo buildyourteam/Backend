@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Slf4j
@@ -22,10 +23,37 @@ public class ProjectController {
     @Autowired
     ProjectRepository projectRepository;
 
-    @GetMapping
-    public ResponseEntity getProjectsList(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 
+    /*
+    직군별 검색기능 value="occupation"
+     */
+
+    @GetMapping
+    public ResponseEntity getProjectsList(Pageable pageable, PagedResourcesAssembler<Project> assembler,
+                                          @RequestParam(value="occupation", required=false) String occupation) {
         Page<Project> page = this.projectRepository.findAll(pageable);
+        switch (occupation) {
+            case "developer":
+                page = this.projectRepository.findAllByNeedMembersDeveloperGreaterThan(0, pageable);
+                break;
+
+            case "designer":
+                page = this.projectRepository.findAllByNeedMembersDesignerGreaterThan(0, pageable);
+                break;
+
+            case "planner":
+                page = this.projectRepository.findAllByNeedMembersPlannerGreaterThan(0, pageable);
+                break;
+
+            case "etc":
+                page = this.projectRepository.findAllByNeedMembersEtcGreaterThan(0, pageable);
+                break;
+
+            default:
+                break;
+
+        }
+
         PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
         pagedResources.add(new Link("/api/projects").withRel("project-list"));
         pagedResources.add(new Link("/html5/index.html#resources-projects-list").withRel("profile"));
