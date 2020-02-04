@@ -6,13 +6,11 @@ import lombok.*;
 import javax.persistence.*;
 
 @NoArgsConstructor
-@Getter @Setter @EqualsAndHashCode(of="id")
+@Getter @Setter @EqualsAndHashCode(of="projectid")
 @Entity
 public class ProjectImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private Long projectid;
     private String filePath;
 

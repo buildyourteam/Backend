@@ -6,12 +6,11 @@ import javax.persistence.*;
 
 
 @NoArgsConstructor
-@Getter @Setter @EqualsAndHashCode(of="id")
+@Getter @Setter @EqualsAndHashCode(of="memberid")
 @Entity
 public class ProfileImage {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
     private Long memberid;
     private String filePath;
 
