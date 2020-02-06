@@ -23,5 +23,4 @@ public class ProjectQuestion {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectQuestionId")
     private List<ProjectAnswer> answers = new ArrayList<ProjectAnswer>();
-
 }
