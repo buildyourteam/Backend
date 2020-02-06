@@ -1,7 +1,5 @@
 package com.eskiiimo.api.projects;
 
-import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,12 +35,10 @@ public class Project{
     private ProjectMemberSet needMembers;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "projectId")
     private List<ProjectQuestion> questions = new ArrayList<ProjectQuestion>();
 
-    @OneToMany(mappedBy = "project")
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
     public void addMember(ProjectMember member){
