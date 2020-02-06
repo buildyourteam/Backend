@@ -1,4 +1,4 @@
-package com.eskiiimo.api.files.profileimage;
+package com.eskiiimo.api.files.projectimage;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,16 +14,16 @@ import javax.persistence.Id;
 @Setter
 @EqualsAndHashCode(of="id")
 @Entity
-public class ProfileImage {
+public class ProjectImage {
 
     @Id
     @GeneratedValue
     private Long id;
-    private Long memberid;
+    private Long projectid;
     private String filePath;
 
-    public ProfileImage(Long memberid, String filePath){
-        this.memberid = memberid;
+    public ProjectImage(Long projectid, String filePath){
+        this.projectid = projectid;
         this.filePath = filePath;
     }
 
