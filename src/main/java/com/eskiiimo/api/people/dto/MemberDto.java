@@ -4,14 +4,13 @@ import lombok.Getter;
 
 @Getter
 public class MemberDto {
-    private Long id;
     private String userId;
     private String userPassword;
     private String userEmail;
     private String userName;
 
-    // 제안 사항
+    // 제안 사항 (작업하기)
 //    public Member toEntity() {
-//        return new Member(id, userId, userPassword, userEmail, userName);
+//        return new Member(userId, userPassword, userEmail, userName);
 //    }
 }

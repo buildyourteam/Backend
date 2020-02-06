@@ -1,6 +1,5 @@
 package com.eskiiimo.api.people;
 
-import com.eskiiimo.api.people.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
