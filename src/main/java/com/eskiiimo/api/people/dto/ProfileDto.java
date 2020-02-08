@@ -14,5 +14,4 @@ public class ProfileDto {
     private ProjectRole role;
     private TechnicalStack stack;
 
-    // toEntity 작업하기
 }

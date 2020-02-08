@@ -1,5 +1,6 @@
 package com.eskiiimo.api.people.dto;
 
+import com.eskiiimo.api.people.Member;
 import lombok.Getter;
 
 @Getter
@@ -9,8 +10,12 @@ public class MemberDto {
     private String userEmail;
     private String userName;
 
-    // 제안 사항 (작업하기)
-//    public Member toEntity() {
-//        return new Member(userId, userPassword, userEmail, userName);
-//    }
+    public Member toEntity(MemberDto memberDto) {
+        return Member.builder()
+                .userId(memberDto.userId)
+                .userPassword(memberDto.userPassword)
+                .userEmail(memberDto.userEmail)
+                .userName(memberDto.userName)
+                .build();
+    }
 }

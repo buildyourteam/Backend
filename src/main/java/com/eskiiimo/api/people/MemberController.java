@@ -51,6 +51,7 @@ public class MemberController {
     // 계정 삭제
     @DeleteMapping
     public void deleteAccount(@PathVariable(value = "user_id") Long user_id) {
+        memberService.deleteMember(user_id);
     }
 
 }
