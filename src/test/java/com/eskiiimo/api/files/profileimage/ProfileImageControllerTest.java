@@ -57,7 +57,7 @@ class ProfileImageControllerTest {
                 .accept(MediaTypes.HAL_JSON)
                  )
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("fileName").value(targetFile.getName()))
+                .andExpect(jsonPath("fileName").value("1.jpg"))
                 .andExpect(jsonPath("fileDownloadUri").value("https://api.eskiiimo.com/profile/image/1"))
                 .andExpect(jsonPath("fileType").value("image/jpeg"))
                 .andExpect(jsonPath("size").value(585219))

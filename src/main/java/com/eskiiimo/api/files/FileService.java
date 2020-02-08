@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.StringTokenizer;
 
 @Service
 public class FileService {
@@ -32,9 +33,11 @@ public class FileService {
         }
     }
 
-    public String storeFile(MultipartFile file, Path location) {
+    public String storeFile(MultipartFile file, Path location,long id) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
+        StringTokenizer tockens =new StringTokenizer(fileName);
+        tockens.nextToken(".");
+        fileName = id+"."+ tockens.nextToken();
         try {
             // 파일명에 부적합 문자가 있는지 확인한다.
             if(fileName.contains(".."))
@@ -53,7 +56,6 @@ public class FileService {
     public Resource loadFileAsResource(Path filePath) {
         try {
             Resource resource = new UrlResource(filePath.toUri());
-
             if(resource.exists()) {
                 return resource;
             }else {

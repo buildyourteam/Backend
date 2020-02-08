@@ -56,7 +56,7 @@ class ProjectImageControllerTest {
        this.mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/projects/image/{projectid}",1).file(image)                .accept(MediaTypes.HAL_JSON)
        )
                .andExpect(MockMvcResultMatchers.status().isOk())
-               .andExpect(jsonPath("fileName").value(targetFile.getName()))
+               .andExpect(jsonPath("fileName").value("1.jpg"))
                .andExpect(jsonPath("fileDownloadUri").value("https://api.eskiiimo.com/projects/image/1"))
                .andExpect(jsonPath("fileType").value("image/jpeg"))
                .andExpect(jsonPath("size").value(585219))

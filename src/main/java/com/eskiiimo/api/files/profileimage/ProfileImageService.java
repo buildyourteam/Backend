@@ -43,8 +43,8 @@ public class ProfileImageService {
 
 
     public FileUploadDto storeProfileImage(Long memberid, MultipartFile file){
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        fileService.storeFile(file,this.profileImageLocation);
+        String fileName = fileService.storeFile(file,this.profileImageLocation,memberid);
+
         ProfileImage profileImage = new ProfileImage(memberid,this.profileImageLocation.resolve(fileName).toString());
         profileImageRepository.save(profileImage);
         FileUploadDto fileUploadDto= FileUploadDto.builder()

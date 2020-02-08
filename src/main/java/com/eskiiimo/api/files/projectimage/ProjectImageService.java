@@ -41,8 +41,8 @@ public class ProjectImageService {
 
 
     public FileUploadDto storeProjectImage(Long projectid, MultipartFile file){
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        fileService.storeFile(file,this.projectImageLocation);
+        String fileName = fileService.storeFile(file,this.projectImageLocation,projectid);
+
         ProjectImage projectImage = new ProjectImage(projectid,this.projectImageLocation.resolve(fileName).toString());
         projectImageRepository.save(projectImage);
         FileUploadDto fileUploadDto= FileUploadDto.builder()
