@@ -10,6 +10,8 @@ public class ProfileDto {
     private String contact;
     private String area;
     private int level;
+    private String description;
     private ProjectRole role;
     private TechnicalStack stack;
+
 }
