@@ -25,5 +25,4 @@ public class MemberInfo {
     private Long level;
     private String description;
 
-
 }
