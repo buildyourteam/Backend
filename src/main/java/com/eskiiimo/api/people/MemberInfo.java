@@ -4,10 +4,7 @@ import com.eskiiimo.api.projects.ProjectRole;
 import com.eskiiimo.api.projects.TechnicalStack;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Builder
 @AllArgsConstructor
@@ -27,6 +24,5 @@ public class MemberInfo {
     private String area;
     private Long level;
     private String description;
-
 
 }
