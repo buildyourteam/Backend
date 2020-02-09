@@ -56,7 +56,7 @@ public class ProjectControllerTests {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andExpect(jsonPath("_links.project-list").exists())
-                .andDo(document("query-events"))
+                .andDo(document("total-project-lists"))
         ;
 
     }
@@ -83,7 +83,31 @@ public class ProjectControllerTests {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andExpect(jsonPath("_links.project-list").exists())
-                .andDo(document("query-events"))
+                .andDo(document("occupation-project-list"))
+        ;
+
+    }
+
+    @Test
+    @TestDescription("마감이 임박한 프로젝트 리스트 조회하기")
+    public void queryEventsDeadline() throws Exception {
+        // Given
+        this.generateEventDeadline(0);
+
+        // When & Then
+        this.mockMvc.perform(get("/api/projects/deadline")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "endDate,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+//                .andExpect(jsonPath("_embedded.projectList[0]._links.self").exists())
+//                .andExpect(jsonPath("_links.self").exists())
+//                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.project-list-deadline").exists())
+                .andDo(document("deadline-project-list"))
         ;
 
     }
@@ -116,6 +140,47 @@ public class ProjectControllerTests {
 
         this.projectRepository.save(project);
         this.projectRepository.save(project1);
+
+    }
+    private void generateEventDeadline(int index) {
+
+        ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
+        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
+        ProjectMemberSet current = new ProjectMemberSet(2,1,1,2);
+
+        Project project = Project.builder()
+                .projectName("project"+index)
+                .teamName("project team"+index*2)
+                .endDate(LocalDateTime.of(2020,04,30,23,59))
+                .description("need yes 입니다.")
+                .current(current)
+                .needMembers(need_yes)
+                .status(ProjectStatus.RECRUTING)
+                .build();
+
+        Project project1 = Project.builder()
+                .projectName("project"+index)
+                .teamName("project team"+index*2)
+                .endDate(LocalDateTime.of(2022,03,30,23,59))
+                .description("need zero 입니다.")
+                .current(current)
+                .needMembers(need_zero)
+                .status(ProjectStatus.RECRUTING)
+                .build();
+
+        Project project2 = Project.builder()
+                .projectName("project"+index)
+                .teamName("project team"+index*2)
+                .endDate(LocalDateTime.of(2020,03,30,23,59))
+                .description("need zero 입니다.")
+                .current(current)
+                .needMembers(need_zero)
+                .status(ProjectStatus.RECRUTING)
+                .build();
+
+        this.projectRepository.save(project);
+        this.projectRepository.save(project1);
+        this.projectRepository.save(project2);
 
     }
 
