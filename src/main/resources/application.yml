@@ -17,6 +17,18 @@ spring:
     deserialization:
       fail-on-unknown-properties : true
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+file:
+  upload-dir: ./files
+  projectimage-dir: ./files/projectimg
+  profileimage-dir: ./files/profileimg
+
+
 logging:
   level:
     org:

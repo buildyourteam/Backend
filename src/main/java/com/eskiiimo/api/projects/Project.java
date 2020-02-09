@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="projectId")
 @Entity
 public class Project{
 
@@ -35,14 +35,17 @@ public class Project{
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
     private ProjectMemberSet needMembers;
-
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "projectId")
     private List<ProjectQuestion> questions = new ArrayList<ProjectQuestion>();
 
+
+    @Builder.Default
     @OneToMany(mappedBy = "project")
     @JsonIgnore
+
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
     public void addMember(ProjectMember member){
@@ -52,4 +55,3 @@ public class Project{
     }
 
 }
-
