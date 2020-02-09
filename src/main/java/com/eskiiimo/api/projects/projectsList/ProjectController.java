@@ -32,33 +32,40 @@ public class ProjectController {
     public ResponseEntity getProjectsList(Pageable pageable, PagedResourcesAssembler<Project> assembler,
                                           @RequestParam(value="occupation", required=false) String occupation) {
         Page<Project> page = this.projectRepository.findAll(pageable);
-        switch (occupation) {
-            case "developer":
+        if(occupation !=null) {
+            if (occupation.equals("developer")) {
                 page = this.projectRepository.findAllByNeedMembersDeveloperGreaterThan(0, pageable);
-                break;
 
-            case "designer":
+            }
+            else if (occupation.equals("designer")) {
                 page = this.projectRepository.findAllByNeedMembersDesignerGreaterThan(0, pageable);
-                break;
 
-            case "planner":
+            }
+            else if (occupation.equals("planner")) {
                 page = this.projectRepository.findAllByNeedMembersPlannerGreaterThan(0, pageable);
-                break;
 
-            case "etc":
+            }
+            else if (occupation.equals("etc")) {
                 page = this.projectRepository.findAllByNeedMembersEtcGreaterThan(0, pageable);
-                break;
 
-            default:
-                break;
+            }
 
         }
-
         PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
         pagedResources.add(new Link("/api/projects").withRel("project-list"));
         pagedResources.add(new Link("/html5/index.html#resources-projects-list").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
-
     }
+
+//    @GetMapping("/deadline")
+//    public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+
+//        Page<Project> page = this.projectRepository.findTop2OrderByEndDate(pageable);
+//        PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
+//        pagedResources.add(new Link("/api/projects/deadline").withRel("project-list-deadline"));
+
+//        return ResponseEntity.ok(pagedResources);
+
+//    }
 }
