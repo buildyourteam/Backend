@@ -1,22 +1,31 @@
 package com.eskiiimo.api.projects.projectsList;
 
 import com.eskiiimo.api.projects.Project;
+import com.eskiiimo.api.projects.ProjectField;
 import com.eskiiimo.api.projects.ProjectStatus;
-import lombok.Getter;
+import lombok.*;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Getter
+@Builder
+@NoArgsConstructor
+@Data
+@AllArgsConstructor
 public class ProjectDto {
+    @NotEmpty
     private String projectName;
+    @NotEmpty
     private String teamName;
+    @NotNull
     private LocalDateTime endDate;
+    @NotEmpty
     private String description;
-    private ProjectStatus status;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ProjectField projectField;
     @Embedded
     private ProjectMemberSet current;
     @Embedded
@@ -34,7 +43,6 @@ public class ProjectDto {
                 .teamName(projectDto.teamName)
                 .endDate(projectDto.endDate)
                 .description(projectDto.description)
-                .status(projectDto.status)
                 .current(projectDto.current)
                 .needMembers(projectDto.needMembers)
                 .build();

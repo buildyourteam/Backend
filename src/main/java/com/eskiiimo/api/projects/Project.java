@@ -24,7 +24,10 @@ public class Project{
     private String teamName;
     private LocalDateTime endDate;
     private String description;
-    private ProjectStatus status;
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status = ProjectStatus.RECRUTING;
+    @Enumerated(EnumType.STRING)
+    private ProjectField projectField;
     @Embedded
     private ProjectMemberSet current;
     @Embedded
@@ -49,6 +52,9 @@ public class Project{
         this.projectMembers.add(member);
         if(member.getProject() != this)
             member.setProject(this);
+    }
+    public void update() {
+
     }
 
 }
