@@ -15,18 +15,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -74,26 +80,47 @@ class ProjectDetailControllerTest {
         this.joinProjectMember((long)1,1);
         this.joinProjectMember((long)1,2);
         // When & Then
-        this.mockMvc.perform(get("/api/projects/1"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/projects/{projectId}",1))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("ProjectName").exists())
+                .andExpect(jsonPath("projectName").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("query-project",
                         links(
-
-                        ),
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("apply").description("apply to project"),
+                                linkWithRel("profile").description("link to profile")
+                            ),
                         pathParameters(
-
-                        ),
-                        requestHeaders(
-
-                        ),
+                                parameterWithName("projectId").description("Project id")
+                            ),
                         responseHeaders(
-
-                        ),
+                               headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                            ),
                         responseFields(
+
+                                fieldWithPath("projectName").description("projectName"),
+                                fieldWithPath("teamName").description("teamName"),
+                                fieldWithPath("endDate").description("endDate"),
+                                fieldWithPath("description").description("description"),
+                                fieldWithPath("status").description("status"),
+                                fieldWithPath("current.developer").description("current Developer"),
+                                fieldWithPath("current.designer").description("current Designer"),
+                                fieldWithPath("current.planner").description("current Planner"),
+                                fieldWithPath("current.etc").description("current Etc Member"),
+                                fieldWithPath("needMembers.developer").description("need Developer"),
+                                fieldWithPath("needMembers.designer").description("need Designer"),
+                                fieldWithPath("needMembers.planner").description("need Planner"),
+                                fieldWithPath("needMembers.etc").description("need Etc Member"),
+                                fieldWithPath("memberList[].userName").description("Project Member's name"),
+                                fieldWithPath("memberList[].role").description("Project Member's role"),
+                                fieldWithPath("memberList[].stack").description("Project Member's stack"),
+                                fieldWithPath("memberList[].level").description("Project Member's level"),
+                                fieldWithPath("memberList[]._links.self.href").description("Link to Project Member's profile "),
+                                fieldWithPath("_links.self.href").description("Link to Self"),
+                                fieldWithPath("_links.apply.href").description("Link to apply"),
+                                fieldWithPath("_links.profile.href").description("Link to Profile")
+
 
                         )
                  ))
