@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mariadb://192.168.0.100:3307/Eskimo
+    url: jdbc:mariadb://192.168.0.100:3307/Eskimo?useUnicode=true&characterEncoding=utf8
     username: eskimo
     password: Eskimo2020Dev!
     driver-class-name: org.mariadb.jdbc.Driver
@@ -16,6 +16,24 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties : true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+file:
+  upload-dir: ./files
+  projectimage-dir: ./files/projectimg
+  profileimage-dir: ./files/profileimg
+
 
 logging:
   level:

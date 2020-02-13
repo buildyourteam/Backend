@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="projectQuestionId")
 @Entity
 public class ProjectQuestion {
     @Id
@@ -19,9 +19,10 @@ public class ProjectQuestion {
     private Long projectQuestionId;
     @Column(name="question")
     private String question;
-
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectQuestionId")
     private List<ProjectAnswer> answers = new ArrayList<ProjectAnswer>();
 
 }
+

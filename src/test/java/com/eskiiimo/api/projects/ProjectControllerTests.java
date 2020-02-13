@@ -84,7 +84,7 @@ public class ProjectControllerTests {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andExpect(jsonPath("_links.project-list").exists())
-                .andDo(document("total-project-lists"))
+                .andDo(document("query-events"))
         ;
 
     }

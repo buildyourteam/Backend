@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="memberId")
 @Entity
 public class Member {
     @Id
@@ -27,7 +27,7 @@ public class Member {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="memberId")
     private MemberInfo memberInfo;
-
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<ProjectMember> projects = new ArrayList<ProjectMember>();
 

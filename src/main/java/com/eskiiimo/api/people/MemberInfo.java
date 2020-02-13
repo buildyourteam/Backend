@@ -4,17 +4,14 @@ import com.eskiiimo.api.projects.ProjectRole;
 import com.eskiiimo.api.projects.TechnicalStack;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="memberId")
 @Entity
 public class MemberInfo {
     @Id
@@ -28,5 +25,5 @@ public class MemberInfo {
     private Long level;
     private String description;
 
-
 }
+
