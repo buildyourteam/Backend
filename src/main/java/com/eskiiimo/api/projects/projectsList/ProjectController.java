@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
 
@@ -37,6 +39,8 @@ public class ProjectController {
     public ResponseEntity createProject(@RequestBody @Valid ProjectDto projectDto, Errors errors) {
 
         Project project = modelMapper.map(projectDto, Project.class);
+        project.update();
+
         Project newProject = this.projectRepository.save(project);
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
@@ -117,14 +121,15 @@ public class ProjectController {
     }
 
 
-//    @GetMapping("/deadline")
-//    public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+    @GetMapping("/deadline")
+    public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 
-//        Page<Project> page = this.projectRepository.findTop2OrderByEndDate(pageable);
-//        PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
-//        pagedResources.add(new Link("/api/projects/deadline").withRel("project-list-deadline"));
+        Page<Project> page = projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
+        PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
+        pagedResources.add(new Link("/api/projects").withRel("project-list"));
+        pagedResources.add(new Link("/html5/index.html#resources-projects-list").withRel("profile"));
 
-//        return ResponseEntity.ok(pagedResources);
+        return ResponseEntity.ok(pagedResources);
 
-//    }
+    }
 }

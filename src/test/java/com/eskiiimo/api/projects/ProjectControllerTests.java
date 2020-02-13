@@ -51,7 +51,7 @@ public class ProjectControllerTests {
         ProjectDto project = ProjectDto.builder()
                 .projectName("project1")
                 .teamName("Team1")
-                .endDate(LocalDateTime.of(2020,06,30,11,11))
+                .endDate(LocalDateTime.of(2020,02,20,11,11))
                 .description("Hi this is project1.")
                 .projectField(ProjectField.SYSTEM)
                 .build();
@@ -169,6 +169,31 @@ public class ProjectControllerTests {
 
     }
 
+    @Test
+    @TestDescription("마감임박한 프로젝트 리스트 조회")
+    public void DeadlineProjectList() throws Exception {
+        // Given
+        this.generateProjectDeadline(0);
+
+        // When & Then
+        this.mockMvc.perform(get("/api/projects/deadline")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "projectName,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+//                .andExpect(jsonPath("_embedded.projectList[0]._links.self").exists())
+//                .andExpect(jsonPath("_links.self").exists())
+//                .andExpect(jsonPath("_links.profile").exists())
+//                .andExpect(jsonPath("_links.project-list").exists())
+//                .andDo(document("total-project-lists"))
+        ;
+
+
+    }
+
 
     private void generateEvent(int index) {
 
@@ -186,6 +211,7 @@ public class ProjectControllerTests {
                 .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.APP)
                 .build();
+        project.update();
 
         Project project1 = Project.builder()
                 .projectName("project"+index)
@@ -197,6 +223,7 @@ public class ProjectControllerTests {
                 .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
+        project1.update();
 
         Project project2 = Project.builder()
                 .projectName("project"+index)
@@ -208,13 +235,14 @@ public class ProjectControllerTests {
                 .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
+        project2.update();
 
         this.projectRepository.save(project);
         this.projectRepository.save(project1);
         this.projectRepository.save(project2);
 
     }
-    private void generateEventDeadline(int index) {
+    private void generateProjectDeadline(int index) {
 
         ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
@@ -223,22 +251,24 @@ public class ProjectControllerTests {
         Project project = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
+                .endDate(LocalDateTime.of(2020,2,28,23,59))
                 .description("need yes 입니다.")
                 .current(current)
                 .needMembers(need_yes)
                 .status(ProjectStatus.RECRUTING)
                 .build();
+        project.update();
 
         Project project1 = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2022,03,30,23,59))
+                .endDate(LocalDateTime.of(2020,2,14,23,59))
                 .description("need zero 입니다.")
                 .current(current)
                 .needMembers(need_zero)
                 .status(ProjectStatus.RECRUTING)
                 .build();
+        project1.update();
 
         Project project2 = Project.builder()
                 .projectName("project"+index)
@@ -249,6 +279,7 @@ public class ProjectControllerTests {
                 .needMembers(need_zero)
                 .status(ProjectStatus.RECRUTING)
                 .build();
+        project2.update();
 
         this.projectRepository.save(project);
         this.projectRepository.save(project1);

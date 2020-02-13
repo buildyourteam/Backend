@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class Project{
     private String teamName;
     private LocalDateTime endDate;
     private String description;
+    private long dday;
     @Enumerated(EnumType.STRING)
     private ProjectStatus status = ProjectStatus.RECRUTING;
     @Enumerated(EnumType.STRING)
@@ -54,7 +56,8 @@ public class Project{
             member.setProject(this);
     }
     public void update() {
-
+        long remainDay = ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate);
+        this.dday=remainDay;
     }
 
 }

@@ -20,6 +20,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByNeedMembersPlannerGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByNeedMembersEtcGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByProjectField(ProjectField field, Pageable pageable);
+    Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
 
 
 //    Page<Project> findTop2OrderByEndDate(Pageable pageable);
