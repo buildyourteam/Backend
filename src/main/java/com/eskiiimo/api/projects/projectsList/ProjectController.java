@@ -19,9 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
 import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
 
 @Controller
@@ -35,6 +32,7 @@ public class ProjectController {
     @Autowired
     ModelMapper modelMapper;
 
+    //  validation작성하기
     @PostMapping
     public ResponseEntity createProject(@RequestBody @Valid ProjectDto projectDto, Errors errors) {
 
@@ -46,7 +44,7 @@ public class ProjectController {
         URI createdUri = selfLinkBuilder.toUri();
         ProjectResource projectResource = new ProjectResource(project);
         projectResource.add(new Link("/api/projects").withRel("create-project"));
-        projectResource.add(new Link("/html5/index.html#resources-projects-list").withRel("profile"));
+        projectResource.add(new Link("/docs/index.html#resources-project-create").withRel("profile"));
 
         return ResponseEntity.created(createdUri).body(projectResource);
     }
@@ -67,9 +65,21 @@ public class ProjectController {
 
         PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
         pagedResources.add(new Link("/api/projects").withRel("project-list"));
-        pagedResources.add(new Link("/html5/index.html#resources-projects-list").withRel("profile"));
+        pagedResources.add(new Link("/docs/index.html#resources-project-list").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
+    }
+
+    @GetMapping("/deadline")
+    public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+
+        Page<Project> page = projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
+        PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
+        pagedResources.add(new Link("/api/projects/deadline").withRel("deadline-project-list"));
+        pagedResources.add(new Link("/html5/index.html#resources-deadline-project-list").withRel("profile"));
+
+        return ResponseEntity.ok(pagedResources);
+
     }
 
     /*
@@ -121,15 +131,5 @@ public class ProjectController {
     }
 
 
-    @GetMapping("/deadline")
-    public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 
-        Page<Project> page = projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
-        PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
-        pagedResources.add(new Link("/api/projects").withRel("project-list"));
-        pagedResources.add(new Link("/html5/index.html#resources-projects-list").withRel("profile"));
-
-        return ResponseEntity.ok(pagedResources);
-
-    }
 }
