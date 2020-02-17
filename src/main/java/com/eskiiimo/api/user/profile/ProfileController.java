@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 @Controller
 @RequestMapping(value = "/profiles", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProfileController {
@@ -22,6 +24,7 @@ public class ProfileController {
     public ResponseEntity getProfile(@PathVariable String user_id){
         ProfileDto profileDto = ProfileService.getProfile(user_id);
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
+        profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
         profileResource.add(new Link("/docs/index.html#resources-profile-get").withRel("profile"));
         return ResponseEntity.ok(profileResource);
     }
