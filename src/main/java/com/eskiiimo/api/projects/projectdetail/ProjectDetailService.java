@@ -42,11 +42,11 @@ public class ProjectDetailService {
 
             for(ProjectMember projectMember: projectMemberList){
                 ProjectMemberDto projectmember = ProjectMemberDto.builder()
-                        .userName(projectMember.getMember().getUserName())
+                        .userName(projectMember.getUser().getUserName())
                         .role(projectMember.getRole())
                         .stack(projectMember.getStack())
                         .build();
-                ProjectMemberResource projectMemberResource = new ProjectMemberResource(projectmember,projectMember.getMember().getUserId());
+                ProjectMemberResource projectMemberResource = new ProjectMemberResource(projectmember,projectMember.getUser().getUserId());
                 projectMemberListResource.add(projectMemberResource);
             }
             projectDetailDto.setMemberList(projectMemberListResource);
