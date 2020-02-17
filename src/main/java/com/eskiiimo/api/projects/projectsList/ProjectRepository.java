@@ -9,19 +9,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-//    Page<Project> findAllByNeedMembersDeveloperGreaterThan(int i, Pageable pageable);
-//    Page<Project> findAllByNeedMembersDeveloperGreaterThanOrProjectField(int i, String field, Pageable pageable);
-    Page<Project> findAllByNeedMembersDeveloperGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMembersDesignerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMembersPlannerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMembersEtcGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMembersDeveloperGreaterThan(int i,  Pageable pageable);
-    Page<Project> findAllByNeedMembersDesignerGreaterThan(int i,  Pageable pageable);
-    Page<Project> findAllByNeedMembersPlannerGreaterThan(int i,  Pageable pageable);
-    Page<Project> findAllByNeedMembersEtcGreaterThan(int i,  Pageable pageable);
+    Page<Project> findAllByNeedMemberDeveloperGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<Project> findAllByNeedMemberDesignerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<Project> findAllByNeedMemberPlannerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<Project> findAllByNeedMemberEtcGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<Project> findAllByNeedMemberDeveloperGreaterThan(int i,  Pageable pageable);
+    Page<Project> findAllByNeedMemberDesignerGreaterThan(int i,  Pageable pageable);
+    Page<Project> findAllByNeedMemberPlannerGreaterThan(int i,  Pageable pageable);
+    Page<Project> findAllByNeedMemberEtcGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByProjectField(ProjectField field, Pageable pageable);
     Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
 
-
-//    Page<Project> findTop2OrderByEndDate(Pageable pageable);
     }

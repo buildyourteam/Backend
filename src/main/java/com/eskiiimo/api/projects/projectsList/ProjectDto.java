@@ -27,7 +27,7 @@ public class ProjectDto {
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
     @Embedded
-    private ProjectMemberSet current;
+    private ProjectMemberSet currentMember;
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="developer", column = @Column(name="needDeveloper")),
@@ -35,7 +35,7 @@ public class ProjectDto {
             @AttributeOverride(name="planner", column = @Column(name="needPlanner")),
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
-    private ProjectMemberSet needMembers;
+    private ProjectMemberSet needMember;
 
     public Project toEntity(ProjectDto projectDto) {
         return Project.builder()
@@ -43,8 +43,8 @@ public class ProjectDto {
                 .teamName(projectDto.teamName)
                 .endDate(projectDto.endDate)
                 .description(projectDto.description)
-                .current(projectDto.current)
-                .needMembers(projectDto.needMembers)
+                .currentMember(projectDto.currentMember)
+                .needMember(projectDto.needMember)
                 .build();
     }
 }

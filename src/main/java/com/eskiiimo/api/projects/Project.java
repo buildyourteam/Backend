@@ -31,7 +31,7 @@ public class Project{
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
     @Embedded
-    private ProjectMemberSet current;
+    private ProjectMemberSet currentMember;
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="developer", column = @Column(name="needDeveloper")),
@@ -39,7 +39,7 @@ public class Project{
             @AttributeOverride(name="planner", column = @Column(name="needPlanner")),
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
-    private ProjectMemberSet needMembers;
+    private ProjectMemberSet needMember;
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
     @JsonIgnore

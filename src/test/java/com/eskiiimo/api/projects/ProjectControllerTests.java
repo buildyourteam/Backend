@@ -62,7 +62,7 @@ public class ProjectControllerTests {
                 .endDate(LocalDateTime.of(2020,02,20,11,11))
                 .description("Hi this is project1.")
                 .projectField(ProjectField.SYSTEM)
-                .needMembers(new ProjectMemberSet(3,4,4,5))
+                .needMember(new ProjectMemberSet(3,4,4,5))
                 .build();
 
         mockMvc.perform(post("/api/projects")
@@ -87,11 +87,11 @@ public class ProjectControllerTests {
                                 fieldWithPath("endDate").description("date time of deadline of new event"),
                                 fieldWithPath("description").description("description of new project"),
                                 fieldWithPath("projectField").description("field of new project"),
-                                fieldWithPath("current").description("current Member of new project"),
-                                fieldWithPath("needMembers.developer").description("need Developer"),
-                                fieldWithPath("needMembers.designer").description("need Designer"),
-                                fieldWithPath("needMembers.planner").description("need Planner"),
-                                fieldWithPath("needMembers.etc").description("need Etc")
+                                fieldWithPath("currentMember").description("current Member of new project"),
+                                fieldWithPath("needMember.developer").description("need Developer"),
+                                fieldWithPath("needMember.designer").description("need Designer"),
+                                fieldWithPath("needMember.planner").description("need Planner"),
+                                fieldWithPath("needMember.etc").description("need Etc")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
@@ -105,11 +105,11 @@ public class ProjectControllerTests {
                                 fieldWithPath("dday").description("D-day"),
                                 fieldWithPath("status").description("status of new project"),
                                 fieldWithPath("projectField").description("field of new project"),
-                                fieldWithPath("current").description("current Member of new project"),
-                                fieldWithPath("needMembers.developer").description("need Developer"),
-                                fieldWithPath("needMembers.designer").description("need Designer"),
-                                fieldWithPath("needMembers.planner").description("need Planner"),
-                                fieldWithPath("needMembers.etc").description("need Etc"),
+                                fieldWithPath("currentMember").description("current Member of new project"),
+                                fieldWithPath("needMember.developer").description("need Developer"),
+                                fieldWithPath("needMember.designer").description("need Designer"),
+                                fieldWithPath("needMember.planner").description("need Planner"),
+                                fieldWithPath("needMember.etc").description("need Etc"),
                                 fieldWithPath("_links.self.href").description("Link to Self"),
                                 fieldWithPath("_links.create-project.href").description("Link to create project"),
                                 fieldWithPath("_links.profile.href").description("Link to Profile")
@@ -193,14 +193,14 @@ public class ProjectControllerTests {
                                 fieldWithPath("_embedded.projectList[].dday").description("dday"),
                                 fieldWithPath("_embedded.projectList[].status").description("status"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("projectField"),
-                                fieldWithPath("_embedded.projectList[].current.developer").description("current Developer"),
-                                fieldWithPath("_embedded.projectList[].current.designer").description("current Designer"),
-                                fieldWithPath("_embedded.projectList[].current.planner").description("current Planner"),
-                                fieldWithPath("_embedded.projectList[].current.etc").description("current Etc Member"),
-                                fieldWithPath("_embedded.projectList[].needMembers.developer").description("need Developer"),
-                                fieldWithPath("_embedded.projectList[].needMembers.designer").description("need Designer"),
-                                fieldWithPath("_embedded.projectList[].needMembers.planner").description("need Planner"),
-                                fieldWithPath("_embedded.projectList[].needMembers.etc").description("need Etc Member"),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("current Developer"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("current Designer"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("current Planner"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("current Etc Member"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("need Developer"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("need Designer"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("need Planner"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("need Etc Member"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("Link to Project detail "),
                                 fieldWithPath("_links.self.href").description("Link to Self"),
                                 fieldWithPath("_links.project-list.href").description("Link to project list"),
@@ -309,14 +309,14 @@ public class ProjectControllerTests {
                                 fieldWithPath("_embedded.projectList[].dday").description("dday"),
                                 fieldWithPath("_embedded.projectList[].status").description("status"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("projectField"),
-                                fieldWithPath("_embedded.projectList[].current.developer").description("current Developer"),
-                                fieldWithPath("_embedded.projectList[].current.designer").description("current Designer"),
-                                fieldWithPath("_embedded.projectList[].current.planner").description("current Planner"),
-                                fieldWithPath("_embedded.projectList[].current.etc").description("current Etc Member"),
-                                fieldWithPath("_embedded.projectList[].needMembers.developer").description("need Developer"),
-                                fieldWithPath("_embedded.projectList[].needMembers.designer").description("need Designer"),
-                                fieldWithPath("_embedded.projectList[].needMembers.planner").description("need Planner"),
-                                fieldWithPath("_embedded.projectList[].needMembers.etc").description("need Etc Member"),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("current Developer"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("current Designer"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("current Planner"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("current Etc Member"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("need Developer"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("need Designer"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("need Planner"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("need Etc Member"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("Link to Project detail "),
                                 fieldWithPath("_links.self.href").description("Link to Self"),
                                 fieldWithPath("_links.deadline-project-list.href").description("Link to deadline project list"),
@@ -330,7 +330,6 @@ public class ProjectControllerTests {
                 ))
         ;
 
-
     }
 
 
@@ -338,15 +337,15 @@ public class ProjectControllerTests {
 
         ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet current = new ProjectMemberSet(2,1,1,2);
+        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
 
         Project project = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
                 .description("need yes 입니다.")
-                .current(current)
-                .needMembers(need_yes)
+                .currentMember(currentMember)
+                .needMember(need_yes)
                 .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.APP)
                 .build();
@@ -357,8 +356,8 @@ public class ProjectControllerTests {
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
                 .description("need zero 입니다.")
-                .current(current)
-                .needMembers(need_zero)
+                .currentMember(currentMember)
+                .needMember(need_zero)
                 .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
@@ -369,8 +368,8 @@ public class ProjectControllerTests {
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
                 .description("need yes 입니다.")
-                .current(current)
-                .needMembers(need_yes)
+                .currentMember(currentMember)
+                .needMember(need_yes)
                 .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
@@ -385,15 +384,15 @@ public class ProjectControllerTests {
 
         ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet current = new ProjectMemberSet(2,1,1,2);
+        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
 
         Project project = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,2,28,23,59))
                 .description("need yes 입니다.")
-                .current(current)
-                .needMembers(need_yes)
+                .currentMember(currentMember)
+                .needMember(need_yes)
                 .status(ProjectStatus.RECRUTING)
                 .build();
         project.update();
@@ -403,8 +402,8 @@ public class ProjectControllerTests {
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,2,14,23,59))
                 .description("need zero 입니다.")
-                .current(current)
-                .needMembers(need_zero)
+                .currentMember(currentMember)
+                .needMember(need_zero)
                 .status(ProjectStatus.RECRUTING)
                 .build();
         project1.update();
@@ -414,8 +413,8 @@ public class ProjectControllerTests {
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,03,30,23,59))
                 .description("need zero 입니다.")
-                .current(current)
-                .needMembers(need_zero)
+                .currentMember(currentMember)
+                .needMember(need_zero)
                 .status(ProjectStatus.RECRUTING)
                 .build();
         project2.update();
