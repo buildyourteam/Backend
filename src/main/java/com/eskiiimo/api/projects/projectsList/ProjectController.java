@@ -2,6 +2,9 @@ package com.eskiiimo.api.projects.projectsList;
 
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
+import com.eskiiimo.api.projects.projectdetail.ProjectDetailDto;
+import com.eskiiimo.api.projects.projectdetail.ProjectDetailResource;
+import com.eskiiimo.api.projects.projectdetail.ProjectDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -32,6 +36,9 @@ public class ProjectController {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    ProjectDetailService projectDetailService;
 
     //  validation작성하기
     @PostMapping
@@ -75,5 +82,29 @@ public class ProjectController {
 
         return ResponseEntity.ok(pagedResources);
     }
+
+    @PutMapping("/{project_id}")
+    public ResponseEntity updateProject(@PathVariable Long project_id,
+                                        @RequestBody ProjectDetailDto projectDetailDto,
+                                        Errors errors) {
+        Project existingProject = this.projectService.findById(project_id);
+        if (existingProject == null) {
+            return ResponseEntity.notFound().build();
+        }
+        this.modelMapper.map(projectDetailDto, existingProject);
+        this.projectService.save(existingProject);
+
+        ProjectDetailDto projectDetail = projectDetailService.getProject(project_id);
+        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetail,project_id);
+        return ResponseEntity.ok(projectDetailResource);
+    }
+
+    @DeleteMapping("/{project_id}")
+    public ResponseEntity deleteProject(@PathVariable Long project_id) {
+        this.projectService.deleteByProjectId(project_id);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    }
+
+
 
 }

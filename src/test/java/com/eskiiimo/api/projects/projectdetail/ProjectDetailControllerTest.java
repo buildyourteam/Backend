@@ -139,8 +139,8 @@ class ProjectDetailControllerTest {
                 .teamName("project team"+index)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
                 .description("need yes 입니다.")
-                .current(current)
-                .needMembers(need_yes)
+                .currentMember(current)
+                .needMember(need_yes)
                 .status(ProjectStatus.RECRUTING)
                 .build();
 
