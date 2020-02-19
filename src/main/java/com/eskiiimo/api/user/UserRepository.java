@@ -24,6 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(nativeQuery = true)
     Page<PeopleDto> findPeopleByLevel(Long level,Pageable pageable);
     @Query(nativeQuery = true)
+    Page<PeopleDto> findPeopleByLevelAndArea(Long level,String area,Pageable pageable);
+    @Query(nativeQuery = true)
     Page<PeopleDto> findPeopleByAreaAndRole(String area,String Role,Pageable pageable);
     @Query(nativeQuery = true)
     Page<PeopleDto> findPeopleByAreaAndRoleAndLevel(String area,String role,Long level,Pageable pageable);

@@ -20,7 +20,6 @@ public class PeopleService {
     @Transactional
     public Page<PeopleDto> getPeople(Long level, String role, String area, Pageable pageable){
         Page<PeopleDto> page = userRepository.findPeopleAll(pageable);
-        /*
         if(level != null){
             if(role!=null){
                 if(area!=null){//세개 다
@@ -30,8 +29,13 @@ public class PeopleService {
                     page = userRepository.findPeopleByRoleAndLevel(role, level, pageable);
                 }
             }
-            else{//level
-                page = userRepository.findPeopleByLevel(level,pageable);
+            else{
+                if(area!=null){//level, area
+                    page= userRepository.findPeopleByLevelAndArea(level,area,pageable);
+                }
+                else {//level
+                    page = userRepository.findPeopleByLevel(level, pageable);
+                }
             }
         }
         else{
@@ -52,8 +56,6 @@ public class PeopleService {
                 }
             }
         }
-        */
-
         return page;
     }
 
