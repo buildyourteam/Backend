@@ -19,4 +19,12 @@ public class ProfileDto {
     private Long level;
     private String description;
 
+    public void updateEntity(User user){
+        user.setUserName(this.getUserName());
+        user.setRole(ProjectRole.valueOf(this.getRole()));
+        user.setStack(TechnicalStack.valueOf(this.getStack()));
+        user.setContact(this.getContact());
+        user.setArea(this.getArea());
+        user.setDescription(this.getDescription());
+    }
 }
