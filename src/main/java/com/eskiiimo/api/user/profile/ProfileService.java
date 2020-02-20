@@ -5,6 +5,7 @@ import com.eskiiimo.api.projects.TechnicalStack;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,8 @@ import java.util.Optional;
 public class ProfileService {
 
     private final UserRepository userRepository;
+
+    private final ModelMapper modelMapper;
 
     @Transactional
     public ProfileDto getProfile(String user_id) {
@@ -33,12 +36,7 @@ public class ProfileService {
             return null;
         }
         User user = optionalUser.get();
-        user.setUserName(updateData.getUserName());
-        user.setRole(ProjectRole.valueOf(updateData.getRole()));
-        user.setStack(TechnicalStack.valueOf(updateData.getStack()));
-        user.setContact(updateData.getContact());
-        user.setArea(updateData.getArea());
-        user.setDescription(updateData.getDescription());
+        updateData.updateEntity(user);
         this.userRepository.save(user);
         return updateData;
     }
