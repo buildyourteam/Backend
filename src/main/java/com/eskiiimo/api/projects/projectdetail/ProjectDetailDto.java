@@ -20,8 +20,8 @@ public class ProjectDetailDto {
     private ProjectStatus status;
 
 
-    private ProjectMemberSet current = new ProjectMemberSet();
-    private ProjectMemberSet needMembers= new ProjectMemberSet();;
+    private ProjectMemberSet currentMember = new ProjectMemberSet();
+    private ProjectMemberSet needMember= new ProjectMemberSet();;
     private List<ProjectMemberResource> memberList = new ArrayList<ProjectMemberResource>();
 
 
@@ -32,8 +32,8 @@ public class ProjectDetailDto {
         this.endDate = endDate;
         this.description = description;
         this.status = status;
-        this.current = currentMembers;
-        this.needMembers = needMembers;
+        this.currentMember = currentMembers;
+        this.needMember = needMembers;
         this.memberList = memberList;
     }
 }
