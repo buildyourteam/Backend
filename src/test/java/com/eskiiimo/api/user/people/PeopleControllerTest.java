@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
 @Import(RestDocsConfiguration.class)
 class PeopleControllerTest {
 
@@ -179,22 +179,19 @@ class PeopleControllerTest {
                 .andDo(print())
                 .andDo(document("get-people",
                         links(
-                                linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile"),
-                                linkWithRel("next").description("link to next list"),
-                                linkWithRel("last").description("link to last list"),
-                                linkWithRel("first").description("link to first list")
+                                linkWithRel("self").description("Self 링크"),
+                                linkWithRel("profile").description("API 프로필"),
+                                linkWithRel("next").description("다음 리스트"),
+                                linkWithRel("last").description("이전 리스트"),
+                                linkWithRel("first").description("리스트 첫번째 페이지")
                         ),
                         requestParameters(
-                                parameterWithName("page").description("page"),
-                                parameterWithName("size").description("number of projects per page"),
-                                parameterWithName("sort").description("sort"),
-                                parameterWithName("level").description("people level"),
-                                parameterWithName("role").description("people role"),
-                                parameterWithName("area").description("people area")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지당 데이터 수"),
+                                parameterWithName("sort").description("정렬"),
+                                parameterWithName("level").description("유저 레벨 필터"),
+                                parameterWithName("role").description("유저 역할 필터"),
+                                parameterWithName("area").description("유저 활동지역 필터")
                         ),
                         responseFields(
 
@@ -209,10 +206,10 @@ class PeopleControllerTest {
                                 fieldWithPath("_links.next.href").description("다음 리스트"),
                                 fieldWithPath("_links.last.href").description("이전 리스트"),
                                 fieldWithPath("_links.profile.href").description("API 프로필"),
-                                fieldWithPath("page.size").description("number of projects per page"),
-                                fieldWithPath("page.totalElements").description("total projects"),
-                                fieldWithPath("page.totalPages").description("total pages"),
-                                fieldWithPath("page.number").description("number")
+                                fieldWithPath("page.size").description("페이지당 데이터 수"),
+                                fieldWithPath("page.totalElements").description("총 데이터 수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("현재 페이지")
 
                         )
                 ))
