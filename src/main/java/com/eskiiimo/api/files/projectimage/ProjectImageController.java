@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping("/projects/image/{projectid}")
 public class ProjectImageController {
     private static final Logger logger = LoggerFactory.getLogger(ProjectImageController.class);

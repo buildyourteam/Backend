@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+
 import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
 
 @Controller
 @Slf4j
+@CrossOrigin(origins = "*")
 @RequestMapping(value = "/api/projects", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectController {
 

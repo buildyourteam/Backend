@@ -1,7 +1,5 @@
 package com.eskiiimo.api.user.people;
 
-import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.projectsList.ProjectController;
 import com.eskiiimo.api.user.profile.ProfileController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping(value = "/profiles", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProfileController {
 

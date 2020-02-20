@@ -2,12 +2,12 @@ package com.eskiiimo.api.projects;
 
 import com.eskiiimo.api.common.RestDocsConfiguration;
 import com.eskiiimo.api.common.TestDescription;
-import com.eskiiimo.api.people.Member;
-import com.eskiiimo.api.people.MemberRepository;
 import com.eskiiimo.api.projects.projectdetail.ProjectDetailDto;
 import com.eskiiimo.api.projects.projectsList.ProjectDto;
 import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
 import com.eskiiimo.api.projects.projectsList.ProjectRepository;
+import com.eskiiimo.api.user.User;
+import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,12 +28,12 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -63,7 +62,7 @@ public class ProjectControllerTests {
     ProjectMemberRepository projectMemberRepository;
 
     @Autowired
-    MemberRepository memberRepository;
+    UserRepository userRepository;
 
 
     @Test
@@ -411,25 +410,25 @@ public class ProjectControllerTests {
     private void joinProjectMember(Long index,int memberno){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        generateMember(memberno);
-        Optional<Member> optionalMember = this.memberRepository.findById((long)memberno);
-        Member member =optionalMember.get();
+        generateUser(memberno);
+        Optional<User> optionalUser = this.userRepository.findById((long)memberno);
+       User user =optionalUser.get();
         ProjectMember projectMember = ProjectMember.builder()
                 .role(ProjectRole.DEVELOPER)
                 .stack(TechnicalStack.SPRINGBOOT)
                 .project(project)
                 .selfDescription("개발자 입니다.")
-                .member(member)
+                .user(user)
                 .build();
         this.projectMemberRepository.save(projectMember);
     }
 
-    private void generateMember(int index){
-        Member member = Member.builder()
+    private void generateUser(int index){
+        User user = User.builder()
                 .userName("테스터"+index)
                 .userId("tester"+index)
                 .build();
-        this.memberRepository.save(member);
+        this.userRepository.save(user);
     }
 
 

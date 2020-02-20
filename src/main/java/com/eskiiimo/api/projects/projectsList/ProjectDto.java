@@ -2,7 +2,6 @@ package com.eskiiimo.api.projects.projectsList;
 
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
-import com.eskiiimo.api.projects.ProjectStatus;
 import lombok.*;
 
 import javax.persistence.*;

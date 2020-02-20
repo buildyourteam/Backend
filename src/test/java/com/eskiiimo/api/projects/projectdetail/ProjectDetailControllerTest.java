@@ -1,11 +1,11 @@
 package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.common.RestDocsConfiguration;
-import com.eskiiimo.api.user.User;
-import com.eskiiimo.api.user.UserRepository;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
 import com.eskiiimo.api.projects.projectsList.ProjectRepository;
+import com.eskiiimo.api.user.User;
+import com.eskiiimo.api.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -32,7 +32,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -100,14 +101,14 @@ class ProjectDetailControllerTest {
                                 fieldWithPath("endDate").description("endDate"),
                                 fieldWithPath("description").description("description"),
                                 fieldWithPath("status").description("status"),
-                                fieldWithPath("current.developer").description("current Developer"),
-                                fieldWithPath("current.designer").description("current Designer"),
-                                fieldWithPath("current.planner").description("current Planner"),
-                                fieldWithPath("current.etc").description("current Etc Member"),
-                                fieldWithPath("needMembers.developer").description("need Developer"),
-                                fieldWithPath("needMembers.designer").description("need Designer"),
-                                fieldWithPath("needMembers.planner").description("need Planner"),
-                                fieldWithPath("needMembers.etc").description("need Etc Member"),
+                                fieldWithPath("currentMember.developer").description("current Developer"),
+                                fieldWithPath("currentMember.designer").description("current Designer"),
+                                fieldWithPath("currentMember.planner").description("current Planner"),
+                                fieldWithPath("currentMember.etc").description("current Etc Member"),
+                                fieldWithPath("needMember.developer").description("need Developer"),
+                                fieldWithPath("needMember.designer").description("need Designer"),
+                                fieldWithPath("needMember.planner").description("need Planner"),
+                                fieldWithPath("needMember.etc").description("need Etc Member"),
                                 fieldWithPath("memberList[].userName").description("Project Member's name"),
                                 fieldWithPath("memberList[].role").description("Project Member's role"),
                                 fieldWithPath("memberList[].stack").description("Project Member's stack"),
@@ -148,7 +149,7 @@ class ProjectDetailControllerTest {
     private void joinProjectMember(Long index,int memberno){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        generateMember(memberno);
+        generateUser(memberno);
         Optional<User> optionalMember = this.userRepository.findById((long)memberno);
         User user =optionalMember.get();
         ProjectMember projectMember = ProjectMember.builder()
@@ -161,7 +162,7 @@ class ProjectDetailControllerTest {
         this.projectMemberRepository.save(projectMember);
     }
 
-    private void generateMember(int index){
+    private void generateUser(int index){
         User user = User.builder()
                 .userName("테스터"+index)
                 .userId("tester"+index)

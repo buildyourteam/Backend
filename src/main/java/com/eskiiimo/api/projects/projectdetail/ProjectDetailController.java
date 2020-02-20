@@ -1,17 +1,16 @@
 package com.eskiiimo.api.projects.projectdetail;
 
-import com.eskiiimo.api.projects.projectapply.ProjectApplyController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping(value = "/api/projects", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectDetailController {
 

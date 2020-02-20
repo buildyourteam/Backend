@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping(value = "/profile/image/{memberid}")
 public class ProfileImageController {
 

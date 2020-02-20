@@ -1,7 +1,5 @@
 package com.eskiiimo.api.user.profile;
 
-import com.eskiiimo.api.projects.ProjectRole;
-import com.eskiiimo.api.projects.TechnicalStack;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;

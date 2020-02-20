@@ -3,9 +3,6 @@ package com.eskiiimo.api.user.people;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Builder
 public class PeopleDto {
