@@ -1,6 +1,6 @@
 package com.eskiiimo.api.projects;
 
-import com.eskiiimo.api.people.Member;
+import com.eskiiimo.api.user.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,8 +25,8 @@ public class ProjectMember {
     private String selfDescription;
 
     @ManyToOne
-    @JoinColumn(name="memberId")
-    private Member member;
+    @JoinColumn(name="accountId")
+    private User user;
 
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
@@ -37,10 +37,10 @@ public class ProjectMember {
     @JoinColumn(name = "projectId")
     private Project project;
 
-    public void setMember(Member member){
-        this.member = member;
-        if(!member.getProjects().contains(this))
-        member.getProjects().add(this);
+    public void setUser(User user){
+        this.user = user;
+        if(!user.getProjects().contains(this))
+        user.getProjects().add(this);
     }
 
     public void setProject(Project project){

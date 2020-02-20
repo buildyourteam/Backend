@@ -112,6 +112,21 @@ operation::get-deadline-project[snippets='curl-request,http-request,http-respons
 operation::create-project[snippets='curl-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
 
 
+[[resources-profile-get]]
+=== 프로필 데이터 조회
+
+`Get` 요청을 사용해서 프로필 데이터를 조회 할 수 있다.
+
+operation::query-profile[snippets='path-parameters,curl-request,http-request,http-response,response-fields,links']
+
+[[resources-profile-update]]
+=== 프로필 업데이트
+
+`PUT` 요청을 사용해서 프로필을 업데이트 할 수 있다.
+
+operation::update-profile[snippets='curl-request,request-fields,http-response,response-fields,links']
+
+
 
 
 [[resources-profile-image-upload]]

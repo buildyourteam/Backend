@@ -1,8 +1,8 @@
 package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.common.RestDocsConfiguration;
-import com.eskiiimo.api.people.Member;
-import com.eskiiimo.api.people.MemberRepository;
+import com.eskiiimo.api.user.User;
+import com.eskiiimo.api.user.UserRepository;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
 import com.eskiiimo.api.projects.projectsList.ProjectRepository;
@@ -13,15 +13,11 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -52,7 +48,7 @@ class ProjectDetailControllerTest {
     ProjectMemberRepository projectMemberRepository;
 
     @Autowired
-    MemberRepository memberRepository;
+    UserRepository userRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -153,24 +149,24 @@ class ProjectDetailControllerTest {
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
         generateMember(memberno);
-        Optional<Member> optionalMember = this.memberRepository.findById((long)memberno);
-        Member member =optionalMember.get();
+        Optional<User> optionalMember = this.userRepository.findById((long)memberno);
+        User user =optionalMember.get();
         ProjectMember projectMember = ProjectMember.builder()
                 .role(ProjectRole.DEVELOPER)
                 .stack(TechnicalStack.SPRINGBOOT)
                 .project(project)
                 .selfDescription("개발자 입니다.")
-                .member(member)
+                .user(user)
                 .build();
         this.projectMemberRepository.save(projectMember);
     }
 
     private void generateMember(int index){
-        Member member = Member.builder()
+        User user = User.builder()
                 .userName("테스터"+index)
                 .userId("tester"+index)
                 .build();
-        this.memberRepository.save(member);
+        this.userRepository.save(user);
     }
 
 }
