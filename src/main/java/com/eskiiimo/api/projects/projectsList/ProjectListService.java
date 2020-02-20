@@ -3,10 +3,14 @@ package com.eskiiimo.api.projects.projectsList;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
 import com.eskiiimo.api.projects.ProjectMemberRepository;
+import com.eskiiimo.api.projects.ProjectRepository;
+import com.eskiiimo.api.projects.projectdetail.ProjectDetailDto;
+import com.eskiiimo.api.projects.projectdetail.ProjectDetailService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +18,15 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectService {
+public class ProjectListService {
 
     private final ProjectRepository projectRepository;
     private final ModelMapper modelMapper;
     private final ProjectMemberRepository projectMemberRepository;
+    private final ProjectDetailService projectDetailService;
 
-    public Project storeProject(ProjectDto projectDto) {
-        Project project = modelMapper.map(projectDto, Project.class);
+    public Project storeProject(ProjectListDto projectListDto) {
+        Project project = modelMapper.map(projectListDto, Project.class);
         project.update();
         Project newProject = this.projectRepository.save(project);
         return newProject;
@@ -94,7 +99,17 @@ public class ProjectService {
     }
 
     @Transactional
-    public void deleteByProjectId(Long id) {
+    public void deleteProject(Long id) {
         this.projectRepository.deleteByProjectId(id);
+    }
+    
+    public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
+        Optional<Project> existingProject = this.projectRepository.findById(project_id);
+
+        this.modelMapper.map(projectDetailDto, existingProject);
+        this.projectRepository.save(existingProject.get());
+
+        ProjectDetailDto projectDetail = projectDetailService.getProject(project_id);
+        return projectDetail;
     }
 }

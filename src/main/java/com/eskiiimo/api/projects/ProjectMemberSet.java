@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectsList;
+package com.eskiiimo.api.projects;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

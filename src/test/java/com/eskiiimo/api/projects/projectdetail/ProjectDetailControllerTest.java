@@ -2,8 +2,8 @@ package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.common.RestDocsConfiguration;
 import com.eskiiimo.api.projects.*;
-import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
-import com.eskiiimo.api.projects.projectsList.ProjectRepository;
+import com.eskiiimo.api.projects.ProjectMemberSet;
+import com.eskiiimo.api.projects.ProjectRepository;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import org.junit.jupiter.api.Test;

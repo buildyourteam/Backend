@@ -1,11 +1,12 @@
-package com.eskiiimo.api.projects;
+package com.eskiiimo.api.projects.projectlist;
 
 import com.eskiiimo.api.common.RestDocsConfiguration;
 import com.eskiiimo.api.common.TestDescription;
+import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.projectdetail.ProjectDetailDto;
-import com.eskiiimo.api.projects.projectsList.ProjectDto;
-import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
-import com.eskiiimo.api.projects.projectsList.ProjectRepository;
+import com.eskiiimo.api.projects.projectsList.ProjectListDto;
+import com.eskiiimo.api.projects.ProjectMemberSet;
+import com.eskiiimo.api.projects.ProjectRepository;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
-public class ProjectControllerTests {
+public class ProjectListControllerTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -68,7 +69,7 @@ public class ProjectControllerTests {
     @Test
     @TestDescription("정상적으로 프로젝트를 생성하는 테스트")
     public void createProject() throws Exception {
-        ProjectDto project = ProjectDto.builder()
+        ProjectListDto project = ProjectListDto.builder()
                 .projectName("project1")
                 .teamName("Team1")
                 .endDate(LocalDateTime.of(2020,02,20,11,11))
