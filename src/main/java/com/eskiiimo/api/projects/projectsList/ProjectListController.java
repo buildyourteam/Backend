@@ -89,10 +89,6 @@ public class ProjectListController {
     public ResponseEntity updateProject(@PathVariable Long project_id,
                                         @RequestBody ProjectListDto projectListDto,
                                         Errors errors) {
-//        ProjectDetailDto projectDetail = projectListService.updateProject(project_id, projectDetailDto);
-//        projectListService.updateProject(project_id, projectDetailDto);
-//        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetail,project_id);
-//        return ResponseEntity.ok(projectDetailResource);
         Project project = projectListService.updateProject(project_id, projectListDto);
         ProjectListResource projectListResource = new ProjectListResource(project);
         projectListResource.add(new Link("/docs/index.html#resources-project-update").withRel("profile"));
@@ -102,9 +98,6 @@ public class ProjectListController {
     @DeleteMapping("/{project_id}")
     public ResponseEntity deleteProject(@PathVariable Long project_id) {
         this.projectListService.deleteProject(project_id);
-//        ProjectListResource projectListResource = new ProjectListResource(project);
-//        projectListResource.add(new Link("/docs/index.html#resources-project-delete").withRel("profile"));
-//        return ResponseEntity.ok(projectListResource);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 

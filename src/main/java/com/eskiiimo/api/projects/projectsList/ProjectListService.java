@@ -113,7 +113,6 @@ public class ProjectListService {
 
         Optional<Project> byId = projectRepository.findById(project_id);
         Project project = byId.get();
-//        ProjectDetailDto projectDetail = projectDetailService.getProject(project_id);
         return project;
     }
 }
