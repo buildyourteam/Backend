@@ -1,6 +1,5 @@
 package com.eskiiimo.api.projects;
 
-import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 

@@ -1,7 +1,7 @@
 package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.projects.ProjectStatus;
-import com.eskiiimo.api.projects.projectsList.ProjectMemberSet;
+import com.eskiiimo.api.projects.ProjectMemberSet;
 import lombok.*;
 
 import java.time.LocalDateTime;

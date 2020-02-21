@@ -2,6 +2,7 @@ package com.eskiiimo.api.projects.projectsList;
 
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
+import com.eskiiimo.api.projects.ProjectMemberSet;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProjectDto {
+public class ProjectListDto {
     @NotEmpty
     private String projectName;
     @NotEmpty
@@ -38,14 +39,14 @@ public class ProjectDto {
     })
     private ProjectMemberSet needMember;
 
-    public Project toEntity(ProjectDto projectDto) {
+    public Project toEntity(ProjectListDto projectListDto) {
         return Project.builder()
-                .projectName(projectDto.projectName)
-                .teamName(projectDto.teamName)
-                .endDate(projectDto.endDate)
-                .description(projectDto.description)
-                .currentMember(projectDto.currentMember)
-                .needMember(projectDto.needMember)
+                .projectName(projectListDto.projectName)
+                .teamName(projectListDto.teamName)
+                .endDate(projectListDto.endDate)
+                .description(projectListDto.description)
+                .currentMember(projectListDto.currentMember)
+                .needMember(projectListDto.needMember)
                 .build();
     }
 }

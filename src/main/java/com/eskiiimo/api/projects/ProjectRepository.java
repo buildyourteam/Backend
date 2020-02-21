@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectsList;
+package com.eskiiimo.api.projects;
 
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
