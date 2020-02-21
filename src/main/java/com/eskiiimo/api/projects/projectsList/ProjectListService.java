@@ -101,15 +101,19 @@ public class ProjectListService {
     @Transactional
     public void deleteProject(Long id) {
         this.projectRepository.deleteByProjectId(id);
+
     }
-    
-    public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
+
+
+    public Project updateProject(Long project_id, ProjectListDto projectListDto) {
         Optional<Project> existingProject = this.projectRepository.findById(project_id);
 
-        this.modelMapper.map(projectDetailDto, existingProject);
+        this.modelMapper.map(projectListDto, existingProject);
         this.projectRepository.save(existingProject.get());
 
-        ProjectDetailDto projectDetail = projectDetailService.getProject(project_id);
-        return projectDetail;
+        Optional<Project> byId = projectRepository.findById(project_id);
+        Project project = byId.get();
+//        ProjectDetailDto projectDetail = projectDetailService.getProject(project_id);
+        return project;
     }
 }

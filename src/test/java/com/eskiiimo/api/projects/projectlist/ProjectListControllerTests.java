@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,8 +34,7 @@ import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.li
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -95,37 +95,37 @@ public class ProjectListControllerTests {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
                         ),
                         requestFields(
-                                fieldWithPath("projectName").description("projectName"),
-                                fieldWithPath("teamName").description("teamName"),
-                                fieldWithPath("endDate").description("date time of deadline of new event"),
-                                fieldWithPath("description").description("description of new project"),
-                                fieldWithPath("projectField").description("field of new project"),
-                                fieldWithPath("currentMember").description("current Member of new project"),
-                                fieldWithPath("needMember.developer").description("need Developer"),
-                                fieldWithPath("needMember.designer").description("need Designer"),
-                                fieldWithPath("needMember.planner").description("need Planner"),
-                                fieldWithPath("needMember.etc").description("need Etc")
+                                fieldWithPath("projectName").description("프로젝트 이름"),
+                                fieldWithPath("teamName").description("팀명"),
+                                fieldWithPath("endDate").description("마감일"),
+                                fieldWithPath("description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("currentMember").description("팀원 현황"),
+                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
                         ),
                         responseFields(
-                                fieldWithPath("projectId").description("image file name"),
-                                fieldWithPath("projectName").description("projectName"),
-                                fieldWithPath("teamName").description("teamName"),
-                                fieldWithPath("endDate").description("date time of deadline of new event"),
-                                fieldWithPath("description").description("description of new project"),
-                                fieldWithPath("dday").description("D-day"),
-                                fieldWithPath("status").description("status of new project"),
-                                fieldWithPath("projectField").description("field of new project"),
-                                fieldWithPath("currentMember").description("current Member of new project"),
-                                fieldWithPath("needMember.developer").description("need Developer"),
-                                fieldWithPath("needMember.designer").description("need Designer"),
-                                fieldWithPath("needMember.planner").description("need Planner"),
-                                fieldWithPath("needMember.etc").description("need Etc"),
-                                fieldWithPath("_links.self.href").description("Link to Self"),
-                                fieldWithPath("_links.create-project.href").description("Link to create project"),
-                                fieldWithPath("_links.profile.href").description("Link to Profile")
+                                fieldWithPath("projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("projectName").description("프로젝트 이름"),
+                                fieldWithPath("teamName").description("팀명"),
+                                fieldWithPath("endDate").description("마감일"),
+                                fieldWithPath("description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("dday").description("마감일까지 남은 일"),
+                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("currentMember").description("팀원 현황"),
+                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.create-project.href").description("프로젝트 생성 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
 
@@ -143,16 +143,67 @@ public class ProjectListControllerTests {
         this.joinProjectMember((long)1,2);
         Optional<Project> byId = this.projectRepository.findById(project.getProjectId());
         Project project1 = byId.get();
-        ProjectDetailDto projectDto = this.modelMapper.map(project1, ProjectDetailDto.class);
+        ProjectListDto projectDto = this.modelMapper.map(project1, ProjectListDto.class);
         projectDto.setProjectName("Hi project....");
 
 
         // When & Then
-        this.mockMvc.perform(put("/api/projects/{project_id}", project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/api/projects/{project_id}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(this.objectMapper.writeValueAsString(projectDto)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("update-project",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        pathParameters(
+                                parameterWithName("project_id").description("Project id")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        requestFields(
+                                fieldWithPath("projectName").description("프로젝트 이름"),
+                                fieldWithPath("teamName").description("팀명"),
+                                fieldWithPath("endDate").description("마감일"),
+                                fieldWithPath("description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
+                        ),
+                        responseFields(
+                                fieldWithPath("projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("projectName").description("프로젝트 이름"),
+                                fieldWithPath("teamName").description("팀명"),
+                                fieldWithPath("endDate").description("마감일"),
+                                fieldWithPath("description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("dday").description("마감일까지 남은 일"),
+                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        )
+                ))
+                ;
 
     }
 
@@ -165,10 +216,20 @@ public class ProjectListControllerTests {
         this.generateEvent(2);
 
         // When & Then
-        this.mockMvc.perform(delete("/api/projects/{project_id}", 2)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/projects/{project_id}", (long)2)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-project",
+                        pathParameters(
+                                parameterWithName("project_id").description("Project id")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        )
+                ))
+
+        ;
 
     }
 
@@ -228,41 +289,41 @@ public class ProjectListControllerTests {
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestParameters(
-                                parameterWithName("page").description("page"),
-                                parameterWithName("size").description("number of projects per page"),
-                                parameterWithName("sort").description("sort"),
-                                parameterWithName("occupation").description("occupation of project"),
-                                parameterWithName("field").description("field of project")
+                                parameterWithName("page").description("찾은 페이지"),
+                                parameterWithName("size").description("한 페이지당 프로젝트 갯수"),
+                                parameterWithName("sort").description("정렬하여 paging하는 경우 기준"),
+                                parameterWithName("occupation").description("프로젝트 직군"),
+                                parameterWithName("field").description("프로젝트 분야")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
                         ),
                         responseFields(
 
-                                fieldWithPath("_embedded.projectList[].projectId").description("projectId"),
-                                fieldWithPath("_embedded.projectList[].projectName").description("projectName"),
-                                fieldWithPath("_embedded.projectList[].teamName").description("teamName"),
-                                fieldWithPath("_embedded.projectList[].endDate").description("endDate"),
-                                fieldWithPath("_embedded.projectList[].description").description("description"),
-                                fieldWithPath("_embedded.projectList[].dday").description("dday"),
-                                fieldWithPath("_embedded.projectList[].status").description("status"),
-                                fieldWithPath("_embedded.projectList[].projectField").description("projectField"),
-                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("current Developer"),
-                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("current Designer"),
-                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("current Planner"),
-                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("current Etc Member"),
-                                fieldWithPath("_embedded.projectList[].needMember.developer").description("need Developer"),
-                                fieldWithPath("_embedded.projectList[].needMember.designer").description("need Designer"),
-                                fieldWithPath("_embedded.projectList[].needMember.planner").description("need Planner"),
-                                fieldWithPath("_embedded.projectList[].needMember.etc").description("need Etc Member"),
-                                fieldWithPath("_embedded.projectList[]._links.self.href").description("Link to Project detail "),
-                                fieldWithPath("_links.self.href").description("Link to Self"),
-                                fieldWithPath("_links.project-list.href").description("Link to project list"),
-                                fieldWithPath("_links.profile.href").description("Link to Profile"),
-                                fieldWithPath("page.size").description("number of projects per page"),
-                                fieldWithPath("page.totalElements").description("total projects"),
-                                fieldWithPath("page.totalPages").description("total pages"),
-                                fieldWithPath("page.number").description("number")
+                                fieldWithPath("_embedded.projectList[].projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
+                                fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
+                                fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
+                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
+                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.project-list.href").description("프로젝트 리스트로 가는 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서"),
+                                fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
+                                fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("페이지 수")
 
                         )
                 ))
@@ -447,7 +508,7 @@ public class ProjectListControllerTests {
                 .description("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-                .status(ProjectStatus.RECRUTING)
+//                .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.APP)
                 .build();
         project.update();
@@ -459,7 +520,7 @@ public class ProjectListControllerTests {
                 .description("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
-                .status(ProjectStatus.RECRUTING)
+//                .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
         project1.update();
@@ -471,7 +532,7 @@ public class ProjectListControllerTests {
                 .description("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-                .status(ProjectStatus.RECRUTING)
+//                .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
         project2.update();
@@ -494,7 +555,7 @@ public class ProjectListControllerTests {
                 .description("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-                .status(ProjectStatus.RECRUTING)
+//                .status(ProjectStatus.RECRUTING)
                 .build();
         project.update();
 
@@ -505,7 +566,7 @@ public class ProjectListControllerTests {
                 .description("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
-                .status(ProjectStatus.RECRUTING)
+//                .status(ProjectStatus.RECRUTING)
                 .build();
         project1.update();
 
@@ -516,7 +577,7 @@ public class ProjectListControllerTests {
                 .description("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
-                .status(ProjectStatus.RECRUTING)
+//                .status(ProjectStatus.RECRUTING)
                 .build();
         project2.update();
 
