@@ -112,6 +112,15 @@ operation::get-deadline-project[snippets='curl-request,http-request,http-respons
 operation::create-project[snippets='curl-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
 
 
+[[resources-people]]
+=== 구인중인 사람들 목록 조회
+
+`Get` 요청을 사용해서 구인중인 사람들의  목록을 조회 할 수 있다.
+
+operation::get-people[snippets='curl-request,request-parameters,http-request,http-response,response-fields,links']
+
+
+
 [[resources-project-update]]
 === 프로젝트 수정
 

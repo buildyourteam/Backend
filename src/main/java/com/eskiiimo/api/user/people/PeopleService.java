@@ -16,8 +16,8 @@ public class PeopleService {
     UserRepository userRepository;
 
     @Transactional
-    public Page<PeopleDto> getPeople(Long level, String role, String area, Pageable pageable){
-        Page<PeopleDto> page = userRepository.findPeopleAll(pageable);
+    public Page<People> getPeople(Long level, String role, String area, Pageable pageable){
+        Page<People> page = userRepository.findPeopleAll(pageable);
         if(level != null){
             if(role!=null){
                 if(area!=null){//세개 다
