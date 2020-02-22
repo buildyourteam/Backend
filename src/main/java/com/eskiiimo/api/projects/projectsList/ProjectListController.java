@@ -30,11 +30,11 @@ import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkT
 @Slf4j
 @CrossOrigin(origins = "*")
 @RequestMapping(value = "/api/projects", produces = MediaTypes.HAL_JSON_VALUE)
-public class ProjectController {
+public class ProjectListController {
 
 
     @Autowired
-    ProjectService projectService;
+    ProjectListService projectListService;
 
     @Autowired
     ModelMapper modelMapper;
@@ -44,15 +44,15 @@ public class ProjectController {
 
     //  validation작성하기
     @PostMapping
-    public ResponseEntity createProject(@RequestBody @Valid ProjectDto projectDto, Errors errors) {
-        Project newProject = this.projectService.storeProject(projectDto);
-        ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectController.class).slash(newProject.getProjectId());
+    public ResponseEntity createProject(@RequestBody @Valid ProjectListDto projectListDto, Errors errors) {
+        Project newProject = this.projectListService.storeProject(projectListDto);
+        ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectListController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
-        ProjectResource projectResource = new ProjectResource(newProject);
-        projectResource.add(new Link("/api/projects").withRel("create-project"));
-        projectResource.add(new Link("/docs/index.html#resources-project-create").withRel("profile"));
+        ProjectListResource projectListResource = new ProjectListResource(newProject);
+        projectListResource.add(new Link("/api/projects").withRel("create-project"));
+        projectListResource.add(new Link("/docs/index.html#resources-project-create").withRel("profile"));
 
-        return ResponseEntity.created(createdUri).body(projectResource);
+        return ResponseEntity.created(createdUri).body(projectListResource);
     }
 
 
@@ -66,8 +66,8 @@ public class ProjectController {
                                           @RequestParam(value = "occupation", required = false) String occupation,
                                           @RequestParam(value = "field", required = false) ProjectField field
     ) {
-        Page<Project> page = this.projectService.getAllByField(occupation, field, pageable);
-        PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
+        Page<Project> page = this.projectListService.getAllByField(occupation, field, pageable);
+        PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
         pagedResources.add(new Link("/api/projects").withRel("project-list"));
         pagedResources.add(new Link("/docs/index.html#resources-project-list").withRel("profile"));
 
@@ -77,8 +77,8 @@ public class ProjectController {
     @GetMapping("/deadline")
     public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 
-        Page<Project> page = projectService.findAllByDdayLessThanOrderByDdayAsc(pageable);
-        PagedModel<ProjectResource> pagedResources = assembler.toModel(page, e -> new ProjectResource(e));
+        Page<Project> page = projectListService.findAllByDdayLessThanOrderByDdayAsc(pageable);
+        PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
         pagedResources.add(new Link("/api/projects/deadline").withRel("deadline-project-list"));
         pagedResources.add(new Link("/html5/index.html#resources-deadline-project-list").withRel("profile"));
 
@@ -87,23 +87,17 @@ public class ProjectController {
 
     @PutMapping("/{project_id}")
     public ResponseEntity updateProject(@PathVariable Long project_id,
-                                        @RequestBody ProjectDetailDto projectDetailDto,
+                                        @RequestBody ProjectListDto projectListDto,
                                         Errors errors) {
-        Project existingProject = this.projectService.findById(project_id);
-        if (existingProject == null) {
-            return ResponseEntity.notFound().build();
-        }
-        this.modelMapper.map(projectDetailDto, existingProject);
-        this.projectService.save(existingProject);
-
-        ProjectDetailDto projectDetail = projectDetailService.getProject(project_id);
-        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetail,project_id);
-        return ResponseEntity.ok(projectDetailResource);
+        Project project = projectListService.updateProject(project_id, projectListDto);
+        ProjectListResource projectListResource = new ProjectListResource(project);
+        projectListResource.add(new Link("/docs/index.html#resources-project-update").withRel("profile"));
+        return ResponseEntity.ok(projectListResource);
     }
 
     @DeleteMapping("/{project_id}")
     public ResponseEntity deleteProject(@PathVariable Long project_id) {
-        this.projectService.deleteByProjectId(project_id);
+        this.projectListService.deleteProject(project_id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 

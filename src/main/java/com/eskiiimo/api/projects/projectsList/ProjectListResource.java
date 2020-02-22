@@ -6,10 +6,10 @@ import org.springframework.hateoas.Link;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-public class ProjectResource extends EntityModel<Project> {
+public class ProjectListResource extends EntityModel<Project> {
 
-    public ProjectResource(Project project, Link... links) {
+    public ProjectListResource(Project project, Link... links) {
         super(project, links);
-        add(linkTo(ProjectController.class).slash(project.getProjectId()).withSelfRel());
+        add(linkTo(ProjectListController.class).slash(project.getProjectId()).withSelfRel());
     }
 }

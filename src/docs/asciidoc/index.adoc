@@ -121,6 +121,19 @@ operation::get-people[snippets='curl-request,request-parameters,http-request,htt
 
 
 
+[[resources-project-update]]
+=== 프로젝트 수정
+
+`PUT` 요청을 사용해서 프로젝트를 수정 할 수 있다.
+
+operation::update-project[snippets='path-parameters,curl-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
+
+[[resources-project-delete]]
+=== 프로젝트 삭제
+
+`DELETE` 요청을 사용해서 프로젝트를 삭제 할 수 있다.
+
+operation::delete-project[snippets='path-parameters,curl-request,http-request,request-headers']
 
 [[resources-profile-get]]
 === 프로필 데이터 조회

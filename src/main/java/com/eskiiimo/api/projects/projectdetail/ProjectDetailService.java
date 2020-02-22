@@ -3,7 +3,7 @@ package com.eskiiimo.api.projects.projectdetail;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectMember;
 import com.eskiiimo.api.projects.ProjectMemberRepository;
-import com.eskiiimo.api.projects.projectsList.ProjectRepository;
+import com.eskiiimo.api.projects.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
