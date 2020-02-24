@@ -17,6 +17,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByNeedMemberEtcGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByProjectField(ProjectField field, Pageable pageable);
     Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
+    long countAllByStatus(ProjectStatus status);
     void deleteByProjectId(Long id);
 
     }

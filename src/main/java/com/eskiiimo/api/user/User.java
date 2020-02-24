@@ -146,6 +146,8 @@ public class User{
     private String area;
     private Long level;
     private String description;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")

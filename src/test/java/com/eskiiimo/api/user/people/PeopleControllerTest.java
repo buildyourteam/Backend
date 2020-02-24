@@ -52,7 +52,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "user_name,DESC")
@@ -66,7 +66,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "user_name,DESC")
@@ -83,7 +83,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "user_name,DESC")
@@ -98,7 +98,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "user_name,DESC")
@@ -114,7 +114,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "user_name,DESC")
@@ -131,7 +131,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "user_name,DESC")
@@ -149,7 +149,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "user_name,DESC")
@@ -166,7 +166,7 @@ class PeopleControllerTest {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/people")
+        this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "3")
                 .param("sort", "user_name,DESC")
