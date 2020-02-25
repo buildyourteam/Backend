@@ -10,7 +10,7 @@ import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkT
 
 @Controller
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/profiles", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/profile", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProfileController {
 
 

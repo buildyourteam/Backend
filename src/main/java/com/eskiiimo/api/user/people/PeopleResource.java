@@ -10,6 +10,6 @@ public class PeopleResource extends EntityModel<People> {
 
     public PeopleResource(People people, Link... links) {
         super(people, links);
-        add(linkTo(ProfileController.class).slash(people.getUserId()).withSelfRel());
+        add(new Link("/profile/"+people.getUserId()).withSelfRel());
     }
 }

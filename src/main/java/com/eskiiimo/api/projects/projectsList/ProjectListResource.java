@@ -10,6 +10,6 @@ public class ProjectListResource extends EntityModel<Project> {
 
     public ProjectListResource(Project project, Link... links) {
         super(project, links);
-        add(linkTo(ProjectListController.class).slash(project.getProjectId()).withSelfRel());
+        add(new Link("/projects/"+project.getProjectId()).withSelfRel());
     }
 }

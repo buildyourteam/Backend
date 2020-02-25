@@ -46,7 +46,7 @@ class ProfileControllerTest {
     void getProfile() throws Exception {
         this.generateUser(2);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profiles/{userId}","user2"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("query-profile",
@@ -88,7 +88,7 @@ class ProfileControllerTest {
                 .level((long)100)
                 .build();
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profiles/{userId}","user1")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(profileDto)))
                 .andExpect(status().isOk())
