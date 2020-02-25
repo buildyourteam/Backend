@@ -90,7 +90,6 @@ public class ProjectListController {
                                         @RequestBody ProjectListDto projectListDto,
                                         Errors errors) {
         Project project = projectListService.updateProject(project_id, projectListDto);
-        System.out.println("===================="+project.getProjectName());
         ProjectListResource projectListResource = new ProjectListResource(project);
         projectListResource.add(new Link("/docs/index.html#resources-project-update").withRel("profile"));
         return ResponseEntity.ok(projectListResource);
