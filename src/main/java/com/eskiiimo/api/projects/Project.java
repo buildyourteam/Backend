@@ -60,6 +60,7 @@ public class Project{
     public void update() {
         long remainDay = ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate);
         this.dday=remainDay;
+        this.currentMember = new ProjectMemberSet(0,0,0,0);
     }
 
 }
