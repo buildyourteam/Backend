@@ -63,7 +63,7 @@ class ProjectDetailControllerTest {
 
 
         // When & Then
-        this.mockMvc.perform(get("/api/projects/2"))
+        this.mockMvc.perform(get("/projects/2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_links.self").exists())
@@ -77,7 +77,7 @@ class ProjectDetailControllerTest {
         this.joinProjectMember((long)1,1);
         this.joinProjectMember((long)1,2);
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/projects/{projectId}",1))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}",1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("projectName").exists())
                 .andExpect(jsonPath("_links.self").exists())

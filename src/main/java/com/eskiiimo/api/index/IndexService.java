@@ -5,7 +5,6 @@ import com.eskiiimo.api.projects.ProjectStatus;
 import com.eskiiimo.api.user.UserRepository;
 import com.eskiiimo.api.user.UserStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

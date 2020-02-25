@@ -1,9 +1,8 @@
 package com.eskiiimo.api.projects.projectsList;
 
+import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
-import com.eskiiimo.api.projects.projectdetail.ProjectDetailDto;
-import com.eskiiimo.api.projects.projectdetail.ProjectDetailResource;
 import com.eskiiimo.api.projects.projectdetail.ProjectDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
@@ -29,7 +27,7 @@ import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkT
 @Controller
 @Slf4j
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/api/projects", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/projects", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectListController {
 
 
@@ -49,8 +47,8 @@ public class ProjectListController {
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectListController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
         ProjectListResource projectListResource = new ProjectListResource(newProject);
-        projectListResource.add(new Link("/api/projects").withRel("create-project"));
-        projectListResource.add(new Link("/docs/index.html#resources-project-create").withRel("profile"));
+        projectListResource.add(linkTo(ProjectListController.class).withRel("create-project"));
+        projectListResource.add(linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile"));
 
         return ResponseEntity.created(createdUri).body(projectListResource);
     }
@@ -68,8 +66,8 @@ public class ProjectListController {
     ) {
         Page<Project> page = this.projectListService.getAllByField(occupation, field, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/api/projects").withRel("project-list"));
-        pagedResources.add(new Link("/docs/index.html#resources-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProjectListController.class).withRel("project-list"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -79,8 +77,8 @@ public class ProjectListController {
 
         Page<Project> page = projectListService.findAllByDdayLessThanOrderByDdayAsc(pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/api/projects/deadline").withRel("deadline-project-list"));
-        pagedResources.add(new Link("/html5/index.html#resources-deadline-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProjectListController.class).slash("/deadline").withRel("deadline-project-list"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesDeadlineProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -91,7 +89,7 @@ public class ProjectListController {
                                         Errors errors) {
         Project project = projectListService.updateProject(project_id, projectListDto);
         ProjectListResource projectListResource = new ProjectListResource(project);
-        projectListResource.add(new Link("/docs/index.html#resources-project-update").withRel("profile"));
+        projectListResource.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
         return ResponseEntity.ok(projectListResource);
     }
 

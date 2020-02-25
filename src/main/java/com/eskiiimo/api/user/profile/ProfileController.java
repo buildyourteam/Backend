@@ -1,12 +1,12 @@
 package com.eskiiimo.api.user.profile;
 
-import org.springframework.hateoas.Link;
+import com.eskiiimo.api.index.DocsController;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -26,7 +26,7 @@ public class ProfileController {
         ProfileDto profileDto = ProfileService.getProfile(user_id);
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
         profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
-        profileResource.add(new Link("/docs/index.html#resourcesProfileGet").withRel("profile"));
+        profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileGet").withRel("profile"));
         return ResponseEntity.ok(profileResource);
     }
 
@@ -34,7 +34,7 @@ public class ProfileController {
     public ResponseEntity updateProfile(@PathVariable String user_id,@RequestBody ProfileDto updateData){
         ProfileDto profileDto = ProfileService.updateProfile(user_id,updateData);
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
-        profileResource.add(new Link("/docs/index.html#resourcesProfileUpdate").withRel("profile"));
+        profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
         return ResponseEntity.ok(profileResource);
     }
     // 사용자가 참여 중인 프로젝트 리스트 가져오기

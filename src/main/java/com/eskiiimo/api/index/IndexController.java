@@ -1,7 +1,5 @@
 package com.eskiiimo.api.index;
 
-import com.eskiiimo.api.projects.ProjectRepository;
-import com.eskiiimo.api.projects.ProjectStatus;
 import com.eskiiimo.api.projects.projectdetail.ProjectDetailController;
 import com.eskiiimo.api.projects.projectsList.ProjectListController;
 import com.eskiiimo.api.user.people.PeopleController;
@@ -9,7 +7,6 @@ import com.eskiiimo.api.user.profile.ProfileController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.RepresentationModel;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;

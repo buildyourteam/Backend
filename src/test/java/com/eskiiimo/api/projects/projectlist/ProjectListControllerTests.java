@@ -78,7 +78,7 @@ public class ProjectListControllerTests {
                 .needMember(new ProjectMemberSet(3,4,4,5))
                 .build();
 
-        mockMvc.perform(post("/api/projects")
+        mockMvc.perform(post("/projects")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(project)))
@@ -148,7 +148,7 @@ public class ProjectListControllerTests {
 
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/api/projects/{project_id}", project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(this.objectMapper.writeValueAsString(projectDto)))
                 .andDo(print())
@@ -216,7 +216,7 @@ public class ProjectListControllerTests {
         this.generateEvent(2);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/projects/{project_id}", (long)2)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", (long)2)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isNoContent())
@@ -243,7 +243,7 @@ public class ProjectListControllerTests {
         });
 
         // When & Then
-        this.mockMvc.perform(get("/api/projects")
+        this.mockMvc.perform(get("/projects")
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -268,7 +268,7 @@ public class ProjectListControllerTests {
         this.generateEvent(1);
 
         // When & Then
-        this.mockMvc.perform(get("/api/projects")
+        this.mockMvc.perform(get("/projects")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -339,7 +339,7 @@ public class ProjectListControllerTests {
         this.generateEvent(1);
 
         // When & Then
-        this.mockMvc.perform(get("/api/projects")
+        this.mockMvc.perform(get("/projects")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -364,7 +364,7 @@ public class ProjectListControllerTests {
         this.generateEvent(1);
 
         // When & Then
-        this.mockMvc.perform(get("/api/projects")
+        this.mockMvc.perform(get("/projects")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -388,7 +388,7 @@ public class ProjectListControllerTests {
         this.generateProjectDeadline(0);
 
         // When & Then
-        this.mockMvc.perform(get("/api/projects/deadline")
+        this.mockMvc.perform(get("/projects/deadline")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
