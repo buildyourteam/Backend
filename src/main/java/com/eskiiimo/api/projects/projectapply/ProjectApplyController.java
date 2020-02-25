@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/api/projects/{project_id}/apply", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/projects/{project_id}/apply", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectApplyController {
 }

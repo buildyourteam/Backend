@@ -31,6 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<People> findPeopleByAreaAndRoleAndLevel(String area, String role, Long level, Pageable pageable);
     @Query(nativeQuery = true)
     Page<People> findPeopleByRoleAndLevel(String role, Long level, Pageable pageable);
+    Long countAllByStatus(UserStatus status);
     Optional<User> findByUserId(String user_id);
 }
 

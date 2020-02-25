@@ -78,7 +78,42 @@ include::{snippets}/errors/http-response.adoc[]
 응답은 http://stateless.co/hal_specification.html[Hypertext Application from resource to resource. Language (HAL)] 형식을 따른다.
 링크는 `_links`라는 키로 제공한다. 본 API의 사용자(클라이언트)는 URI를 직접 생성하지 않아야 하며, 리소스에서 제공하는 링크를 사용해야 한다.
 
-[[resources-project-list]]
+[[indexMain]]
+=== 메인페이지 인덱스
+
+`Get` 요청을 사용해서 메인 페이지 인덱스를 조회 할 수 있다.
+
+operation::index-main[snippets='curl-request,links']
+
+[[indexProjects]]
+=== /projects 인덱스
+
+`Get` 요청을 사용해서 /projects 페이지 인덱스를 조회 할 수 있다.
+
+operation::index-projects[snippets='curl-request,links']
+
+[[indexProjectsDetail]]
+=== /projects/{projectId} 인덱스
+
+`Get` 요청을 사용해서 /projects/{projectId} 페이지 인덱스를 조회 할 수 있다.
+
+operation::index-projects-detail[snippets='curl-request,links']
+
+[[indexPeople]]
+=== /people 인덱스
+
+`Get` 요청을 사용해서 /people 페이지 인덱스를 조회 할 수 있다.
+
+operation::index-people[snippets='curl-request,links']
+
+[[indexProfile]]
+=== /profile 인덱스
+
+`Get` 요청을 사용해서 /profile 페이지 인덱스를 조회 할 수 있다.
+
+operation::index-profile[snippets='curl-request,links']
+
+[[resourcesProjectList]]
 === 프로젝트 목록 조회
 
 `Get` 요청을 사용해서 프로젝트 목록을 조회 할 수 있다.
@@ -86,16 +121,7 @@ include::{snippets}/errors/http-response.adoc[]
 operation::get-projects[snippets='curl-request,http-request,http-response,response-fields,links']
 
 
-
-[[resources-project-get]]
-=== 프로젝트 상세 데이터 조회
-
-`Get` 요청을 사용해서 프로젝트 상세 데이터를 조회 할 수 있다.
-
-operation::query-project[snippets='path-parameters,curl-request,http-request,http-response,response-fields,links']
-
-
-[[resources-deadline-project-list]]
+[[resourcesDeadlineProjectList]]
 === 마감 임박한 프로젝트 목록 조회
 
 `Get` 요청을 사용해서 마감 임박한 프로젝트 목록을 조회 할 수 있다.
@@ -103,8 +129,15 @@ operation::query-project[snippets='path-parameters,curl-request,http-request,htt
 operation::get-deadline-project[snippets='curl-request,http-request,http-response,response-fields,links']
 
 
+[[resourcesProjectGet]]
+=== 프로젝트 상세 데이터 조회
 
-[[resources-project-create]]
+`Get` 요청을 사용해서 프로젝트 상세 데이터를 조회 할 수 있다.
+
+operation::query-project[snippets='path-parameters,curl-request,http-request,http-response,response-fields,links']
+
+
+[[resourcesProjectCreate]]
 === 프로젝트 생성
 
 `POST` 요청을 사용해서 프로젝트를 생성 할 수 있다.
@@ -112,37 +145,35 @@ operation::get-deadline-project[snippets='curl-request,http-request,http-respons
 operation::create-project[snippets='curl-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
 
 
-[[resources-people]]
-=== 구인중인 사람들 목록 조회
-
-`Get` 요청을 사용해서 구인중인 사람들의  목록을 조회 할 수 있다.
-
-operation::get-people[snippets='curl-request,request-parameters,http-request,http-response,response-fields,links']
-
-
-
-[[resources-project-update]]
+[[resourcesProjectUpdate]]
 === 프로젝트 수정
 
 `PUT` 요청을 사용해서 프로젝트를 수정 할 수 있다.
 
 operation::update-project[snippets='path-parameters,curl-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
 
-[[resources-project-delete]]
+[[resourcesProjectDelete]]
 === 프로젝트 삭제
 
 `DELETE` 요청을 사용해서 프로젝트를 삭제 할 수 있다.
 
 operation::delete-project[snippets='path-parameters,curl-request,http-request,request-headers']
 
-[[resources-profile-get]]
+[[resourcesPeople]]
+=== 구인중인 사람들 목록 조회
+
+`Get` 요청을 사용해서 구인중인 사람들의  목록을 조회 할 수 있다.
+
+operation::get-people[snippets='curl-request,request-parameters,http-request,http-response,response-fields,links']
+
+[[resourcesProfileGet]]
 === 프로필 데이터 조회
 
 `Get` 요청을 사용해서 프로필 데이터를 조회 할 수 있다.
 
 operation::query-profile[snippets='path-parameters,curl-request,http-request,http-response,response-fields,links']
 
-[[resources-profile-update]]
+[[resourcesProfileUpdate]]
 === 프로필 업데이트
 
 `PUT` 요청을 사용해서 프로필을 업데이트 할 수 있다.
@@ -150,9 +181,7 @@ operation::query-profile[snippets='path-parameters,curl-request,http-request,htt
 operation::update-profile[snippets='curl-request,request-fields,http-response,response-fields,links']
 
 
-
-
-[[resources-profile-image-upload]]
+[[resourcesProfileImageUpload]]
 === 프로필 이미지 업로드
 
 `POST` 요청을 사용해서 프로필 이미지를 업로드 할 수 있다.
@@ -160,7 +189,7 @@ operation::update-profile[snippets='curl-request,request-fields,http-response,re
 operation::upload-profile-image[snippets='path-parameters,curl-request,request-headers,http-response,response-headers,response-fields']
 
 
-[[resources-project-image-upload]]
+[[resourcesProjectImageUpload]]
 === 프로젝트 이미지 업로드
 
 `POST` 요청을 사용해서 프로젝트 이미지를 업로드 할 수 있다.
