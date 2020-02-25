@@ -23,7 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Controller
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/profile/{user_id}", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/profile", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProfileController {
 
 
@@ -35,7 +35,7 @@ public class ProfileController {
 
 
 
-    @GetMapping
+    @GetMapping("/{user_id}")
     public ResponseEntity getProfile(@PathVariable String user_id){
         ProfileDto profileDto = ProfileService.getProfile(user_id);
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
@@ -44,7 +44,7 @@ public class ProfileController {
         return ResponseEntity.ok(profileResource);
     }
 
-    @PutMapping
+    @PutMapping("/{user_id}")
     public ResponseEntity updateProfile(@PathVariable String user_id,@RequestBody ProfileDto updateData){
         ProfileDto profileDto = ProfileService.updateProfile(user_id,updateData);
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
@@ -53,7 +53,7 @@ public class ProfileController {
     }
 
 //     //사용자가 참여 중인 프로젝트 리스트 가져오기
-//    @GetMapping("/running")
+//    @GetMapping("/{user_id}/running")
 //    public ResponseEntity  getRunningProjects(@PathVariable(value = "user_id") Long user_id,
 //                                                   Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 //        Page<Project> page = this.projectListService.getRunning(user_id);
@@ -66,7 +66,7 @@ public class ProfileController {
 //
 //    }
 //     //사용자가 참여했던 프로젝트 리스트 가져오기
-//    @GetMapping("/ended")
+//    @GetMapping("/{user_id}/ended")
 //    public ResponseEntity  getEndedProjects(@PathVariable(value = "user_id") Long user_id,
 //                                            Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 //        Page<Project> page = this.projectListService.getEnded(user_id);
@@ -79,7 +79,7 @@ public class ProfileController {
 //    }
 //
 //    // 사용자가 기획한 프로젝트 리스트 가져오기
-//    @GetMapping("/leader")
+//    @GetMapping("/{user_id}/leader")
 //    public ResponseEntity  getMyPlanProjects(@PathVariable(value = "user_id") Long user_id,
 //                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 //        Page<Project> page = this.projectListService.getLeader(user_id);
