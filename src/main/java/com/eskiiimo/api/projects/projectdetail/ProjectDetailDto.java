@@ -1,7 +1,7 @@
 package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.projects.ProjectField;
-import com.eskiiimo.api.projects.ProjectStatus;
+import com.eskiiimo.api.projects.Status;
 import com.eskiiimo.api.projects.ProjectMemberSet;
 import lombok.*;
 
@@ -18,7 +18,7 @@ public class ProjectDetailDto {
     private String teamName;
     private LocalDateTime endDate;
     private String description;
-    private ProjectStatus status;
+    private Status status;
     private long dday;
     private ProjectField projectField;
 
@@ -28,7 +28,7 @@ public class ProjectDetailDto {
 
 
     @Builder
-    public ProjectDetailDto(String projectName,String teamName, LocalDateTime endDate,String description,ProjectStatus status, ProjectMemberSet currentMember, ProjectMemberSet needMember, List<ProjectMemberResource> memberList, long dday, ProjectField projectField){
+    public ProjectDetailDto(String projectName, String teamName, LocalDateTime endDate, String description, Status status, ProjectMemberSet currentMember, ProjectMemberSet needMember, List<ProjectMemberResource> memberList, long dday, ProjectField projectField){
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;

@@ -5,7 +5,6 @@ import com.eskiiimo.api.common.TestDescription;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.ProjectMemberSet;
 import com.eskiiimo.api.projects.ProjectRepository;
-import com.eskiiimo.api.projects.projectsList.ProjectListDto;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -329,7 +328,7 @@ class ProjectDetailControllerTest {
                 .description("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-                .status(ProjectStatus.RECRUTING)
+                .status(Status.RECRUTING)
                 .projectField(ProjectField.APP)
                 .build();
         project.update();
@@ -397,7 +396,7 @@ class ProjectDetailControllerTest {
                 .description("need yes 입니다.")
                 .currentMember(current)
                 .needMember(need_yes)
-                .status(ProjectStatus.RECRUTING)
+                .status(Status.RECRUTING)
                 .build();
 
         this.projectRepository.save(project);

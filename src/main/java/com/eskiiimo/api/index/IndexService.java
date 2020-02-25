@@ -1,7 +1,7 @@
 package com.eskiiimo.api.index;
 
 import com.eskiiimo.api.projects.ProjectRepository;
-import com.eskiiimo.api.projects.ProjectStatus;
+import com.eskiiimo.api.projects.Status;
 import com.eskiiimo.api.user.UserRepository;
 import com.eskiiimo.api.user.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class IndexService {
 
 
     public long getRandomProjectPage(long pageSize) {
-        long pages = projectRepository.countAllByStatus(ProjectStatus.RECRUTING)/pageSize+1;
+        long pages = projectRepository.countAllByStatus(Status.RECRUTING)/pageSize+1;
         long random= (long)Math.random()%pages;
         return random;
     }

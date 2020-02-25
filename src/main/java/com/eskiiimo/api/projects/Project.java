@@ -26,7 +26,7 @@ public class Project{
     private String description;
     private long dday;
     @Enumerated(EnumType.STRING)
-    private ProjectStatus status = ProjectStatus.RECRUTING;
+    private Status status = Status.RECRUTING;
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
     @Embedded
@@ -51,6 +51,11 @@ public class Project{
     @JsonIgnore
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JsonIgnore
+    private ProjectStatus projectStatus;
+
     public void addMember(ProjectMember member){
         this.projectMembers.add(member);
         if(member.getProject() != this)
@@ -59,13 +64,16 @@ public class Project{
     public void update() {
         long remainDay = ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate);
         this.dday = remainDay;
+        if (this.dday <= -1) {
+            this.status = Status.RECRUTING;
+        }
 
         if (this.getCurrentMember() == null) {
             this.currentMember = new ProjectMemberSet(0, 0, 0, 0);
         }
 
         if (this.status == null) {
-            this.status = ProjectStatus.RECRUTING;
+            this.status = Status.RECRUTING;
         }
 
     }

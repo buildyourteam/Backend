@@ -28,7 +28,7 @@ public class ProfileController {
 
 
     @Autowired
-    ProfileService ProfileService;
+    ProfileService profileService;
 
     @Autowired
     ProjectListService projectListService;
@@ -37,7 +37,7 @@ public class ProfileController {
 
     @GetMapping("/{user_id}")
     public ResponseEntity getProfile(@PathVariable String user_id){
-        ProfileDto profileDto = ProfileService.getProfile(user_id);
+        ProfileDto profileDto = profileService.getProfile(user_id);
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
         profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileGet").withRel("profile"));
@@ -46,25 +46,25 @@ public class ProfileController {
 
     @PutMapping("/{user_id}")
     public ResponseEntity updateProfile(@PathVariable String user_id,@RequestBody ProfileDto updateData){
-        ProfileDto profileDto = ProfileService.updateProfile(user_id,updateData);
+        ProfileDto profileDto = profileService.updateProfile(user_id,updateData);
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
         return ResponseEntity.ok(profileResource);
     }
 
-//     //사용자가 참여 중인 프로젝트 리스트 가져오기
-//    @GetMapping("/{user_id}/running")
-//    public ResponseEntity  getRunningProjects(@PathVariable(value = "user_id") Long user_id,
-//                                                   Pageable pageable, PagedResourcesAssembler<Project> assembler) {
-//        Page<Project> page = this.projectListService.getRunning(user_id);
-//        PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-//        pagedResources.add(new Link("/api/projects").withRel("project-list"));
-//        pagedResources.add(new Link("/docs/index.html#resources-project-list").withRel("profile"));
-//
-//        return ResponseEntity.ok(pagedResources);
-//
-//
-//    }
+     //사용자가 참여 중인 프로젝트 리스트 가져오기
+    @GetMapping("/{user_id}/running")
+    public ResponseEntity  getRunningProjects(@PathVariable(value = "user_id") String user_id,
+                                                   Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+        Page<Project> page = this.profileService.getRunning(user_id, pageable);
+        PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
+        pagedResources.add(new Link("/profile/{user_id}/running").withRel("runningProjectList"));
+        pagedResources.add(new Link("/docs/index.html#resources-running-project-list").withRel("profile"));
+
+        return ResponseEntity.ok(pagedResources);
+
+
+    }
 //     //사용자가 참여했던 프로젝트 리스트 가져오기
 //    @GetMapping("/{user_id}/ended")
 //    public ResponseEntity  getEndedProjects(@PathVariable(value = "user_id") Long user_id,
