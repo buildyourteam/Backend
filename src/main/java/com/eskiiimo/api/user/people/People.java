@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PeopleDto {
+public class People {
     private String userId;
     private String userName;
     private String stack;
     private String area;
     private Long level;
 
-    public PeopleDto(String userId ,String userName, String stack, String area, Long level){
+    public People(String userId , String userName, String stack, String area, Long level){
         super();
         this.userId = userId;
         this.area =area;

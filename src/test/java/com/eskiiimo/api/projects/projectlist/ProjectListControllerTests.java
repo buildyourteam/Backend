@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
 @Import(RestDocsConfiguration.class)
 public class ProjectListControllerTests {
 
@@ -419,30 +419,30 @@ public class ProjectListControllerTests {
                         ),
                         responseFields(
 
-                                fieldWithPath("_embedded.projectList[].projectId").description("projectId"),
-                                fieldWithPath("_embedded.projectList[].projectName").description("projectName"),
-                                fieldWithPath("_embedded.projectList[].teamName").description("teamName"),
-                                fieldWithPath("_embedded.projectList[].endDate").description("endDate"),
-                                fieldWithPath("_embedded.projectList[].description").description("description"),
-                                fieldWithPath("_embedded.projectList[].dday").description("dday"),
-                                fieldWithPath("_embedded.projectList[].status").description("status"),
-                                fieldWithPath("_embedded.projectList[].projectField").description("projectField"),
-                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("current Developer"),
-                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("current Designer"),
-                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("current Planner"),
-                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("current Etc Member"),
-                                fieldWithPath("_embedded.projectList[].needMember.developer").description("need Developer"),
-                                fieldWithPath("_embedded.projectList[].needMember.designer").description("need Designer"),
-                                fieldWithPath("_embedded.projectList[].needMember.planner").description("need Planner"),
-                                fieldWithPath("_embedded.projectList[].needMember.etc").description("need Etc Member"),
-                                fieldWithPath("_embedded.projectList[]._links.self.href").description("Link to Project detail "),
-                                fieldWithPath("_links.self.href").description("Link to Self"),
-                                fieldWithPath("_links.deadline-project-list.href").description("Link to deadline project list"),
-                                fieldWithPath("_links.profile.href").description("Link to Profile"),
-                                fieldWithPath("page.size").description("number of projects per page"),
-                                fieldWithPath("page.totalElements").description("total projects"),
-                                fieldWithPath("page.totalPages").description("total pages"),
-                                fieldWithPath("page.number").description("number")
+                                fieldWithPath("_embedded.projectList[].projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
+                                fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
+                                fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
+                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
+                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.deadline-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서"),
+                                fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
+                                fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("페이지 수")
 
                         )
                 ))

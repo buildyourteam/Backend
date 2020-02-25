@@ -3,7 +3,7 @@ package com.eskiiimo.api.user;
 import com.eskiiimo.api.projects.ProjectMember;
 import com.eskiiimo.api.projects.ProjectRole;
 import com.eskiiimo.api.projects.TechnicalStack;
-import com.eskiiimo.api.user.people.PeopleDto;
+import com.eskiiimo.api.user.people.People;
 import com.eskiiimo.api.user.profile.ProfileDto;
 import lombok.*;
 
@@ -41,7 +41,7 @@ import java.util.List;
                 name="peopleMapping",
                 classes={
                         @ConstructorResult(
-                                targetClass = PeopleDto.class,
+                                targetClass = People.class,
                                 columns = {
                                         @ColumnResult(name="user_id", type = String.class),
                                         @ColumnResult(name="user_name", type = String.class),

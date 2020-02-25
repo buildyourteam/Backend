@@ -71,10 +71,10 @@ class ProjectImageControllerTest {
                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
                        ),
                        responseFields(
-                               fieldWithPath("fileName").description("image file name"),
-                               fieldWithPath("fileDownloadUri").description("image file uri"),
-                               fieldWithPath("fileType").description("image file type"),
-                               fieldWithPath("size").description("image file size")
+                               fieldWithPath("fileName").description("사진 이름"),
+                               fieldWithPath("fileDownloadUri").description("사진의 Url"),
+                               fieldWithPath("fileType").description("사진의 형태"),
+                               fieldWithPath("size").description("사진 크기")
                        )
                ))
        ;

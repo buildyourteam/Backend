@@ -25,12 +25,12 @@ public class PeopleController {
 
 
     @GetMapping("/api/people")
-    public ResponseEntity getJobSeekers(Pageable pageable, PagedResourcesAssembler<PeopleDto> assembler,
+    public ResponseEntity getJobSeekers(Pageable pageable, PagedResourcesAssembler<People> assembler,
                                         @RequestParam(value = "level", required = false)Long level,
                                         @RequestParam(value = "role",required =  false)String role,
                                         @RequestParam(value = "area",required = false)String area
     ) {
-        Page<PeopleDto> page = peopleService.getPeople(level,role,area,pageable);
+        Page<People> page = peopleService.getPeople(level,role,area,pageable);
         PagedModel<PeopleResource> pagedResources = assembler.toModel(page, e -> new PeopleResource(e));
         pagedResources.add(new Link("/docs/index.html#resources-people").withRel("profile"));
 
