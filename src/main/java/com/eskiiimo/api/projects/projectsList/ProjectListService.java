@@ -107,12 +107,10 @@ public class ProjectListService {
 
     public Project updateProject(Long project_id, ProjectListDto projectListDto) {
         Optional<Project> existingProject = this.projectRepository.findById(project_id);
+        Project pr = existingProject.get();
+        this.modelMapper.map(projectListDto, pr);
+        this.projectRepository.save(pr);
 
-        this.modelMapper.map(projectListDto, existingProject);
-        this.projectRepository.save(existingProject.get());
-
-        Optional<Project> byId = projectRepository.findById(project_id);
-        Project project = byId.get();
-        return project;
+        return pr;
     }
 }
