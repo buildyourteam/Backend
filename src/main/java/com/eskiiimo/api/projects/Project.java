@@ -49,7 +49,6 @@ public class Project{
     @Builder.Default
     @OneToMany(mappedBy = "project")
     @JsonIgnore
-
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
     public void addMember(ProjectMember member){
@@ -59,8 +58,16 @@ public class Project{
     }
     public void update() {
         long remainDay = ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate);
-        this.dday=remainDay;
-        this.currentMember = new ProjectMemberSet(0,0,0,0);
+        this.dday = remainDay;
+
+        if (this.getCurrentMember() == null) {
+            this.currentMember = new ProjectMemberSet(0, 0, 0, 0);
+        }
+
+        if (this.status == null) {
+            this.status = ProjectStatus.RECRUTING;
+        }
+
     }
 
 }

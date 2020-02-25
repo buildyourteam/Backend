@@ -1,13 +1,19 @@
 package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.index.DocsController;
+import com.eskiiimo.api.projects.Project;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
 
@@ -16,12 +22,11 @@ import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkT
 @RequestMapping(value = "/projects", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectDetailController {
 
+    @Autowired
+    ProjectDetailService projectDetailService;
 
-    private final ProjectDetailService projectDetailService;
-
-    public ProjectDetailController(ProjectDetailService projectDetailService) {
-        this.projectDetailService = projectDetailService;
-    }
+    @Autowired
+    ModelMapper modelMapper;
 
 
     @GetMapping(value = "/{project_id}")
@@ -31,5 +36,35 @@ public class ProjectDetailController {
         projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id+"/apply").withRel("apply"));
         projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectGet").withRel("profile"));
         return ResponseEntity.ok(projectDetailResource);
+    }
+
+    @PostMapping
+    public ResponseEntity createProject(@RequestBody @Valid ProjectDetailDto projectDetailDto, Errors errors) {
+
+        Project newProject = this.projectDetailService.storeProject(projectDetailDto);
+        ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectDetailController.class).slash(newProject.getProjectId());
+        URI createdUri = selfLinkBuilder.toUri();
+        ProjectDetailDto projectDetailDto1 = modelMapper.map(newProject, ProjectDetailDto.class);
+        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetailDto1, newProject.getProjectId());
+        projectDetailResource.add(linkTo(ProjectDetailController.class).withRel("create-project"));
+        projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile"));
+        return ResponseEntity.created(createdUri).body(projectDetailResource);
+    }
+
+    @PutMapping("/{project_id}")
+    public ResponseEntity updateProject(@PathVariable Long project_id,
+                                        @RequestBody ProjectDetailDto projectDetailDto,
+                                        Errors errors) {
+        Project project = projectDetailService.updateProject(project_id, projectDetailDto);
+        ProjectDetailDto projectDetailDto1 = modelMapper.map(project, ProjectDetailDto.class);
+        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetailDto1, project_id);
+        projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
+        return ResponseEntity.ok(projectDetailResource);
+    }
+
+    @DeleteMapping("/{project_id}")
+    public ResponseEntity deleteProject(@PathVariable Long project_id) {
+        this.projectDetailService.deleteProject(project_id);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

@@ -4,6 +4,7 @@ import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectMember;
 import com.eskiiimo.api.projects.ProjectMemberRepository;
 import com.eskiiimo.api.projects.ProjectRepository;
+import com.eskiiimo.api.projects.projectsList.ProjectListDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,30 @@ public class ProjectDetailService {
     private final ModelMapper modelMapper;
 
 
+    public Project storeProject(ProjectDetailDto projectDetailDto) {
+        Project project = modelMapper.map(projectDetailDto, Project.class);
+        project.update();
+        Project newProject = this.projectRepository.save(project);
+//        ProjectDetailDto projectDetailDto1 = modelMapper.map(newProject, ProjectDetailDto.class);
+        return newProject;
+    }
+
+    @Transactional
+    public void deleteProject(Long id) {
+        this.projectRepository.deleteByProjectId(id);
+
+    }
+
+
+    public Project updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
+        Optional<Project> existingProject = this.projectRepository.findById(project_id);
+        Project pr = existingProject.get();
+        pr.update();
+        this.modelMapper.map(projectDetailDto, pr);
+        this.projectRepository.save(pr);
+
+        return pr;
+    }
 
     @Transactional
     public ProjectDetailDto getProject(Long project_id){

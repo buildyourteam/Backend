@@ -98,19 +98,5 @@ public class ProjectListService {
         return project;
     }
 
-    @Transactional
-    public void deleteProject(Long id) {
-        this.projectRepository.deleteByProjectId(id);
 
-    }
-
-
-    public Project updateProject(Long project_id, ProjectListDto projectListDto) {
-        Optional<Project> existingProject = this.projectRepository.findById(project_id);
-        Project pr = existingProject.get();
-        this.modelMapper.map(projectListDto, pr);
-        this.projectRepository.save(pr);
-
-        return pr;
-    }
 }
