@@ -27,7 +27,6 @@ public class ProjectDetailService {
         Project project = modelMapper.map(projectDetailDto, Project.class);
         project.update();
         Project newProject = this.projectRepository.save(project);
-//        ProjectDetailDto projectDetailDto1 = modelMapper.map(newProject, ProjectDetailDto.class);
         return newProject;
     }
 
@@ -38,14 +37,15 @@ public class ProjectDetailService {
     }
 
 
-    public Project updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
+    public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
         Optional<Project> existingProject = this.projectRepository.findById(project_id);
         Project pr = existingProject.get();
         pr.update();
         this.modelMapper.map(projectDetailDto, pr);
         this.projectRepository.save(pr);
+        ProjectDetailDto projectDetailDto1 = this.modelMapper.map(pr, ProjectDetailDto.class);
 
-        return pr;
+        return projectDetailDto1;
     }
 
     @Transactional

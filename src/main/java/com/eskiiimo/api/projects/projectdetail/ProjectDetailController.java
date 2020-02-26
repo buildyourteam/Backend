@@ -55,9 +55,8 @@ public class ProjectDetailController {
     public ResponseEntity updateProject(@PathVariable Long project_id,
                                         @RequestBody ProjectDetailDto projectDetailDto,
                                         Errors errors) {
-        Project project = projectDetailService.updateProject(project_id, projectDetailDto);
-        ProjectDetailDto projectDetailDto1 = modelMapper.map(project, ProjectDetailDto.class);
-        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetailDto1, project_id);
+        ProjectDetailDto project = projectDetailService.updateProject(project_id, projectDetailDto);
+        ProjectDetailResource projectDetailResource = new ProjectDetailResource(project, project_id);
         projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
         return ResponseEntity.ok(projectDetailResource);
     }
