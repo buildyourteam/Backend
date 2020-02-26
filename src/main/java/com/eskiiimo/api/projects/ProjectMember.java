@@ -37,11 +37,6 @@ public class ProjectMember {
     @JoinColumn(name = "projectId")
     private Project project;
 
-    public void setUser(User user){
-        this.user = user;
-        if(!user.getProjects().contains(this))
-        user.getProjects().add(this);
-    }
 
     public void setProject(Project project){
         this.project = project;

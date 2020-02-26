@@ -1,6 +1,9 @@
 package com.eskiiimo.api.user.profile;
 
 import com.eskiiimo.api.common.RestDocsConfiguration;
+import com.eskiiimo.api.projects.ProjectRole;
+import com.eskiiimo.api.projects.TechnicalStack;
+import com.eskiiimo.api.user.*;
 import com.eskiiimo.api.common.TestDescription;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.user.User;
@@ -18,6 +21,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +45,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileControllerTest {
 
     @Autowired
+    UserRepository profileRepository;
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -53,7 +60,7 @@ class ProfileControllerTest {
 
     @Test
     void getProfile() throws Exception {
-        this.generateUser(2);
+        this.generateProfile(2);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
                 .andExpect(status().isOk())
@@ -70,7 +77,7 @@ class ProfileControllerTest {
                         responseFields(
                                 fieldWithPath("userName").description("사용자 이름"),
                                 fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stack").description("기술스택"),
+                                fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
                                 fieldWithPath("level").description("레벨"),
@@ -86,13 +93,15 @@ class ProfileControllerTest {
 
     @Test
     void updateProfile() throws Exception {
-        this.generateUser(1);
+        this.generateProfile(1);
+        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
+        stacks.add(TechnicalStack.DJANGO);
         ProfileDto profileDto = ProfileDto.builder()
                 .area("서울시 구로구")
                 .contact("010-9876-5432")
                 .description("프로필 업데이트 하기")
-                .role("LEADER")
-                .stack("DJANGO")
+                .role(ProjectRole.LEADER)
+                .stacks(stacks)
                 .userName("회원 01")
                 .level((long)100)
                 .build();
@@ -113,7 +122,7 @@ class ProfileControllerTest {
                         requestFields(
                                 fieldWithPath("userName").description("사용자 이름"),
                                 fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stack").description("기술스택"),
+                                fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
                                 fieldWithPath("level").description("레벨"),
@@ -122,7 +131,7 @@ class ProfileControllerTest {
                         responseFields(
                                 fieldWithPath("userName").description("사용자 이름"),
                                 fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stack").description("기술스택"),
+                                fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
                                 fieldWithPath("level").description("레벨"),
@@ -133,7 +142,6 @@ class ProfileControllerTest {
                 ))
         ;
     }
-
 
     @Test
     @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
@@ -192,21 +200,22 @@ class ProfileControllerTest {
         return projectStatus;
    }
 
-    private User generateUser(int index){
-        User user = User.builder()
+    private User generateProfile(int index){
+        List<UsersStack> stacks = new ArrayList<UsersStack>();
+        stacks.add(new UsersStack(TechnicalStack.SPRINGBOOT));
+        stacks.add(new UsersStack(TechnicalStack.DJANGO));
+        User profile = User.builder()
                 .userId("user"+index)
                 .userName("회원"+index)
-                .userEmail("user"+index+"@Eskiiimo.com")
-                .userPassword("password")
                 .area("seoul")
                 .contact("010-1234-5678")
                 .description("테스트용 가계정"+index)
                 .level((long) (index*100))
                 .role(ProjectRole.DEVELOPER)
-                .stack(TechnicalStack.SPRINGBOOT)
+                .stacks(stacks)
                 .build();
-        this.userRepository.save(user);
-        return user;
+        this.profileRepository.save(profile).getAccountId();
+        return profile;
 
     }
 }
