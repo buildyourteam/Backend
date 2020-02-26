@@ -170,6 +170,60 @@ class ProfileControllerTest {
 
     }
 
+    @Test
+    @TestDescription("사용자가 참여했던 프로젝트 리스트 가져오기")
+    public void getEndedProjectList() throws Exception {
+        // Given
+        User user1=this.generateProfile(1);
+        User user2 = this.generateProfile(2);
+
+        this.generateProject(1, user1.getUserId(), Status.ENDED);
+        this.generateProject(2, user1.getUserId(), Status.ENDED);
+        this.generateProject(3, user1.getUserId(), Status.RUNNING);
+
+        this.generateProject(4, user2.getUserId(), Status.ENDED);
+        this.generateProject(5, user2.getUserId(), Status.RECRUTING);
+        this.generateProject(6, user2.getUserId(), Status.RUNNING);
+
+        // When & Then
+        this.mockMvc.perform(get("/profile/user1/ended")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "projectName,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+
+    }
+
+    @Test
+    @TestDescription("사용자가 기획한 프로젝트 리스트 가져오기")
+    public void getPlannedProjectList() throws Exception {
+        // Given
+        User user1=this.generateProfile(1);
+        User user2 = this.generateProfile(2);
+
+        this.generateProject(1, user1.getUserId(), Status.RUNNING);
+        this.generateProject(2, user1.getUserId(), Status.RECRUTING);
+        this.generateProject(3, user1.getUserId(), Status.RUNNING);
+
+        this.generateProject(4, user2.getUserId(), Status.RUNNING);
+        this.generateProject(5, user2.getUserId(), Status.RECRUTING);
+        this.generateProject(6, user2.getUserId(), Status.RUNNING);
+
+        // When & Then
+        this.mockMvc.perform(get("/profile/user1/plan")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "projectName,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+
+    }
+
     private Project generateProject(int index, String user_id, Status status) {
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
         ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
@@ -195,6 +249,7 @@ class ProfileControllerTest {
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .status(status.toString())
                 .userId(user_id)
+                .plan(Boolean.FALSE)
                 .build();
 
         return projectStatus;
