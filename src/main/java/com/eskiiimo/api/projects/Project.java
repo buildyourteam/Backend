@@ -62,6 +62,14 @@ public class Project{
             member.setProject(this);
     }
     public void update() {
+        if (this.projectStatus == null) {
+            ProjectStatus projectStatus = ProjectStatus.builder()
+//                .userId()
+                    .plan(Boolean.TRUE)
+                    .build();
+            this.projectStatus = projectStatus;
+        }
+
         long remainDay = ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate);
         this.dday = remainDay;
         if (this.dday <= -1) {
