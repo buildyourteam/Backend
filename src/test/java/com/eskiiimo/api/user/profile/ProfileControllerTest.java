@@ -4,6 +4,10 @@ import com.eskiiimo.api.common.RestDocsConfiguration;
 import com.eskiiimo.api.projects.ProjectRole;
 import com.eskiiimo.api.projects.TechnicalStack;
 import com.eskiiimo.api.user.*;
+import com.eskiiimo.api.common.TestDescription;
+import com.eskiiimo.api.projects.*;
+import com.eskiiimo.api.user.User;
+import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +23,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -26,7 +33,9 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -39,6 +48,9 @@ class ProfileControllerTest {
     UserRepository profileRepository;
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -130,6 +142,63 @@ class ProfileControllerTest {
                 ))
         ;
     }
+
+    @Test
+    @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
+    public void getRunningProjectList() throws Exception {
+        // Given
+        User user1=this.generateUser(1);
+        User user2 = this.generateUser(2);
+
+        this.generateProject(1, user1.getUserId(), Status.RUNNING);
+        this.generateProject(2, user1.getUserId(), Status.RECRUTING);
+        this.generateProject(3, user1.getUserId(), Status.RUNNING);
+
+        this.generateProject(4, user2.getUserId(), Status.RUNNING);
+        this.generateProject(5, user2.getUserId(), Status.RECRUTING);
+        this.generateProject(6, user2.getUserId(), Status.RUNNING);
+
+        // When & Then
+        this.mockMvc.perform(get("/profile/user1/running")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "projectName,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+
+    }
+
+    private Project generateProject(int index, String user_id, Status status) {
+        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
+        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectStatus projectStatus = setProjectStatus(user_id, status);
+
+        Project project = Project.builder()
+                .projectName("project"+index)
+                .teamName("project team"+index*2)
+                .endDate(LocalDateTime.of(2020,04,30,23,59))
+                .description("need yes 입니다.")
+                .currentMember(currentMember)
+                .needMember(need_yes)
+                .status(status)
+                .projectField(ProjectField.APP)
+                .build();
+        project.setProjectStatus(projectStatus);
+        project.update();
+        this.projectRepository.save(project);
+        return project;
+    }
+
+    private ProjectStatus setProjectStatus(String user_id, Status status) {
+        ProjectStatus projectStatus = ProjectStatus.builder()
+                .status(status.toString())
+                .userId(user_id)
+                .build();
+
+        return projectStatus;
+   }
 
     private User generateProfile(int index){
         List<UsersStack> stacks = new ArrayList<UsersStack>();

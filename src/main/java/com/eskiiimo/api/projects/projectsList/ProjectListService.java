@@ -22,16 +22,6 @@ public class ProjectListService {
 
     private final ProjectRepository projectRepository;
     private final ModelMapper modelMapper;
-    private final ProjectMemberRepository projectMemberRepository;
-    private final ProjectDetailService projectDetailService;
-
-    public Project storeProject(ProjectListDto projectListDto) {
-        Project project = modelMapper.map(projectListDto, Project.class);
-        project.update();
-        Project newProject = this.projectRepository.save(project);
-        return newProject;
-    }
-
 
     /*
     1. 직군별, 분야별 둘다 선택되어있을 경우
@@ -98,21 +88,5 @@ public class ProjectListService {
         return project;
     }
 
-    @Transactional
-    public void deleteProject(Long id) {
-        this.projectRepository.deleteByProjectId(id);
 
-    }
-
-
-    public Project updateProject(Long project_id, ProjectListDto projectListDto) {
-        Optional<Project> existingProject = this.projectRepository.findById(project_id);
-
-        this.modelMapper.map(projectListDto, existingProject);
-        this.projectRepository.save(existingProject.get());
-
-        Optional<Project> byId = projectRepository.findById(project_id);
-        Project project = byId.get();
-        return project;
-    }
 }

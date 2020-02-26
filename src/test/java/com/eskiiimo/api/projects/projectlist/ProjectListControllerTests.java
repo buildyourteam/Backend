@@ -17,24 +17,23 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,177 +62,6 @@ public class ProjectListControllerTests {
 
     @Autowired
     UserRepository userRepository;
-
-
-    @Test
-    @TestDescription("정상적으로 프로젝트를 생성하는 테스트")
-    public void createProject() throws Exception {
-        ProjectListDto project = ProjectListDto.builder()
-                .projectName("project1")
-                .teamName("Team1")
-                .endDate(LocalDateTime.of(2020,02,20,11,11))
-                .description("Hi this is project1.")
-                .projectField(ProjectField.SYSTEM)
-                .needMember(new ProjectMemberSet(3,4,4,5))
-                .build();
-
-        mockMvc.perform(post("/projects")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(project)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andDo(document("create-project",
-                        links(
-                                linkWithRel("self").description("link to self"),
-                                linkWithRel("create-project").description("link to create project"),
-                                linkWithRel("profile").description("link to profile")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                        ),
-                        requestFields(
-                                fieldWithPath("projectName").description("프로젝트 이름"),
-                                fieldWithPath("teamName").description("팀명"),
-                                fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember").description("팀원 현황"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-                        ),
-                        responseFields(
-                                fieldWithPath("projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
-                                fieldWithPath("projectName").description("프로젝트 이름"),
-                                fieldWithPath("teamName").description("팀명"),
-                                fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("dday").description("마감일까지 남은 일"),
-                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
-                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember.developer").description("팀원 현황"),
-                                fieldWithPath("currentMember.designer").description("팀원 현황"),
-                                fieldWithPath("currentMember.planner").description("팀원 현황"),
-                                fieldWithPath("currentMember.etc").description("팀원 현황"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.create-project.href").description("프로젝트 생성 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
-                        )
-                ))
-
-        ;
-    }
-
-
-
-    @Test
-    @TestDescription("프로젝트를 정상적으로 수정")
-    public void updateProject() throws Exception {
-        // Given
-        Project project = this.generateOneProject(1);
-        this.joinProjectMember((long)1,1);
-        this.joinProjectMember((long)1,2);
-        Optional<Project> byId = this.projectRepository.findById(project.getProjectId());
-        Project project1 = byId.get();
-        ProjectListDto projectDto = this.modelMapper.map(project1, ProjectListDto.class);
-        projectDto.setProjectName("Hi project....");
-
-
-        // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", project.getProjectId())
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(this.objectMapper.writeValueAsString(projectDto)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("update-project",
-                        links(
-                                linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
-                        ),
-                        pathParameters(
-                                parameterWithName("project_id").description("Project id")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                        ),
-                        requestFields(
-                                fieldWithPath("projectName").description("프로젝트 이름"),
-                                fieldWithPath("teamName").description("팀명"),
-                                fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
-                                fieldWithPath("currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("currentMember.etc").description("현재 기타 수"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-                        ),
-                        responseFields(
-                                fieldWithPath("projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
-                                fieldWithPath("projectName").description("프로젝트 이름"),
-                                fieldWithPath("teamName").description("팀명"),
-                                fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("dday").description("마감일까지 남은 일"),
-                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
-                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
-                                fieldWithPath("currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("currentMember.etc").description("현재 기타 수"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
-                        )
-                ))
-                ;
-
-    }
-
-
-    @Test
-    @TestDescription("프로젝트를 정상적으로 삭제")
-    public void deleteProject() throws Exception {
-        // Given
-        this.generateEvent(1);
-        this.generateEvent(2);
-
-        // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", (long)2)
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(print())
-                .andExpect(status().isNoContent())
-                .andDo(document("delete-project",
-                        pathParameters(
-                                parameterWithName("project_id").description("Project id")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                        )
-                ))
-
-        ;
-
-    }
 
 
     @Test
@@ -398,10 +226,6 @@ public class ProjectListControllerTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
-//                .andExpect(jsonPath("_embedded.projectList[0]._links.self").exists())
-//                .andExpect(jsonPath("_links.self").exists())
-//                .andExpect(jsonPath("_links.profile").exists())
-//                .andExpect(jsonPath("_links.project-list").exists())
                 .andDo(document("get-deadline-project",
                         links(
                                 linkWithRel("self").description("link to self"),
@@ -449,52 +273,6 @@ public class ProjectListControllerTests {
 
     }
 
-    private Project generateOneProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
-
-        Project project = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-//                .projectMembers()
-                .status(ProjectStatus.RECRUTING)
-                .projectField(ProjectField.APP)
-                .build();
-        project.update();
-        this.projectRepository.save(project);
-        return project;
-
-    }
-
-
-    private void joinProjectMember(Long index,int memberno){
-        Optional<Project> optionalProject = this.projectRepository.findById(index);
-        Project project = optionalProject.get();
-        generateUser(memberno);
-        Optional<User> optionalUser = this.userRepository.findById((long)memberno);
-       User user =optionalUser.get();
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.DEVELOPER)
-                .stack(TechnicalStack.SPRINGBOOT)
-                .project(project)
-                .selfDescription("개발자 입니다.")
-                .user(user)
-                .build();
-        this.projectMemberRepository.save(projectMember);
-    }
-
-    private void generateUser(int index){
-        User user = User.builder()
-                .userName("테스터"+index)
-                .userId("tester"+index)
-                .build();
-        this.userRepository.save(user);
-    }
-
 
 
     private void generateEvent(int index) {
@@ -510,7 +288,6 @@ public class ProjectListControllerTests {
                 .description("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-//                .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.APP)
                 .build();
         project.update();
@@ -522,7 +299,6 @@ public class ProjectListControllerTests {
                 .description("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
-//                .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
         project1.update();
@@ -534,7 +310,6 @@ public class ProjectListControllerTests {
                 .description("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-//                .status(ProjectStatus.RECRUTING)
                 .projectField(ProjectField.WEB)
                 .build();
         project2.update();
@@ -557,7 +332,6 @@ public class ProjectListControllerTests {
                 .description("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-//                .status(ProjectStatus.RECRUTING)
                 .build();
         project.update();
 
@@ -568,7 +342,6 @@ public class ProjectListControllerTests {
                 .description("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
-//                .status(ProjectStatus.RECRUTING)
                 .build();
         project1.update();
 
@@ -579,7 +352,6 @@ public class ProjectListControllerTests {
                 .description("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
-//                .status(ProjectStatus.RECRUTING)
                 .build();
         project2.update();
 

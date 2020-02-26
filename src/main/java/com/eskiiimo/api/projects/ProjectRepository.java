@@ -1,7 +1,5 @@
 package com.eskiiimo.api.projects;
 
-import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.ProjectField;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +15,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByNeedMemberEtcGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByProjectField(ProjectField field, Pageable pageable);
     Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
-    long countAllByStatus(ProjectStatus status);
+    Page<Project> findAllByProjectStatus_UserIdAndProjectStatus_Status(String user_id,String projectStatus, Pageable pageable);
+    long countAllByStatus(Status status);
     void deleteByProjectId(Long id);
 
     }
