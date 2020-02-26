@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
 @Import(RestDocsConfiguration.class)
-class ProfileListControllerTest {
+class PeopleControllerTest {
 
     @Autowired
     MockMvc mockMvc;
