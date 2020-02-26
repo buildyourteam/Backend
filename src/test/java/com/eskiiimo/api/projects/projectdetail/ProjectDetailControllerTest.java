@@ -71,11 +71,11 @@ class ProjectDetailControllerTest {
     @Test
     void getProjectDetailNoMembers () throws Exception {
         // Given
-            this.generateProject(2);
+            this.generateProject(3);
 
 
         // When & Then
-        this.mockMvc.perform(get("/projects/2")
+        this.mockMvc.perform(get("/projects/3")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isOk())

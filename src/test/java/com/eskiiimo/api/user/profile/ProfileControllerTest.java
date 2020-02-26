@@ -147,8 +147,8 @@ class ProfileControllerTest {
     @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
     public void getRunningProjectList() throws Exception {
         // Given
-        User user1=this.generateUser(1);
-        User user2 = this.generateUser(2);
+        User user1=this.generateProfile(1);
+        User user2 = this.generateProfile(2);
 
         this.generateProject(1, user1.getUserId(), Status.RUNNING);
         this.generateProject(2, user1.getUserId(), Status.RECRUTING);
