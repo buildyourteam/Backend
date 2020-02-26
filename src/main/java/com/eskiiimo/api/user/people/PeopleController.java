@@ -1,6 +1,7 @@
 package com.eskiiimo.api.user.people;
 
 import com.eskiiimo.api.index.DocsController;
+import com.eskiiimo.api.projects.ProjectRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public class PeopleController {
     @GetMapping
     public ResponseEntity getJobSeekers(Pageable pageable, PagedResourcesAssembler<People> assembler,
                                         @RequestParam(value = "level", required = false)Long level,
-                                        @RequestParam(value = "role",required =  false)String role,
+                                        @RequestParam(value = "role",required =  false) ProjectRole role,
                                         @RequestParam(value = "area",required = false)String area
     ) {
         Page<People> page = peopleService.getPeople(level,role,area,pageable);

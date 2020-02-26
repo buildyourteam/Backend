@@ -19,11 +19,12 @@ public class ProfileService {
 
     @Transactional
     public ProfileDto getProfile(String user_id) {
-        Optional<ProfileDto> optionalProfileDto = this.userRepository.findProfileByUserId(user_id);
-        if (optionalProfileDto.isEmpty()) {
+        Optional<User> optionalUser = this.userRepository.findByUserId(user_id);
+        if (optionalUser.isEmpty()) {
             return null;
         }
-        ProfileDto profileDto = optionalProfileDto.get();
+        User profile = optionalUser.get();
+        ProfileDto profileDto = profile.toProfileDto();
         return profileDto;
     }
 
@@ -33,9 +34,9 @@ public class ProfileService {
         if (optionalUser.isEmpty()) {
             return null;
         }
-        User user = optionalUser.get();
-        updateData.updateEntity(user);
-        this.userRepository.save(user);
+        User profile = optionalUser.get();
+        updateData.updateProfile(profile);
+        this.userRepository.save(profile);
         return updateData;
     }
 }
