@@ -1,14 +1,11 @@
 package com.eskiiimo.api.logback.filters;
 
-import com.eskiiimo.api.logback.util.AgentUtils;
 import com.eskiiimo.api.logback.util.HttpUtils;
 import com.eskiiimo.api.logback.util.MDCUtil;
 import com.eskiiimo.api.logback.util.RequestWrapper;
-
 import org.slf4j.MDC;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class LogbackMdcFilter implements Filter {
@@ -25,8 +22,11 @@ public class LogbackMdcFilter implements Filter {
         // Set Http Header
         MDCUtil.setJsonValue(MDCUtil.HEADER_MAP_MDC, requestWrapper.headerMap());
 
-        // Set Http Body
+        // Set Http params
         MDCUtil.setJsonValue(MDCUtil.PARAMETER_MAP_MDC, requestWrapper.parameterMap());
+
+        // Set Http Body
+        MDCUtil.setJsonValue(MDCUtil.BODY_MDC, requestWrapper.body());
 
         // If you use SpringSecurity, you could SpringSecurity UserDetail Information.
         MDCUtil.setJsonValue(MDCUtil.USER_INFO_MDC, HttpUtils.getCurrentUser());

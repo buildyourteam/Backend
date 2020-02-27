@@ -1,18 +1,19 @@
 package com.eskiiimo.api.logback.appender;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import ch.qos.logback.core.util.ContextUtil;
 import com.eskiiimo.api.logback.config.LogConfig;
 import com.eskiiimo.api.logback.entity.ErrorLog;
 import com.eskiiimo.api.logback.entity.ErrorLogService;
 import com.eskiiimo.api.logback.util.JsonUtils;
-import net.gpedro.integrations.slack.SlackApi;
-import ch.qos.logback.classic.spi.StackTraceElementProxy;
-import ch.qos.logback.core.util.ContextUtil;
 import com.eskiiimo.api.logback.util.MDCUtil;
+import net.gpedro.integrations.slack.SlackApi;
 import net.gpedro.integrations.slack.SlackAttachment;
 import net.gpedro.integrations.slack.SlackField;
 import net.gpedro.integrations.slack.SlackMessage;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -70,8 +71,14 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
         SlackField path = new SlackField();
         path.setTitle("요청 URL");
         path.setValue(errorLog.getPath());
-        path.setShorten(false);
+        path.setShorten(true);
         fields.add(path);
+
+        SlackField ParamInformation = new SlackField();
+        ParamInformation.setTitle("Http Parameter 정보");
+        ParamInformation.setValue(JsonUtils.toPrettyJson(errorLog.getParameterMap()));
+        ParamInformation.setShorten(true);
+        fields.add(ParamInformation);
 
         SlackField date = new SlackField();
         date.setTitle("발생시간");
@@ -117,10 +124,10 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
         SlackField bodyInformation = new SlackField();
         bodyInformation.setTitle("Http Body 정보");
-        bodyInformation.setValue(JsonUtils.toPrettyJson(errorLog.getParameterMap()));
+        bodyInformation.setValue(errorLog.getBody());
         bodyInformation.setShorten(false);
         fields.add(bodyInformation);
-/*
+        /*
         SlackField agentDetail = new SlackField();
         agentDetail.setTitle("사용자 환경정보");
         agentDetail.setValue(JsonUtils.toPrettyJson(errorLog.getAgentDetail()));
@@ -130,20 +137,19 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
         String title = errorLog.getMessage();
 
         if (logConfig.getDatabase().isEnabled()) {
-            title = "상세 로그 보기 / [" + errorLog.getId() + "] ";
+            title = "Error TRACE  / [" + errorLog.getId() + "] ";
         }
 
         SlackAttachment slackAttachment = new SlackAttachment();
-        slackAttachment.setFallback("에러발생!! 확인요망");
+        slackAttachment.setFallback("Api 서버 에러발생!! 확인요망");
         slackAttachment.setColor("danger");
         slackAttachment.setFields(fields);
         slackAttachment.setTitle(title);
-        slackAttachment.setTitleLink("https://api.codingnome.dev/docs/index.html");
         slackAttachment.setText(errorLog.getTrace());
 
         SlackMessage slackMessage = new SlackMessage("");
         slackMessage.setChannel("#" + logConfig.getSlack().getChannel());
-        slackMessage.setUsername(String.format("[%s] - ErrorReportBot", errorLog.getPhase()));
+        slackMessage.setUsername(String.format("[ESKIIIMO API] - ErrorReportBot"));
         slackMessage.setIcon(":exclamation:");
         slackMessage.setAttachments(Collections.singletonList(slackAttachment));
 
@@ -151,6 +157,8 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
     }
 
     private void toDatabase(ErrorLog errorLog) {
+        String unescapeBody = StringEscapeUtils.unescapeJson(errorLog.getBody());
+        errorLog.setBody(unescapeBody);
         errorLogService.save(errorLog);
     }
 
@@ -166,6 +174,7 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
             errorLog.setMessage(loggingEvent.getFormattedMessage());
             errorLog.setHeaderMap(MDCUtil.get(MDCUtil.HEADER_MAP_MDC));
             errorLog.setParameterMap(MDCUtil.get(MDCUtil.PARAMETER_MAP_MDC));
+            errorLog.setBody(MDCUtil.get(MDCUtil.BODY_MDC));
             errorLog.setUserInfo(MDCUtil.get(MDCUtil.USER_INFO_MDC));
             errorLog.setAgentDetail(MDCUtil.get(MDCUtil.AGENT_DETAIL_MDC));
 

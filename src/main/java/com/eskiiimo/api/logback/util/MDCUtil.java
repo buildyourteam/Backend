@@ -1,4 +1,5 @@
 package com.eskiiimo.api.logback.util;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -19,6 +20,8 @@ public class MDCUtil {
 
     public static final String AGENT_DETAIL_MDC = "AGENT_DETAIL_MDC";
 
+    public static final String BODY_MDC = "BODY_MDC";
+
     private static Logger logger = LoggerFactory.getLogger(MDCUtil.class);
 
     public static void set(String key, String value) {
@@ -28,8 +31,14 @@ public class MDCUtil {
     public static void setJsonValue(String key, Object value) {
         try {
             if (value != null) {
-                String json = JsonUtils.toJson(value);
-                mdc.put(key, json);
+
+                if(key == BODY_MDC){
+                    mdc.put(key,(String) value);
+                }
+                else {
+                    String json = JsonUtils.toJson(value);
+                    mdc.put(key, json);
+                }
             }
         } catch (Exception e) {
             // ignored

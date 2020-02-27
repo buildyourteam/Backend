@@ -39,6 +39,9 @@ public class ErrorLog {
     @Column(name = "PATH", length = 2048)
     private String path;
 
+    @Column(name = "BODY",columnDefinition = "TEXT")
+    private String body;
+
     @Column(name = "MESSAGE", columnDefinition = "TEXT")
     private String message;
 
@@ -77,6 +80,7 @@ public class ErrorLog {
         if (serverName != null ? !serverName.equals(errorLog.serverName) : errorLog.serverName != null) return false;
         if (hostName != null ? !hostName.equals(errorLog.hostName) : errorLog.hostName != null) return false;
         if (path != null ? !path.equals(errorLog.path) : errorLog.path != null) return false;
+        if(body != null ? !body.equals(errorLog.body) : errorLog.body != null) return false;
         if (message != null ? !message.equals(errorLog.message) : errorLog.message != null) return false;
         if (trace != null ? !trace.equals(errorLog.trace) : errorLog.trace != null) return false;
         if (errorDatetime != null ? !errorDatetime.equals(errorLog.errorDatetime) : errorLog.errorDatetime != null)
@@ -99,6 +103,7 @@ public class ErrorLog {
         result = 31 * result + (serverName != null ? serverName.hashCode() : 0);
         result = 31 * result + (hostName != null ? hostName.hashCode() : 0);
         result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (body != null ? body.hashCode() : 0);
         result = 31 * result + (message != null ? message.hashCode() : 0);
         result = 31 * result + (trace != null ? trace.hashCode() : 0);
         result = 31 * result + (errorDatetime != null ? errorDatetime.hashCode() : 0);
@@ -120,6 +125,7 @@ public class ErrorLog {
                 ", serverName='" + serverName + '\'' +
                 ", hostName='" + hostName + '\'' +
                 ", path='" + path + '\'' +
+                ", body='" + body + '\'' +
                 ", message='" + message + '\'' +
                 ", trace='" + trace + '\'' +
                 ", errorDatetime=" + errorDatetime +
