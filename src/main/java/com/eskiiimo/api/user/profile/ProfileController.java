@@ -58,8 +58,8 @@ public class ProfileController {
                                                    Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getRunning(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/running").withRel("runningProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-running-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/running").withRel("runningProjectList"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesRunningProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -69,8 +69,8 @@ public class ProfileController {
                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getEnded(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/ended").withRel("endedProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-ended-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/ended").withRel("endedProjectList"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesEndedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -81,8 +81,8 @@ public class ProfileController {
                                              Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getPlanner(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/plan").withRel("plannedProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-planned-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/plan").withRel("plannedProjectList"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesPlannedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
