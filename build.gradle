@@ -33,6 +33,8 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	asciidoctor('org.springframework.restdocs:spring-restdocs-asciidoctor')
+	compile 'eu.bitwalker:UserAgentUtils:1.21'
+	compile 'net.gpedro.integrations.slack:slack-webhook:1.4.0'
 //	compile 'org.springframework.boot:spring-boot-starter-security'
 //	compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.0.RELEASE'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
