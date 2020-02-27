@@ -133,7 +133,7 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
         agentDetail.setValue(JsonUtils.toPrettyJson(errorLog.getAgentDetail()));
         agentDetail.setShorten(false);
         fields.add(agentDetail);
-*/
+        */
         String title = errorLog.getMessage();
 
         if (logConfig.getDatabase().isEnabled()) {
