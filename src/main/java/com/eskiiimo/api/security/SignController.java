@@ -35,7 +35,6 @@ public class SignController {
         if (!passwordEncoder.matches(password, user.getPassword()))
             throw new CSigninFailedException();
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-        header.add("AUTHCODE","xxxxxxx");
         header.add("TOKEN", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
 
         return new ResponseEntity(header, HttpStatus.OK);

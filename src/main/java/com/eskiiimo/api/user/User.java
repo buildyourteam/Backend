@@ -101,6 +101,7 @@ public class User implements UserDetails {
                 .role(this.role)
                 .stacks(stackList)
                 .area(this.area)
+                .contact(this.contact)
                 .level(this.level)
                 .description(this.description)
                 .build();

@@ -10,7 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,10 +46,21 @@ public class ProfileController {
 
     @PutMapping("/{user_id}")
     public ResponseEntity updateProfile(@PathVariable String user_id,@RequestBody ProfileDto updateData){
-        ProfileDto profileDto = profileService.updateProfile(user_id,updateData);
-        ProfileResource profileResource = new ProfileResource(profileDto,user_id);
-        profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
-        return ResponseEntity.ok(profileResource);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication!=null) {
+            String userId = authentication.getName();
+            System.out.println(userId);
+                if(!userId.equals(user_id))
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            ProfileDto profileDto = profileService.updateProfile(user_id,updateData);
+            ProfileResource profileResource = new ProfileResource(profileDto, user_id);
+            profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
+            return ResponseEntity.ok(profileResource);
+        }
+        else {
+            System.out.println("noauth");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
      //사용자가 참여 중인 프로젝트 리스트 가져오기
