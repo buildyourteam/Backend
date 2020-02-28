@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,12 +28,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -58,90 +60,90 @@ class ProfileControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Test
-    void getProfile() throws Exception {
-        this.generateProfile(2);
-
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("query-profile",
-                        links(
-                                linkWithRel("self").description("self 링크"),
-                                linkWithRel("updateProfile").description("프로필 업데이트"),
-                                linkWithRel("profile").description("Api 명세서")
-                        ),
-                        pathParameters(
-                                parameterWithName("userId").description("사용자 아이디")
-                        ),
-                        responseFields(
-                                fieldWithPath("userName").description("사용자 이름"),
-                                fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stacks").description("기술스택"),
-                                fieldWithPath("contact").description("연락처"),
-                                fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("level").description("레벨"),
-                                fieldWithPath("description").description("자기소개"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
-                        )
-                ))
-        ;
-
-    }
-
-    @Test
-    void updateProfile() throws Exception {
-        this.generateProfile(1);
-        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
-        stacks.add(TechnicalStack.DJANGO);
-        ProfileDto profileDto = ProfileDto.builder()
-                .area("서울시 구로구")
-                .contact("010-9876-5432")
-                .description("프로필 업데이트 하기")
-                .role(ProjectRole.LEADER)
-                .stacks(stacks)
-                .userName("회원 01")
-                .level((long)100)
-                .build();
-
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(profileDto)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("update-profile",
-                        links(
-                                linkWithRel("self").description("self 링크"),
-                                linkWithRel("profile").description("Api 명세서")
-                        ),
-                        pathParameters(
-                                parameterWithName("userId").description("사용자 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("userName").description("사용자 이름"),
-                                fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stacks").description("기술스택"),
-                                fieldWithPath("contact").description("연락처"),
-                                fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("level").description("레벨"),
-                                fieldWithPath("description").description("자기소개")
-                        ),
-                        responseFields(
-                                fieldWithPath("userName").description("사용자 이름"),
-                                fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stacks").description("기술스택"),
-                                fieldWithPath("contact").description("연락처"),
-                                fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("level").description("레벨"),
-                                fieldWithPath("description").description("자기소개"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
-                        )
-                ))
-        ;
-    }
+//    @Test
+//    void getProfile() throws Exception {
+//        this.generateProfile(2);
+//
+//        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
+//                .andExpect(status().isOk())
+//                .andDo(print())
+//                .andDo(document("query-profile",
+//                        links(
+//                                linkWithRel("self").description("self 링크"),
+//                                linkWithRel("updateProfile").description("프로필 업데이트"),
+//                                linkWithRel("profile").description("Api 명세서")
+//                        ),
+//                        pathParameters(
+//                                parameterWithName("userId").description("사용자 아이디")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("userName").description("사용자 이름"),
+//                                fieldWithPath("role").description("역할군"),
+//                                fieldWithPath("stacks").description("기술스택"),
+//                                fieldWithPath("contact").description("연락처"),
+//                                fieldWithPath("area").description("활동지역"),
+//                                fieldWithPath("level").description("레벨"),
+//                                fieldWithPath("description").description("자기소개"),
+//                                fieldWithPath("_links.self.href").description("self 링크"),
+//                                fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
+//                                fieldWithPath("_links.profile.href").description("Api 명세서")
+//                        )
+//                ))
+//        ;
+//
+//    }
+//
+//    @Test
+//    void updateProfile() throws Exception {
+//        this.generateProfile(1);
+//        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
+//        stacks.add(TechnicalStack.DJANGO);
+//        ProfileDto profileDto = ProfileDto.builder()
+//                .area("서울시 구로구")
+//                .contact("010-9876-5432")
+//                .description("프로필 업데이트 하기")
+//                .role(ProjectRole.LEADER)
+//                .stacks(stacks)
+//                .userName("회원 01")
+//                .level((long)100)
+//                .build();
+//
+//        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(this.objectMapper.writeValueAsString(profileDto)))
+//                .andExpect(status().isOk())
+//                .andDo(print())
+//                .andDo(document("update-profile",
+//                        links(
+//                                linkWithRel("self").description("self 링크"),
+//                                linkWithRel("profile").description("Api 명세서")
+//                        ),
+//                        pathParameters(
+//                                parameterWithName("userId").description("사용자 아이디")
+//                        ),
+//                        requestFields(
+//                                fieldWithPath("userName").description("사용자 이름"),
+//                                fieldWithPath("role").description("역할군"),
+//                                fieldWithPath("stacks").description("기술스택"),
+//                                fieldWithPath("contact").description("연락처"),
+//                                fieldWithPath("area").description("활동지역"),
+//                                fieldWithPath("level").description("레벨"),
+//                                fieldWithPath("description").description("자기소개")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("userName").description("사용자 이름"),
+//                                fieldWithPath("role").description("역할군"),
+//                                fieldWithPath("stacks").description("기술스택"),
+//                                fieldWithPath("contact").description("연락처"),
+//                                fieldWithPath("area").description("활동지역"),
+//                                fieldWithPath("level").description("레벨"),
+//                                fieldWithPath("description").description("자기소개"),
+//                                fieldWithPath("_links.self.href").description("self 링크"),
+//                                fieldWithPath("_links.profile.href").description("Api 명세서")
+//                        )
+//                ))
+//        ;
+//    }
 
     @Test
     @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
@@ -166,6 +168,49 @@ class ProfileControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("get-running-project",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("running-project-list").description("link to deadline project list"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("page"),
+                                parameterWithName("size").description("number of projects per page"),
+                                parameterWithName("sort").description("sort")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        responseFields(
+
+                                fieldWithPath("_embedded.projectList[].projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
+                                fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
+                                fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
+                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
+                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.running-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서"),
+                                fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
+                                fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("페이지 수")
+
+                        )
+                ))
         ;
 
     }
@@ -193,6 +238,50 @@ class ProfileControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("get-ended-project",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("ended-project-list").description("link to deadline project list"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("page"),
+                                parameterWithName("size").description("number of projects per page"),
+                                parameterWithName("sort").description("sort")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        responseFields(
+
+                                fieldWithPath("_embedded.projectList[].projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
+                                fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
+                                fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
+                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
+                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.ended-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서"),
+                                fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
+                                fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("페이지 수")
+
+                        )
+                ))
+
         ;
 
     }
@@ -220,6 +309,50 @@ class ProfileControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("get-planned-project",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("planned-project-list").description("link to deadline project list"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("page"),
+                                parameterWithName("size").description("number of projects per page"),
+                                parameterWithName("sort").description("sort")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        responseFields(
+
+                                fieldWithPath("_embedded.projectList[].projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
+                                fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
+                                fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
+                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
+                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.planned-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서"),
+                                fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
+                                fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("페이지 수")
+
+                        )
+                ))
+
         ;
 
     }
@@ -249,7 +382,7 @@ class ProfileControllerTest {
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .status(status.toString())
                 .userId(user_id)
-                .plan(Boolean.FALSE)
+                .plan(Boolean.TRUE)
                 .build();
 
         return projectStatus;
