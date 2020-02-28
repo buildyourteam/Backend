@@ -86,10 +86,7 @@ class IndexControllerTest {
                 .andExpect(jsonPath("_links.profileDetail.href").exists())
                 .andDo(document("index-profile",
                         links(
-                                linkWithRel("profileDetail").description("프로필"),
-                                linkWithRel("endedProjectList").description("내가 완료한 프로젝트"),
-                                linkWithRel("runningProjectList").description("현재 참여중인 프로젝트"),
-                                linkWithRel("plannedProjectList").description("내가 기획한 프로젝트")
+                                linkWithRel("profileDetail").description("프로필")
                         )
                 ))
         ;
