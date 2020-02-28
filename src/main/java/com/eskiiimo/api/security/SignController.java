@@ -2,6 +2,7 @@ package com.eskiiimo.api.security;
 
 
 import com.eskiiimo.api.security.exception.CSigninFailedException;
+import com.eskiiimo.api.security.exception.CUserNotFoundException;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -31,7 +31,10 @@ public class SignController {
     public ResponseEntity signin(@RequestParam String id,
                                          @RequestParam String password) {
 
-        User user = userRepository.findByUserId(id).orElseThrow(CSigninFailedException::new);
+        Optional<User> optionalUser = userRepository.findByUserId(id);
+        if(optionalUser.isEmpty())
+            throw new CUserNotFoundException();
+        User user = optionalUser.get();
         if (!passwordEncoder.matches(password, user.getPassword()))
             throw new CSigninFailedException();
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
@@ -52,5 +55,16 @@ public class SignController {
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());
         return ResponseEntity.ok().body(id);
+    }
+    @ExceptionHandler(CUserNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity userNotFound(HttpServletRequest request, CUserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 회원입니다.");
+    }
+
+    @ExceptionHandler(CSigninFailedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity signinFailed(HttpServletRequest request, CSigninFailedException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("아이디 또는 비밀번호가 정확하지 않습니다.");
     }
 }
