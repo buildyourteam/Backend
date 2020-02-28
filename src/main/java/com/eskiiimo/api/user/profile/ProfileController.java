@@ -2,6 +2,7 @@ package com.eskiiimo.api.user.profile;
 
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
+import com.eskiiimo.api.projects.projectsList.ProjectListController;
 import com.eskiiimo.api.projects.projectsList.ProjectListDto;
 import com.eskiiimo.api.projects.projectsList.ProjectListResource;
 import com.eskiiimo.api.projects.projectsList.ProjectListService;
@@ -12,6 +13,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,8 +60,8 @@ public class ProfileController {
                                                    Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getRunning(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/running").withRel("runningProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-running-project-list").withRel("profile"));
+        pagedResources.add(ControllerLinkBuilder.linkTo(ProfileController.class).slash("/user_id/running").withRel("running-project-list"));
+        pagedResources.add(ControllerLinkBuilder.linkTo(DocsController.class).slash("#resourcesRunningProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -69,8 +71,8 @@ public class ProfileController {
                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getEnded(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/ended").withRel("endedProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-ended-project-list").withRel("profile"));
+        pagedResources.add(ControllerLinkBuilder.linkTo(ProfileController.class).slash("/user_id/ended").withRel("ended-project-list"));
+        pagedResources.add(ControllerLinkBuilder.linkTo(DocsController.class).slash("#resourcesEndedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -81,8 +83,8 @@ public class ProfileController {
                                              Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getPlanner(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/plan").withRel("plannedProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-planned-project-list").withRel("profile"));
+        pagedResources.add(ControllerLinkBuilder.linkTo(ProfileController.class).slash("/user_id/plan").withRel("planned-project-list"));
+        pagedResources.add(ControllerLinkBuilder.linkTo(DocsController.class).slash("#resourcesPlannedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }

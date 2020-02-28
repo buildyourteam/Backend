@@ -173,6 +173,30 @@ operation::get-people[snippets='curl-request,request-parameters,http-request,htt
 
 operation::query-profile[snippets='path-parameters,curl-request,http-request,http-response,response-fields,links']
 
+[[resourcesRunningProjectList]]
+=== 사용자가 참여중인 프로젝트
+
+`Get` 요청을 사용해서 사용자가 참여중인 프로젝트를 조회 할 수 있다.
+
+operation::get-running-project[snippets='curl-request,http-request,http-response,response-fields,links']
+
+
+[[resourcesPlannedProjectList]]
+=== 사용자가 기획한 프로젝트
+
+`Get` 요청을 사용해서 사용자가 참여중인 프로젝트를 조회 할 수 있다.
+
+operation::get-planned-project[snippets='curl-request,http-request,http-response,response-fields,links']
+
+
+[[resourcesEndedProjectList]]
+=== 사용자가 참여했던 프로젝트
+
+`Get` 요청을 사용해서 사용자가 참여중인 프로젝트를 조회 할 수 있다.
+
+operation::get-ended-project[snippets='curl-request,http-request,http-response,response-fields,links']
+
+
 [[resourcesProfileUpdate]]
 === 프로필 업데이트
 
