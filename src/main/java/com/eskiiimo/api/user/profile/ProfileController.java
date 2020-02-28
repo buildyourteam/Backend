@@ -2,22 +2,17 @@ package com.eskiiimo.api.user.profile;
 
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.projectsList.ProjectListDto;
 import com.eskiiimo.api.projects.projectsList.ProjectListResource;
 import com.eskiiimo.api.projects.projectsList.ProjectListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -38,6 +33,8 @@ public class ProfileController {
     @GetMapping("/{user_id}")
     public ResponseEntity getProfile(@PathVariable String user_id){
         ProfileDto profileDto = profileService.getProfile(user_id);
+        if(profileDto == null)
+            return ResponseEntity.notFound().build();
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
         profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileGet").withRel("profile"));
@@ -58,8 +55,8 @@ public class ProfileController {
                                                    Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getRunning(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/running").withRel("runningProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-running-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/running").withRel("runningProjectList"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesRunningProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -69,8 +66,8 @@ public class ProfileController {
                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getEnded(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/ended").withRel("endedProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-ended-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/ended").withRel("endedProjectList"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesEndedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
@@ -81,8 +78,8 @@ public class ProfileController {
                                              Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getPlanner(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(new Link("/profile/{user_id}/plan").withRel("plannedProjectList"));
-        pagedResources.add(new Link("/docs/index.html#resources-planned-project-list").withRel("profile"));
+        pagedResources.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/plan").withRel("plannedProjectList"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesPlannedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
