@@ -36,10 +36,14 @@ public class ProfileController {
     @GetMapping("/{user_id}")
     public ResponseEntity getProfile(@PathVariable String user_id){
         ProfileDto profileDto = profileService.getProfile(user_id);
-        if(profileDto == null)
-            return ResponseEntity.notFound().build();
+//        if(profileDto == null)
+//            return ResponseEntity.notFound().build();
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
-        profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication!=null) {
+           if(user_id.equals(authentication.getName()))
+                profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
+        }
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileGet").withRel("profile"));
         return ResponseEntity.ok(profileResource);
     }
@@ -47,20 +51,15 @@ public class ProfileController {
     @PutMapping("/{user_id}")
     public ResponseEntity updateProfile(@PathVariable String user_id,@RequestBody ProfileDto updateData){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication!=null) {
-            String userId = authentication.getName();
-            System.out.println(userId);
-                if(!userId.equals(user_id))
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            ProfileDto profileDto = profileService.updateProfile(user_id,updateData);
-            ProfileResource profileResource = new ProfileResource(profileDto, user_id);
-            profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
-            return ResponseEntity.ok(profileResource);
-        }
-        else {
-            System.out.println("noauth");
+        if(authentication==null)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        String userId = authentication.getName();
+        if(!userId.equals(user_id))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        ProfileDto profileDto = profileService.updateProfile(user_id,updateData);
+        ProfileResource profileResource = new ProfileResource(profileDto, user_id);
+        profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
+        return ResponseEntity.ok(profileResource);
     }
 
      //사용자가 참여 중인 프로젝트 리스트 가져오기
