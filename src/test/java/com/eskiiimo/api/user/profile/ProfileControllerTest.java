@@ -60,90 +60,90 @@ class ProfileControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-//    @Test
-//    void getProfile() throws Exception {
-//        this.generateProfile(2);
-//
-//        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andDo(document("query-profile",
-//                        links(
-//                                linkWithRel("self").description("self 링크"),
-//                                linkWithRel("updateProfile").description("프로필 업데이트"),
-//                                linkWithRel("profile").description("Api 명세서")
-//                        ),
-//                        pathParameters(
-//                                parameterWithName("userId").description("사용자 아이디")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("userName").description("사용자 이름"),
-//                                fieldWithPath("role").description("역할군"),
-//                                fieldWithPath("stacks").description("기술스택"),
-//                                fieldWithPath("contact").description("연락처"),
-//                                fieldWithPath("area").description("활동지역"),
-//                                fieldWithPath("level").description("레벨"),
-//                                fieldWithPath("description").description("자기소개"),
-//                                fieldWithPath("_links.self.href").description("self 링크"),
-//                                fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
-//                                fieldWithPath("_links.profile.href").description("Api 명세서")
-//                        )
-//                ))
-//        ;
-//
-//    }
-//
-//    @Test
-//    void updateProfile() throws Exception {
-//        this.generateProfile(1);
-//        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
-//        stacks.add(TechnicalStack.DJANGO);
-//        ProfileDto profileDto = ProfileDto.builder()
-//                .area("서울시 구로구")
-//                .contact("010-9876-5432")
-//                .description("프로필 업데이트 하기")
-//                .role(ProjectRole.LEADER)
-//                .stacks(stacks)
-//                .userName("회원 01")
-//                .level((long)100)
-//                .build();
-//
-//        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(this.objectMapper.writeValueAsString(profileDto)))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andDo(document("update-profile",
-//                        links(
-//                                linkWithRel("self").description("self 링크"),
-//                                linkWithRel("profile").description("Api 명세서")
-//                        ),
-//                        pathParameters(
-//                                parameterWithName("userId").description("사용자 아이디")
-//                        ),
-//                        requestFields(
-//                                fieldWithPath("userName").description("사용자 이름"),
-//                                fieldWithPath("role").description("역할군"),
-//                                fieldWithPath("stacks").description("기술스택"),
-//                                fieldWithPath("contact").description("연락처"),
-//                                fieldWithPath("area").description("활동지역"),
-//                                fieldWithPath("level").description("레벨"),
-//                                fieldWithPath("description").description("자기소개")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("userName").description("사용자 이름"),
-//                                fieldWithPath("role").description("역할군"),
-//                                fieldWithPath("stacks").description("기술스택"),
-//                                fieldWithPath("contact").description("연락처"),
-//                                fieldWithPath("area").description("활동지역"),
-//                                fieldWithPath("level").description("레벨"),
-//                                fieldWithPath("description").description("자기소개"),
-//                                fieldWithPath("_links.self.href").description("self 링크"),
-//                                fieldWithPath("_links.profile.href").description("Api 명세서")
-//                        )
-//                ))
-//        ;
-//    }
+    @Test
+    void getProfile() throws Exception {
+        this.generateProfile(2);
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("query-profile",
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("updateProfile").description("프로필 업데이트"),
+                                linkWithRel("profile").description("Api 명세서")
+                        ),
+                        pathParameters(
+                                parameterWithName("userId").description("사용자 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("role").description("역할군"),
+                                fieldWithPath("stacks").description("기술스택"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("area").description("활동지역"),
+                                fieldWithPath("level").description("레벨"),
+                                fieldWithPath("description").description("자기소개"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    void updateProfile() throws Exception {
+        this.generateProfile(1);
+        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
+        stacks.add(TechnicalStack.DJANGO);
+        ProfileDto profileDto = ProfileDto.builder()
+                .area("서울시 구로구")
+                .contact("010-9876-5432")
+                .description("프로필 업데이트 하기")
+                .role(ProjectRole.LEADER)
+                .stacks(stacks)
+                .userName("회원 01")
+                .level((long)100)
+                .build();
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.objectMapper.writeValueAsString(profileDto)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("update-profile",
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("profile").description("Api 명세서")
+                        ),
+                        pathParameters(
+                                parameterWithName("userId").description("사용자 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("role").description("역할군"),
+                                fieldWithPath("stacks").description("기술스택"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("area").description("활동지역"),
+                                fieldWithPath("level").description("레벨"),
+                                fieldWithPath("description").description("자기소개")
+                        ),
+                        responseFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("role").description("역할군"),
+                                fieldWithPath("stacks").description("기술스택"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("area").description("활동지역"),
+                                fieldWithPath("level").description("레벨"),
+                                fieldWithPath("description").description("자기소개"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        )
+                ))
+        ;
+    }
 
     @Test
     @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
