@@ -59,10 +59,6 @@ public class IndexController {
     public RepresentationModel profileIndex(@PathVariable String user_id){
         var profileIndex = new RepresentationModel();
         profileIndex.add(linkTo(ProfileController.class).slash(user_id).withRel("profileDetail"));
-        profileIndex.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/running").withRel("runningProjectList"));
-        profileIndex.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/ended").withRel("endedProjectList"));
-        profileIndex.add(linkTo(ProfileController.class).slash(user_id).withRel(user_id+"/plan").withRel("plannedProjectList"));
-
         return profileIndex;
     }
 }

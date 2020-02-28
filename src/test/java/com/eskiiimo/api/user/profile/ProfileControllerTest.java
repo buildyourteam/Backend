@@ -60,9 +60,9 @@ class ProfileControllerTest {
 
     @Test
     void getProfile() throws Exception {
-        this.generateProfile(21);
+        this.generateProfile(2);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user21"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("query-profile",
@@ -93,7 +93,7 @@ class ProfileControllerTest {
 
     @Test
     void updateProfile() throws Exception {
-        this.generateProfile(12);
+        this.generateProfile(1);
         List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
         stacks.add(TechnicalStack.DJANGO);
         ProfileDto profileDto = ProfileDto.builder()
@@ -106,7 +106,7 @@ class ProfileControllerTest {
                 .level((long)100)
                 .build();
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user12")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(profileDto)))
                 .andExpect(status().isOk())
