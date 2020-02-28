@@ -32,6 +32,8 @@ public class ProjectDetailController {
     @GetMapping(value = "/{project_id}")
     public ResponseEntity getProjectDetail(@PathVariable Long project_id){
         ProjectDetailDto projectDetailDto = projectDetailService.getProject(project_id);
+        if(projectDetailDto == null)
+            return ResponseEntity.notFound().build();
         ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetailDto,project_id);
         projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id+"/apply").withRel("apply"));
         projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectGet").withRel("profile"));

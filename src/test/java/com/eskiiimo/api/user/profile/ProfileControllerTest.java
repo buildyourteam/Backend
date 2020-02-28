@@ -35,6 +35,7 @@ import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.li
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -62,9 +63,9 @@ class ProfileControllerTest {
 
     @Test
     void getProfile() throws Exception {
-        this.generateProfile(2);
+        this.generateProfile(21);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user2"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user21"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("query-profile",
@@ -95,7 +96,7 @@ class ProfileControllerTest {
 
     @Test
     void updateProfile() throws Exception {
-        this.generateProfile(1);
+        this.generateProfile(12);
         List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
         stacks.add(TechnicalStack.DJANGO);
         ProfileDto profileDto = ProfileDto.builder()
@@ -108,7 +109,7 @@ class ProfileControllerTest {
                 .level((long)100)
                 .build();
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user12")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(profileDto)))
                 .andExpect(status().isOk())
@@ -171,7 +172,6 @@ class ProfileControllerTest {
                 .andDo(document("get-running-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("running-project-list").description("link to deadline project list"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestParameters(
@@ -202,7 +202,6 @@ class ProfileControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.running-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
@@ -241,7 +240,6 @@ class ProfileControllerTest {
                 .andDo(document("get-ended-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("ended-project-list").description("link to deadline project list"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestParameters(
@@ -272,7 +270,6 @@ class ProfileControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.ended-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
@@ -312,7 +309,6 @@ class ProfileControllerTest {
                 .andDo(document("get-planned-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("planned-project-list").description("link to deadline project list"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestParameters(
@@ -343,7 +339,6 @@ class ProfileControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.planned-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
@@ -386,7 +381,7 @@ class ProfileControllerTest {
                 .build();
 
         return projectStatus;
-   }
+    }
 
     private User generateProfile(int index){
         List<UsersStack> stacks = new ArrayList<UsersStack>();
