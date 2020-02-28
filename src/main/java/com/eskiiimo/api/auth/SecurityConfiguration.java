@@ -1,4 +1,4 @@
-package com.eskiiimo.api.security;
+package com.eskiiimo.api.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

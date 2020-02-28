@@ -1,8 +1,10 @@
-package com.eskiiimo.api.security;
+package com.eskiiimo.api.auth;
 
 
-import com.eskiiimo.api.security.exception.CSigninFailedException;
-import com.eskiiimo.api.security.exception.CUserNotFoundException;
+import com.eskiiimo.api.auth.exception.CSigninFailedException;
+import com.eskiiimo.api.auth.exception.CUserNotFoundException;
+import com.eskiiimo.api.auth.exception.SignInDto;
+import com.eskiiimo.api.auth.exception.SignUpDto;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +29,14 @@ public class SignController {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping(value = "/signin")
-    public ResponseEntity signin(@RequestParam String id,
-                                         @RequestParam String password) {
+    @PostMapping(value = "/signin")
+    public ResponseEntity signin(@RequestBody SignInDto signInDto) {
 
-        Optional<User> optionalUser = userRepository.findByUserId(id);
+        Optional<User> optionalUser = userRepository.findByUserId(signInDto.getUserId());
         if(optionalUser.isEmpty())
             throw new CUserNotFoundException();
         User user = optionalUser.get();
-        if (!passwordEncoder.matches(password, user.getPassword()))
+        if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword()))
             throw new CSigninFailedException();
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
         header.add("TOKEN", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
@@ -43,18 +44,17 @@ public class SignController {
         return new ResponseEntity(header, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/signup")
-    public ResponseEntity signin(@RequestParam String id,
-                                 @RequestParam String password,
-                                 @RequestParam String name) {
+    @PostMapping(value = "/signup")
+    public ResponseEntity signin(@RequestBody SignUpDto signUpDto) {
 
         userRepository.save(User.builder()
-                .userId(id)
-                .password(passwordEncoder.encode(password))
-                .userName(name)
+                .userId(signUpDto.getUserId())
+                .password(passwordEncoder.encode(signUpDto.getPassword()))
+                .userName(signUpDto.getName())
+                .userEmail(signUpDto.getUserEmail())
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());
-        return ResponseEntity.ok().body(id);
+        return ResponseEntity.ok().build();
     }
     @ExceptionHandler(CUserNotFoundException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

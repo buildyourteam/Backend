@@ -1,4 +1,4 @@
-package com.eskiiimo.api.security.exception;
+package com.eskiiimo.api.auth.exception;
 
 public class CUserNotFoundException extends RuntimeException {
     public CUserNotFoundException(String msg, Throwable t) {

@@ -1,4 +1,4 @@
-package com.eskiiimo.api.security;
+package com.eskiiimo.api.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

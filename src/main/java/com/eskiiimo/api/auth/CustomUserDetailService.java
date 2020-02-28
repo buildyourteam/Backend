@@ -1,6 +1,6 @@
-package com.eskiiimo.api.security;
+package com.eskiiimo.api.auth;
 
-import com.eskiiimo.api.security.exception.CUserNotFoundException;
+import com.eskiiimo.api.auth.exception.CUserNotFoundException;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
