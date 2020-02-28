@@ -40,7 +40,7 @@ public class ProjectImageService {
 
 
     public FileUploadDto storeProjectImage(Long projectid, MultipartFile file){
-        String fileName = fileService.storeFile(file,this.projectImageLocation,projectid);
+        String fileName = fileService.storeFile(file,this.projectImageLocation,projectid.toString());
 
         ProjectImage projectImage = new ProjectImage(projectid,this.projectImageLocation.resolve(fileName).toString());
         projectImageRepository.save(projectImage);

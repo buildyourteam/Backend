@@ -25,6 +25,7 @@ public class Project{
     private LocalDateTime endDate;
     private String description;
     private long dday;
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private Status status = Status.RECRUTING;
     @Enumerated(EnumType.STRING)

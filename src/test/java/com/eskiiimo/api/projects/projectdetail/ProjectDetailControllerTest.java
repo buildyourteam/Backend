@@ -20,6 +20,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -142,6 +143,7 @@ class ProjectDetailControllerTest {
 
 
     @Test
+    @WithMockUser(username="testuser")
     @TestDescription("정상적으로 프로젝트를 생성하는 테스트")
     public void createProject() throws Exception {
         ProjectDetailDto project = ProjectDetailDto.builder()
@@ -215,6 +217,7 @@ class ProjectDetailControllerTest {
 
 
     @Test
+    @WithMockUser(username="testuser")
     @TestDescription("프로젝트를 정상적으로 수정")
     public void updateProject() throws Exception {
         // Given
@@ -293,6 +296,7 @@ class ProjectDetailControllerTest {
 
 
     @Test
+    @WithMockUser(username="testuser")
     @TestDescription("프로젝트를 정상적으로 삭제")
     public void deleteProject() throws Exception {
         // Given

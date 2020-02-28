@@ -13,6 +13,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -46,6 +47,7 @@ class ProjectImageControllerTest {
     protected ProjectImageRepository projectImageRepository;
 
     @Test
+    @WithMockUser(username="testuser")
     void uploadProjectImage() throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/api/files/testfiles/testimg.jpg");
         MockMultipartFile image = new MockMultipartFile(

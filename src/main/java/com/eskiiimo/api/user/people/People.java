@@ -14,6 +14,7 @@ import java.util.List;
 public class People {
     private String userId;
     private String userName;
+    @Builder.Default
     private List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
     private String area;
     private Long level;

@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -62,13 +63,15 @@ class ProfileControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    void getProfile() throws Exception {
+    @TestDescription("본인의 프로필페이지를 조회했을때")
+    @WithMockUser(username="user21")
+    void getMyProfile() throws Exception {
         this.generateProfile(21);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user21"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("query-profile",
+                .andDo(document("query-my-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
                                 linkWithRel("updateProfile").description("프로필 업데이트"),
@@ -95,6 +98,39 @@ class ProfileControllerTest {
     }
 
     @Test
+    @TestDescription("프로필페이지를 조회했을때")
+    void getProfile() throws Exception {
+        this.generateProfile(22);
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user21"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("query-profile",
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("profile").description("Api 명세서")
+                        ),
+                        pathParameters(
+                                parameterWithName("userId").description("사용자 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("role").description("역할군"),
+                                fieldWithPath("stacks").description("기술스택"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("area").description("활동지역"),
+                                fieldWithPath("level").description("레벨"),
+                                fieldWithPath("description").description("자기소개"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @WithMockUser(username="user12")
     void updateProfile() throws Exception {
         this.generateProfile(12);
         List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
