@@ -28,7 +28,8 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
-
+jwt:
+  secretKey: govlepel@$&amp;
 log:
   slack:
     enabled: true

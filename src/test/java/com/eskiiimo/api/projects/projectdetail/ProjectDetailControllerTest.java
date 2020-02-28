@@ -87,8 +87,8 @@ class ProjectDetailControllerTest {
     void getProjectDetail() throws Exception {
         // Given
         this.generateProject(1);
-        this.joinProjectMember((long)1,1);
-        this.joinProjectMember((long)1,2);
+        this.joinProjectMember((long)1,3);
+        this.joinProjectMember((long)1,4);
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}",1))
                 .andExpect(status().isOk())
@@ -424,6 +424,7 @@ class ProjectDetailControllerTest {
         User user = User.builder()
                 .userName("테스터"+index)
                 .userId("tester"+index)
+                .password("testpassword")
                 .build();
         this.userRepository.save(user);
     }

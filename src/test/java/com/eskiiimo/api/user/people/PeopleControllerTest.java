@@ -48,7 +48,7 @@ class PeopleControllerTest {
 
     @Test
     void getJobSeekers() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(35,40).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -61,7 +61,7 @@ class PeopleControllerTest {
     }
     @Test
     void getJobSeekers_level() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(5,9).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -77,7 +77,7 @@ class PeopleControllerTest {
     }
     @Test
     void getJobSeekers_role() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(10,14).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -91,7 +91,7 @@ class PeopleControllerTest {
     }
     @Test
     void getJobSeekers_area() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(15,19).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -106,7 +106,7 @@ class PeopleControllerTest {
     }
     @Test
     void getJobSeekers_levelAndRole() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(20,24).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -122,7 +122,7 @@ class PeopleControllerTest {
     }
     @Test
     void getJobSeekers_levelAndArea() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(25,29).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -139,7 +139,7 @@ class PeopleControllerTest {
     }
     @Test
     void getJobSeekers_RoleAndArea() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(30,34).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -155,7 +155,7 @@ class PeopleControllerTest {
     }
     @Test
     void getJobSeekers_LevelAndRoleAndArea() throws Exception {
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(0,4).forEach(i -> {
             this.generatePeople(i);
         });
 
@@ -216,7 +216,8 @@ class PeopleControllerTest {
         List<UsersStack> stacks3 = new ArrayList<UsersStack>();
         stacks3.add(new UsersStack(TechnicalStack.SPRINGBOOT));
         User user1 =  User.builder()
-                .userId("tester"+(3*index+1))
+                .userId("testUser"+(3*index+1))
+                .password("testpassword")
                 .level((long)1)
                 .stacks(stacks1)
                 .area("Seoul")
@@ -224,7 +225,8 @@ class PeopleControllerTest {
                 .role(ProjectRole.LEADER)
                 .build();
         User user2 = User.builder()
-                .userId("tester"+(3*index+2))
+                .userId("testUser"+(3*index+2))
+                .password("testpassword")
                 .level((long)2)
                 .stacks(stacks2)
                 .area("Busan")
@@ -233,7 +235,8 @@ class PeopleControllerTest {
 
                 .build();
         User user3 =  User.builder()
-                .userId("tester"+(3*index+3))
+                .userId("testUser"+(3*index+3))
+                .password("testpassword")
                 .level((long)3)
                 .stacks(stacks3)
                 .area("Daegu")

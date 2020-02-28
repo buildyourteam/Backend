@@ -29,6 +29,10 @@ spring:
       enabled: true
       force: true
 
+jwt:
+  secretKey: govlepel@$&amp;
+
+
 log:
   slack:
     enabled: true

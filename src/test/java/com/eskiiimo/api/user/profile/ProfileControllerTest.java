@@ -218,8 +218,8 @@ class ProfileControllerTest {
     @TestDescription("사용자가 참여했던 프로젝트 리스트 가져오기")
     public void getEndedProjectList() throws Exception {
         // Given
-        User user1=this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1=this.generateProfile(3);
+        User user2 = this.generateProfile(4);
 
         this.generateProject(1, user1.getUserId(), Status.ENDED);
         this.generateProject(2, user1.getUserId(), Status.ENDED);
@@ -230,7 +230,7 @@ class ProfileControllerTest {
         this.generateProject(6, user2.getUserId(), Status.RUNNING);
 
         // When & Then
-        this.mockMvc.perform(get("/profile/user1/ended")
+        this.mockMvc.perform(get("/profile/user3/ended")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -287,8 +287,8 @@ class ProfileControllerTest {
     @TestDescription("사용자가 기획한 프로젝트 리스트 가져오기")
     public void getPlannedProjectList() throws Exception {
         // Given
-        User user1=this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1=this.generateProfile(5);
+        User user2 = this.generateProfile(6);
 
         this.generateProject(1, user1.getUserId(), Status.RUNNING);
         this.generateProject(2, user1.getUserId(), Status.RECRUTING);
@@ -299,7 +299,7 @@ class ProfileControllerTest {
         this.generateProject(6, user2.getUserId(), Status.RUNNING);
 
         // When & Then
-        this.mockMvc.perform(get("/profile/user1/plan")
+        this.mockMvc.perform(get("/profile/user5/plan")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -389,6 +389,7 @@ class ProfileControllerTest {
         stacks.add(new UsersStack(TechnicalStack.DJANGO));
         User profile = User.builder()
                 .userId("user"+index)
+                .password("testpassword")
                 .userName("회원"+index)
                 .area("seoul")
                 .contact("010-1234-5678")
