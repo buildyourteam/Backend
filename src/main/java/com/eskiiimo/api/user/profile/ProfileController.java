@@ -2,6 +2,10 @@ package com.eskiiimo.api.user.profile;
 
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
+
+import com.eskiiimo.api.projects.projectsList.ProjectListController;
+import com.eskiiimo.api.projects.projectsList.ProjectListDto;
+
 import com.eskiiimo.api.projects.projectsList.ProjectListResource;
 import com.eskiiimo.api.projects.projectsList.ProjectListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

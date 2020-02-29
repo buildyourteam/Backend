@@ -61,6 +61,7 @@ class ProfileControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+
     @Test
     void getProfile() throws Exception {
         this.generateProfile(21);

@@ -45,6 +45,9 @@ public class ProjectListController {
                                           @RequestParam(value = "field", required = false) ProjectField field
     ) {
         Page<Project> page = this.projectListService.getAllByField(occupation, field, pageable);
+        if (page ==null) {
+            return ResponseEntity.notFound().build();
+        }
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
         pagedResources.add(linkTo(ProjectListController.class).withRel("project-list"));
         pagedResources.add(linkTo(DocsController.class).slash("#resourcesProjectList").withRel("profile"));
@@ -56,6 +59,9 @@ public class ProjectListController {
     public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 
         Page<Project> page = projectListService.findAllByDdayLessThanOrderByDdayAsc(pageable);
+        if (page == null) {
+            return ResponseEntity.notFound().build();
+        }
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
         pagedResources.add(linkTo(ProjectListController.class).slash("/deadline").withRel("deadline-project-list"));
         pagedResources.add(linkTo(DocsController.class).slash("#resourcesDeadlineProjectList").withRel("profile"));

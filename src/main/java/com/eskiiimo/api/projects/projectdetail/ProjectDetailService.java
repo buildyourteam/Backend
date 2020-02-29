@@ -33,12 +33,14 @@ public class ProjectDetailService {
     @Transactional
     public void deleteProject(Long id) {
         this.projectRepository.deleteByProjectId(id);
-
     }
 
 
     public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
         Optional<Project> existingProject = this.projectRepository.findById(project_id);
+        if (existingProject.isEmpty()) {
+            return null;
+        }
         Project pr = existingProject.get();
         pr.update();
         this.modelMapper.map(projectDetailDto, pr);
