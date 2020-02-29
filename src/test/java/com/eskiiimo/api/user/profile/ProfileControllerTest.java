@@ -173,7 +173,6 @@ class ProfileControllerTest {
                 .andDo(document("get-running-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("running-project-list").description("link to deadline project list"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestParameters(
@@ -204,7 +203,6 @@ class ProfileControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.running-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
@@ -243,7 +241,6 @@ class ProfileControllerTest {
                 .andDo(document("get-ended-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("ended-project-list").description("link to deadline project list"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestParameters(
@@ -274,7 +271,6 @@ class ProfileControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.ended-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
@@ -314,7 +310,6 @@ class ProfileControllerTest {
                 .andDo(document("get-planned-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("planned-project-list").description("link to deadline project list"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestParameters(
@@ -345,7 +340,6 @@ class ProfileControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.planned-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),

@@ -60,7 +60,6 @@ public class ProfileController {
                                                    Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getRunning(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(ControllerLinkBuilder.linkTo(DocsController.class).slash("#resourcesRunningProjectList").withRel("profile"));
         pagedResources.add(linkTo(DocsController.class).slash("#resourcesRunningProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
@@ -71,7 +70,6 @@ public class ProfileController {
                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getEnded(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(ControllerLinkBuilder.linkTo(DocsController.class).slash("#resourcesEndedProjectList").withRel("profile"));
         pagedResources.add(linkTo(DocsController.class).slash("#resourcesEndedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
@@ -83,7 +81,6 @@ public class ProfileController {
                                              Pageable pageable, PagedResourcesAssembler<Project> assembler) {
         Page<Project> page = this.profileService.getPlanner(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(ControllerLinkBuilder.linkTo(DocsController.class).slash("#resourcesPlannedProjectList").withRel("profile"));
         pagedResources.add(linkTo(DocsController.class).slash("#resourcesPlannedProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
