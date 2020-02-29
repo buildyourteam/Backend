@@ -1,5 +1,6 @@
 package com.eskiiimo.api.projects.projectdetail;
 
+import com.eskiiimo.api.common.ErrorResource;
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
 import org.modelmapper.ModelMapper;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -43,6 +45,14 @@ public class ProjectDetailController {
     @PostMapping
     public ResponseEntity createProject(@RequestBody @Valid ProjectDetailDto projectDetailDto, Errors errors) {
 
+        if(errors.hasErrors()) {
+            return badRequest(errors);
+        }
+
+        /*
+        ProjectDetail validator
+         */
+
         Project newProject = this.projectDetailService.storeProject(projectDetailDto);
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectDetailController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
@@ -58,6 +68,9 @@ public class ProjectDetailController {
                                         @RequestBody ProjectDetailDto projectDetailDto,
                                         Errors errors) {
         ProjectDetailDto project = projectDetailService.updateProject(project_id, projectDetailDto);
+        if (project == null) {
+            return ResponseEntity.notFound().build();
+        }
         ProjectDetailResource projectDetailResource = new ProjectDetailResource(project, project_id);
         projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
         return ResponseEntity.ok(projectDetailResource);
@@ -67,5 +80,9 @@ public class ProjectDetailController {
     public ResponseEntity deleteProject(@PathVariable Long project_id) {
         this.projectDetailService.deleteProject(project_id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    }
+
+    private ResponseEntity badRequest(Errors errors) {
+        return ResponseEntity.badRequest().body(new ErrorResource(errors));
     }
 }
