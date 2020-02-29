@@ -1,4 +1,4 @@
-package com.eskiiimo.api.auth;
+package com.eskiiimo.api.user.account;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

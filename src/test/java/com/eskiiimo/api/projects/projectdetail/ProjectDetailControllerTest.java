@@ -23,6 +23,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -68,30 +69,14 @@ class ProjectDetailControllerTest {
     ModelMapper modelMapper;
 
 
-
-    @Test
-    void getProjectDetailNoMembers () throws Exception {
-        // Given
-            this.generateProject(3);
-
-
-        // When & Then
-        this.mockMvc.perform(get("/projects/3")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("_links.self").exists())
-                .andDo(document("query-events"))
-        ;
-    }
     @Test
     void getProjectDetail() throws Exception {
         // Given
-        this.generateProject(1);
-        this.joinProjectMember((long)1,3);
-        this.joinProjectMember((long)1,4);
+        Project project = this.generateOneProject(2);
+        this.joinProjectMember(project.getProjectId(),1);
+        this.joinProjectMember(project.getProjectId(),2);
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}",1))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}",project.getProjectId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("projectName").exists())
                 .andExpect(jsonPath("_links.self").exists())
@@ -221,9 +206,9 @@ class ProjectDetailControllerTest {
     @TestDescription("프로젝트를 정상적으로 수정")
     public void updateProject() throws Exception {
         // Given
-        Project project = this.generateOneProject(1);
-        this.joinProjectMember((long)1,1);
-        this.joinProjectMember((long)1,2);
+        Project project = this.generateOneProject(3);
+        this.joinProjectLeader((long)1,"testuser");
+        this.joinProjectMember((long)1,3);
         Optional<Project> byId = this.projectRepository.findById(project.getProjectId());
         Project project1 = byId.get();
         ProjectDetailDto projectDetailDto = this.modelMapper.map(project1, ProjectDetailDto.class);
@@ -296,15 +281,15 @@ class ProjectDetailControllerTest {
 
 
     @Test
-    @WithMockUser(username="testuser")
+    @WithMockUser(username="tester")
     @TestDescription("프로젝트를 정상적으로 삭제")
     public void deleteProject() throws Exception {
         // Given
-        this.generateEvent(1);
-        this.generateEvent(2);
+        Project project = this.generateOneProject(3);
+        this.joinProjectLeader(project.getProjectId(),"tester");
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", (long)2)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isNoContent())
@@ -341,52 +326,6 @@ class ProjectDetailControllerTest {
 
     }
 
-    private void generateEvent(int index) {
-
-        ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
-
-        Project project = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .projectField(ProjectField.APP)
-                .build();
-        project.update();
-
-        Project project1 = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need zero 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_zero)
-                .projectField(ProjectField.WEB)
-                .build();
-        project1.update();
-
-        Project project2 = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .projectField(ProjectField.WEB)
-                .build();
-        project2.update();
-
-        this.projectRepository.save(project);
-        this.projectRepository.save(project1);
-        this.projectRepository.save(project2);
-
-    }
-
-
     private void generateProject(int index) {
 
         ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
@@ -394,6 +333,7 @@ class ProjectDetailControllerTest {
         ProjectMemberSet current = new ProjectMemberSet(2,1,1,2);
 
         Project project = Project.builder()
+                .projectId((long)index)
                 .projectName("project"+index)
                 .teamName("project team"+index)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
@@ -407,13 +347,10 @@ class ProjectDetailControllerTest {
 
     }
 
-
     private void joinProjectMember(Long index,int memberno){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        generateUser(memberno);
-        Optional<User> optionalMember = this.userRepository.findById((long)memberno);
-        User user =optionalMember.get();
+        User user = generateUser(memberno);
         ProjectMember projectMember = ProjectMember.builder()
                 .role(ProjectRole.DEVELOPER)
                 .stack(TechnicalStack.SPRINGBOOT)
@@ -423,14 +360,36 @@ class ProjectDetailControllerTest {
                 .build();
         this.projectMemberRepository.save(projectMember);
     }
+    private void joinProjectLeader(Long index,String memberno){
+        Optional<Project> optionalProject = this.projectRepository.findById(index);
+        Project project = optionalProject.get();
+        User user = generateUser(memberno);
+        ProjectMember projectMember = ProjectMember.builder()
+                .role(ProjectRole.LEADER)
+                .stack(TechnicalStack.SPRINGBOOT)
+                .project(project)
+                .user(user)
+                .build();
+        this.projectMemberRepository.save(projectMember);
+        this.projectRepository.save(project);
+    }
 
-    private void generateUser(int index){
+    private User generateUser(int index){
         User user = User.builder()
                 .userName("테스터"+index)
                 .userId("tester"+index)
                 .password("testpassword")
                 .build();
-        this.userRepository.save(user);
+       return this.userRepository.save(user);
+    }
+    private User generateUser(String tester){
+        User user = User.builder()
+                .userName("테스터")
+                .userId(tester)
+                .userEmail("UserEmail")
+                .password("pasword")
+                .build();
+        return this.userRepository.save(user);
     }
 
 }

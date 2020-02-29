@@ -186,8 +186,8 @@ class ProfileControllerTest {
     @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
     public void getRunningProjectList() throws Exception {
         // Given
-        User user1=this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1=this.generateProfile(100);
+        User user2 = this.generateProfile(101);
 
         this.generateProject(1, user1.getUserId(), Status.RUNNING);
         this.generateProject(2, user1.getUserId(), Status.RECRUTING);
@@ -198,7 +198,7 @@ class ProfileControllerTest {
         this.generateProject(6, user2.getUserId(), Status.RUNNING);
 
         // When & Then
-        this.mockMvc.perform(get("/profile/user1/running")
+        this.mockMvc.perform(get("/profile/user100/running")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")

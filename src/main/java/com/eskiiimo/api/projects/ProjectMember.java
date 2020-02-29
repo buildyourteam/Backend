@@ -41,6 +41,6 @@ public class ProjectMember {
     public void setProject(Project project){
         this.project = project;
         if(!project.getProjectMembers().contains(this))
-            project.getProjectMembers().add(this);
+            this.project.addMember(this);
     }
 }

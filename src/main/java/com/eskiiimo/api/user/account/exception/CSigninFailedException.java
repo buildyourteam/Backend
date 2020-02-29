@@ -1,4 +1,4 @@
-package com.eskiiimo.api.auth.exception;
+package com.eskiiimo.api.user.account.exception;
 
 public class CSigninFailedException extends RuntimeException {
     public CSigninFailedException(String msg, Throwable t) {

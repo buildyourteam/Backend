@@ -1,11 +1,9 @@
-package com.eskiiimo.api.auth;
+package com.eskiiimo.api.user.account;
 
-import com.eskiiimo.api.auth.exception.SignInDto;
-import com.eskiiimo.api.auth.exception.SignUpDto;
+import com.eskiiimo.api.user.account.exception.SignInDto;
+import com.eskiiimo.api.user.account.exception.SignUpDto;
 import com.eskiiimo.api.common.RestDocsConfiguration;
-import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -14,13 +12,11 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -48,7 +44,7 @@ class SignControllerTest {
     void signin() throws Exception {
 
         SignUpDto signUpDto = SignUpDto.builder()
-                .userId("testUser")
+                .userId("user1")
                 .userEmail("tester@eskiiimo.com")
                 .name("testUser")
                 .password("testPassword")
@@ -56,9 +52,9 @@ class SignControllerTest {
         this.mockMvc.perform(post("/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(signUpDto)));
-
+//
                 SignInDto signInDto = SignInDto.builder()
-                .userId("testUser")
+                .userId("user1")
                 .password("testPassword")
                 .build();
 
@@ -66,7 +62,7 @@ class SignControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(signInDto)))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("TOKEN"))
+                .andExpect(header().exists("X-AUTH-TOKEN"))
                 .andDo(print())
                 .andDo(document("signin",
                         requestFields(
@@ -74,7 +70,7 @@ class SignControllerTest {
                                 fieldWithPath("password").description("비밀번호")
                         ),
                         responseHeaders(
-                                headerWithName("TOKEN").description("로그인 토큰")
+                                headerWithName("X-AUTH-TOKEN").description("로그인 토큰")
                         )
                 ))
         ;
@@ -84,7 +80,7 @@ class SignControllerTest {
     @Test
     void Signup() throws Exception {
         SignUpDto signUpDto = SignUpDto.builder()
-                .userId("tester")
+                .userId("testid")
                 .userEmail("tester@eskiiimo.com")
                 .name("testUser")
                 .password("testPassword")

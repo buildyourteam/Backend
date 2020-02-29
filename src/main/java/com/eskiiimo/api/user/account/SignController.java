@@ -1,10 +1,10 @@
-package com.eskiiimo.api.auth;
+package com.eskiiimo.api.user.account;
 
 
-import com.eskiiimo.api.auth.exception.CSigninFailedException;
-import com.eskiiimo.api.auth.exception.CUserNotFoundException;
-import com.eskiiimo.api.auth.exception.SignInDto;
-import com.eskiiimo.api.auth.exception.SignUpDto;
+import com.eskiiimo.api.user.account.exception.CSigninFailedException;
+import com.eskiiimo.api.user.account.exception.CUserNotFoundException;
+import com.eskiiimo.api.user.account.exception.SignInDto;
+import com.eskiiimo.api.user.account.exception.SignUpDto;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class SignController {
         if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword()))
             throw new CSigninFailedException();
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-        header.add("TOKEN", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
+        header.add("X-AUTH-TOKEN", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
 
         return new ResponseEntity(header, HttpStatus.OK);
     }

@@ -1,4 +1,4 @@
-package com.eskiiimo.api.auth.exception;
+package com.eskiiimo.api.user.account.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
