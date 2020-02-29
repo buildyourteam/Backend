@@ -38,7 +38,7 @@ public class ProjectDetailService {
 
     public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
         Optional<Project> existingProject = this.projectRepository.findById(project_id);
-        if (existingProject == null) {
+        if (existingProject.isEmpty()) {
             return null;
         }
         Project pr = existingProject.get();
