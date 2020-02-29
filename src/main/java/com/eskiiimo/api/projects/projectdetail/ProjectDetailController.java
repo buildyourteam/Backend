@@ -70,7 +70,7 @@ public class ProjectDetailController {
         /*
         ProjectDetail validator
          */
-        Project newProject = this.projectDetailService.storeProject(projectDetailDto);
+        Project newProject = this.projectDetailService.storeProject(projectDetailDto,userId);
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectDetailController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
         ProjectDetailDto projectDetailDto1 = modelMapper.map(newProject, ProjectDetailDto.class);
