@@ -62,6 +62,7 @@ class ProfileControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+
     @Test
     @TestDescription("본인의 프로필페이지를 조회했을때")
     @WithMockUser(username="user21")

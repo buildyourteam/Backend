@@ -1,5 +1,6 @@
 package com.eskiiimo.api.projects.projectdetail;
 
+import com.eskiiimo.api.common.ErrorResource;
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectMember;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -61,7 +63,14 @@ public class ProjectDetailController {
         if(authentication==null)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String userId = authentication.getName();
-        Project newProject = this.projectDetailService.storeProject(projectDetailDto,userId);
+        if(errors.hasErrors()) {
+            return badRequest(errors);
+        }
+
+        /*
+        ProjectDetail validator
+         */
+        Project newProject = this.projectDetailService.storeProject(projectDetailDto);
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectDetailController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
         ProjectDetailDto projectDetailDto1 = modelMapper.map(newProject, ProjectDetailDto.class);
@@ -109,5 +118,9 @@ public class ProjectDetailController {
             }
         }
         return Boolean.FALSE;
+    }
+
+    private ResponseEntity badRequest(Errors errors) {
+        return ResponseEntity.badRequest().body(new ErrorResource(errors));
     }
 }

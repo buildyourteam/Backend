@@ -30,6 +30,9 @@ public class ProjectListService {
     */
     public Page<Project> getAllByField(String occupation, ProjectField field, Pageable pageable) {
         Page<Project> page = this.projectRepository.findAll(pageable);
+        if (page.isEmpty()) {
+            return null;
+        }
         if (occupation != null) {
             if (occupation.equals("developer")) {
 
@@ -72,7 +75,11 @@ public class ProjectListService {
     }
 
     public Page<Project> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
+//        this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
         Page<Project> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
+        if (page.isEmpty()) {
+            return null;
+        }
         return page;
     }
 
