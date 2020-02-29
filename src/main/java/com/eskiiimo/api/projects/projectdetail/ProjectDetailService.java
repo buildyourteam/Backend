@@ -1,9 +1,7 @@
 package com.eskiiimo.api.projects.projectdetail;
 
-import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.ProjectMember;
-import com.eskiiimo.api.projects.ProjectMemberRepository;
-import com.eskiiimo.api.projects.ProjectRepository;
+import com.eskiiimo.api.projects.*;
+import com.eskiiimo.api.projects.projectapply.ProjectApplyService;
 import com.eskiiimo.api.projects.projectsList.ProjectListDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -14,29 +12,53 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectDetailService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
+    private final ProjectApplyService projectApplyService;
     private final ModelMapper modelMapper;
 
-
-    public Project storeProject(ProjectDetailDto projectDetailDto) {
+    @Transactional
+    public Project storeProject(ProjectDetailDto projectDetailDto,String user_id) {
         Project project = modelMapper.map(projectDetailDto, Project.class);
         project.update();
+
         Project newProject = this.projectRepository.save(project);
+        this.projectApplyService.addLeader(project,user_id);
         return newProject;
     }
 
     @Transactional
-    public void deleteProject(Long id) {
-        this.projectRepository.deleteByProjectId(id);
+    public Boolean deleteProject(Long id,String userId) {
+        Optional<Project> optionalProjectProject = this.projectRepository.findById(id);
+        Project project = optionalProjectProject.get();
+        Boolean isLeader=Boolean.FALSE;
+        for(ProjectMember projectMember : project.getProjectMembers()){
+            if(projectMember.getRole().equals(ProjectRole.LEADER)){
+                if(projectMember.getUser().getUserId().equals(userId)) {
+                    isLeader = Boolean.TRUE;
+                    break;
+                }
+            }
+        }
+        if(isLeader) {
+            for(ProjectMember projectMember : project.getProjectMembers()){
+                this.projectMemberRepository.delete(projectMember);
+            }
+            this.projectRepository.deleteByProjectId(id);
+            return Boolean.TRUE;
+        }
+        else
+            return Boolean.FALSE;
     }
 
-
-    public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto) {
+    @Transactional
+    public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto,String userId) {
         Optional<Project> existingProject = this.projectRepository.findById(project_id);
         if (existingProject.isEmpty()) {
             return null;
@@ -44,6 +66,17 @@ public class ProjectDetailService {
         Project pr = existingProject.get();
         pr.update();
         this.modelMapper.map(projectDetailDto, pr);
+        Boolean isLeader=Boolean.FALSE;
+        for(ProjectMember projectMember : pr.getProjectMembers()){
+            if(projectMember.getRole().equals(ProjectRole.LEADER)){
+                if(projectMember.getUser().getUserId().equals(userId)) {
+                    isLeader = Boolean.TRUE;
+                    break;
+                }
+            }
+        }
+        if(isLeader==Boolean.FALSE)
+            return null;
         this.projectRepository.save(pr);
         ProjectDetailDto projectDetailDto1 = this.modelMapper.map(pr, ProjectDetailDto.class);
 

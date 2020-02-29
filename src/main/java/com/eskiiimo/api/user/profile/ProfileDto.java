@@ -17,6 +17,7 @@ import java.util.List;
 public class ProfileDto {
     private String userName;
     private ProjectRole role;
+    @Builder.Default
     private List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
     private String contact;
     private String area;
@@ -25,14 +26,17 @@ public class ProfileDto {
 
     public void updateProfile(User User) {
         List<UsersStack> stackList = new ArrayList<UsersStack>();
-        for (TechnicalStack stack : this.stacks) {
+        for(TechnicalStack stack : this.stacks){
+            UsersStack usersStack = new UsersStack();
+            usersStack.setStack(stack);
+            stackList.add(usersStack);
+        }
             User.setRole(this.role);
             User.setStacks(stackList);
             User.setContact(this.contact);
             User.setArea(this.area);
             User.setLevel(this.level);
             User.setDescription(this.description);
-        }
     }
 
 }

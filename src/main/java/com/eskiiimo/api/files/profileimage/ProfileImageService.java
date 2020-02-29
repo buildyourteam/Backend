@@ -41,10 +41,13 @@ public class ProfileImageService {
 
 
 
-    public FileUploadDto storeProfileImage(Long memberid, MultipartFile file){
-        String fileName = fileService.storeFile(file,this.profileImageLocation,memberid);
+    public FileUploadDto storeProfileImage(String user_id, MultipartFile file){
+        String fileName = fileService.storeFile(file,this.profileImageLocation,user_id);
 
-        ProfileImage profileImage = new ProfileImage(memberid,this.profileImageLocation.resolve(fileName).toString());
+        ProfileImage profileImage = ProfileImage.builder()
+                .userId(user_id)
+                .filePath(this.profileImageLocation.resolve(fileName).toString())
+                .build();
         profileImageRepository.save(profileImage);
         FileUploadDto fileUploadDto= FileUploadDto.builder()
                 .fileName(fileName)
@@ -57,8 +60,8 @@ public class ProfileImageService {
     }
 
 
-    public Resource getProfileImage(Long memberid){
-        ProfileImage profileImage = profileImageRepository.findByMemberid(memberid);
+    public Resource getProfileImage(String userId){
+        ProfileImage profileImage = profileImageRepository.findByUserId(userId);
         Path filePath = Paths.get(profileImage.getFilePath());
         return fileService.loadFileAsResource(filePath);
     }

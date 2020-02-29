@@ -33,7 +33,7 @@ public class FileService {
         }
     }
 
-    public String storeFile(MultipartFile file, Path location,long id) {
+    public String storeFile(MultipartFile file, Path location,String id) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         StringTokenizer tockens =new StringTokenizer(fileName);
         tockens.nextToken(".");

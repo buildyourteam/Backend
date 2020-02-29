@@ -113,6 +113,20 @@ operation::index-people[snippets='curl-request,links']
 
 operation::index-profile[snippets='curl-request,links']
 
+[[signIn]]
+=== 로그인
+
+`Get` 요청을 사용해서 /profile 페이지 인덱스를 조회 할 수 있다.
+
+operation::signin[snippets='curl-request,request-body,response-headers']
+
+[[SignUp]]
+=== 회원가입
+
+`Get` 요청을 사용해서 /profile 페이지 인덱스를 조회 할 수 있다.
+
+operation::signup[snippets='curl-request,request-body']
+
 [[resourcesProjectList]]
 === 프로젝트 목록 조회
 

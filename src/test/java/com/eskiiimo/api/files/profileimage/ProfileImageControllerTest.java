@@ -13,6 +13,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -45,23 +46,24 @@ class ProfileImageControllerTest {
     @Autowired
     protected ProfileImageRepository profileImageRepository;
     @Test
+    @WithMockUser(username="testuser")
     void uploadProfileImage() throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/api/files/testfiles/testimg.jpg");
         MockMultipartFile image = new MockMultipartFile(
                 "image", targetFile.getName(), "image/jpeg", new FileInputStream(targetFile));
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/profile/image/{profileid}",1).file(image)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/profile/image/{user_id}","testuser").file(image)
                 .accept(MediaTypes.HAL_JSON)
                  )
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("fileName").value("1.jpg"))
-                .andExpect(jsonPath("fileDownloadUri").value("https://api.eskiiimo.com/profile/image/1"))
+                .andExpect(jsonPath("fileName").value("testuser.jpg"))
+                .andExpect(jsonPath("fileDownloadUri").value("https://api.eskiiimo.com/profile/image/testuser"))
                 .andExpect(jsonPath("fileType").value("image/jpeg"))
                 .andExpect(jsonPath("size").value(585219))
                 .andDo(print())
                 .andDo(document("upload-profile-image",
                         pathParameters(
-                                parameterWithName("profileid").description("user id")
+                                parameterWithName("user_id").description("user id")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -86,10 +88,13 @@ class ProfileImageControllerTest {
     void downloadProfileImage() throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/api/files/testfiles/testimg.jpg");
 
-        ProfileImage profileImage = new ProfileImage((long)1,targetFile.getPath());
+        ProfileImage profileImage = ProfileImage.builder()
+                .userId("testuser")
+                .filePath(targetFile.getPath())
+                .build();
         profileImageRepository.save(profileImage);
 
-        this.mockMvc.perform(get("/profile/image/1"))
+        this.mockMvc.perform(get("/profile/image/testuser"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print())
         ;

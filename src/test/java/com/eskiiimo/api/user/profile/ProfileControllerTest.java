@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -63,13 +64,15 @@ class ProfileControllerTest {
 
 
     @Test
-    void getProfile() throws Exception {
+    @TestDescription("본인의 프로필페이지를 조회했을때")
+    @WithMockUser(username="user21")
+    void getMyProfile() throws Exception {
         this.generateProfile(21);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user21"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("query-profile",
+                .andDo(document("query-my-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
                                 linkWithRel("updateProfile").description("프로필 업데이트"),
@@ -96,6 +99,39 @@ class ProfileControllerTest {
     }
 
     @Test
+    @TestDescription("프로필페이지를 조회했을때")
+    void getProfile() throws Exception {
+        this.generateProfile(22);
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}","user21"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("query-profile",
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("profile").description("Api 명세서")
+                        ),
+                        pathParameters(
+                                parameterWithName("userId").description("사용자 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("role").description("역할군"),
+                                fieldWithPath("stacks").description("기술스택"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("area").description("활동지역"),
+                                fieldWithPath("level").description("레벨"),
+                                fieldWithPath("description").description("자기소개"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @WithMockUser(username="user12")
     void updateProfile() throws Exception {
         this.generateProfile(12);
         List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
@@ -151,8 +187,8 @@ class ProfileControllerTest {
     @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
     public void getRunningProjectList() throws Exception {
         // Given
-        User user1=this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1=this.generateProfile(100);
+        User user2 = this.generateProfile(101);
 
         this.generateProject(1, user1.getUserId(), Status.RUNNING);
         this.generateProject(2, user1.getUserId(), Status.RECRUTING);
@@ -163,7 +199,7 @@ class ProfileControllerTest {
         this.generateProject(6, user2.getUserId(), Status.RUNNING);
 
         // When & Then
-        this.mockMvc.perform(get("/profile/user1/running")
+        this.mockMvc.perform(get("/profile/user100/running")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -219,8 +255,8 @@ class ProfileControllerTest {
     @TestDescription("사용자가 참여했던 프로젝트 리스트 가져오기")
     public void getEndedProjectList() throws Exception {
         // Given
-        User user1=this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1=this.generateProfile(3);
+        User user2 = this.generateProfile(4);
 
         this.generateProject(1, user1.getUserId(), Status.ENDED);
         this.generateProject(2, user1.getUserId(), Status.ENDED);
@@ -231,7 +267,7 @@ class ProfileControllerTest {
         this.generateProject(6, user2.getUserId(), Status.RUNNING);
 
         // When & Then
-        this.mockMvc.perform(get("/profile/user1/ended")
+        this.mockMvc.perform(get("/profile/user3/ended")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -288,8 +324,8 @@ class ProfileControllerTest {
     @TestDescription("사용자가 기획한 프로젝트 리스트 가져오기")
     public void getPlannedProjectList() throws Exception {
         // Given
-        User user1=this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1=this.generateProfile(5);
+        User user2 = this.generateProfile(6);
 
         this.generateProject(1, user1.getUserId(), Status.RUNNING);
         this.generateProject(2, user1.getUserId(), Status.RECRUTING);
@@ -300,7 +336,7 @@ class ProfileControllerTest {
         this.generateProject(6, user2.getUserId(), Status.RUNNING);
 
         // When & Then
-        this.mockMvc.perform(get("/profile/user1/plan")
+        this.mockMvc.perform(get("/profile/user5/plan")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
@@ -390,6 +426,7 @@ class ProfileControllerTest {
         stacks.add(new UsersStack(TechnicalStack.DJANGO));
         User profile = User.builder()
                 .userId("user"+index)
+                .password("testpassword")
                 .userName("회원"+index)
                 .area("seoul")
                 .contact("010-1234-5678")

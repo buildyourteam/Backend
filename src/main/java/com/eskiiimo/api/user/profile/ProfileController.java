@@ -14,8 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,15 +44,25 @@ public class ProfileController {
         if(profileDto == null)
             return ResponseEntity.notFound().build();
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
-        profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication!=null) {
+           if(user_id.equals(authentication.getName()))
+                profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
+        }
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileGet").withRel("profile"));
         return ResponseEntity.ok(profileResource);
     }
 
     @PutMapping("/{user_id}")
     public ResponseEntity updateProfile(@PathVariable String user_id,@RequestBody ProfileDto updateData){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication==null)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        String userId = authentication.getName();
+        if(!userId.equals(user_id))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         ProfileDto profileDto = profileService.updateProfile(user_id,updateData);
-        ProfileResource profileResource = new ProfileResource(profileDto,user_id);
+        ProfileResource profileResource = new ProfileResource(profileDto, user_id);
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
         return ResponseEntity.ok(profileResource);
     }
