@@ -7,8 +7,11 @@ import com.eskiiimo.api.projects.ProjectMember;
 import com.eskiiimo.api.projects.ProjectRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -73,11 +76,11 @@ public class ProjectDetailController {
         Project newProject = this.projectDetailService.storeProject(projectDetailDto,userId);
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectDetailController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
-        ProjectDetailDto projectDetailDto1 = modelMapper.map(newProject, ProjectDetailDto.class);
-        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetailDto1, newProject.getProjectId());
-        projectDetailResource.add(linkTo(ProjectDetailController.class).withRel("create-project"));
-        projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile"));
-        return ResponseEntity.created(createdUri).body(projectDetailResource);
+        RepresentationModel created = new RepresentationModel();
+        created.add(WebMvcLinkBuilder.linkTo(ProjectDetailController.class).withSelfRel());
+        created.add(new Link("/projects/"+newProject.getProjectId()).withRel("createdProject"));
+        created.add(linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile"));
+        return ResponseEntity.created(createdUri).body(created);
     }
 
     @PutMapping("/{project_id}")
