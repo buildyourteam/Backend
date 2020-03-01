@@ -156,7 +156,7 @@ operation::query-project[snippets='path-parameters,curl-request,http-request,htt
 
 `POST` 요청을 사용해서 프로젝트를 생성 할 수 있다.
 
-operation::create-project[snippets='curl-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
+operation::create-project[snippets='curl-request,request-headers,request-fields,http-response,response-headers,links']
 
 
 [[resourcesProjectUpdate]]

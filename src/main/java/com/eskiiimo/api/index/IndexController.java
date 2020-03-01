@@ -31,6 +31,7 @@ public class IndexController {
                 .slash("deadline?page="+randomProject+"&size="+projectListSize).withRel("projectListDeadline"));
         mainIndex.add(linkTo(PeopleController.class)
                 .slash("?page="+randomPeople+"&size="+peopleSize).withRel("peopleList"));
+        mainIndex.add(linkTo(ProjectDetailController.class).withRel("createProject"));
         return mainIndex;
     }
     @GetMapping(value = "/projects")
@@ -39,6 +40,7 @@ public class IndexController {
         var projectListIndex = new RepresentationModel();
         projectListIndex.add(linkTo(ProjectListController.class)
                 .slash("?page=0&size="+projectListSize).withRel("projectList"));
+        projectListIndex.add(linkTo(ProjectDetailController.class).withRel("createProject"));
         return projectListIndex;
     }
     @GetMapping(value = "/projects/{project_id}")

@@ -38,7 +38,8 @@ class IndexControllerTest {
                         links(
                                 linkWithRel("projectList").description("프로젝트 리스트"),
                                 linkWithRel("projectListDeadline").description("마감임박 프로젝트 리스트"),
-                                linkWithRel("peopleList").description("팀을 구하는 사람들 리스트 API")
+                                linkWithRel("peopleList").description("팀을 구하는 사람들 리스트 API"),
+                                linkWithRel("createProject").description("프로젝트 만들기")
                         )
                         ))
         ;
@@ -50,7 +51,8 @@ class IndexControllerTest {
                 .andExpect(jsonPath("_links.projectList.href").exists())
                 .andDo(document("index-projects",
                         links(
-                                linkWithRel("projectList").description("프로젝트 리스트")
+                                linkWithRel("projectList").description("프로젝트 리스트"),
+                                linkWithRel("createProject").description("프로젝트 만들기")
                         )
                 ))
         ;

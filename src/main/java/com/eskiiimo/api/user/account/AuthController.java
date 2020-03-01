@@ -3,8 +3,6 @@ package com.eskiiimo.api.user.account;
 
 import com.eskiiimo.api.user.account.exception.CSigninFailedException;
 import com.eskiiimo.api.user.account.exception.CUserNotFoundException;
-import com.eskiiimo.api.user.account.exception.SignInDto;
-import com.eskiiimo.api.user.account.exception.SignUpDto;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,27 +15,20 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "/auth")
-public class SignController {
+public class AuthController {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
 
     @PostMapping(value = "/signin")
     public ResponseEntity signin(@RequestBody SignInDto signInDto) {
-
-        Optional<User> optionalUser = userRepository.findByUserId(signInDto.getUserId());
-        if(optionalUser.isEmpty())
-            throw new CUserNotFoundException();
-        User user = optionalUser.get();
-        if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword()))
-            throw new CSigninFailedException();
+        User user = authService.signin(signInDto);
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
         header.add("X-AUTH-TOKEN", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
 
@@ -45,16 +36,21 @@ public class SignController {
     }
 
     @PostMapping(value = "/signup")
-    public ResponseEntity signin(@RequestBody SignUpDto signUpDto) {
+    public ResponseEntity signup(@RequestBody SignUpDto signupDto) {
+        if(authService.signup(signupDto))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-        userRepository.save(User.builder()
-                .userId(signUpDto.getUserId())
-                .password(passwordEncoder.encode(signUpDto.getPassword()))
-                .userName(signUpDto.getName())
-                .userEmail(signUpDto.getUserEmail())
-                .roles(Collections.singletonList("ROLE_USER"))
-                .build());
-        return ResponseEntity.ok().build();
+
+    }
+    @PostMapping(value = "/idcheck/{checkId}")
+    public ResponseEntity canUseThisId(@PathVariable String checkId) {
+
+        if(authService.idCheck(checkId))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
     @ExceptionHandler(CUserNotFoundException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

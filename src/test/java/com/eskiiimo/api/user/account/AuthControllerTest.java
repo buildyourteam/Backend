@@ -1,7 +1,5 @@
 package com.eskiiimo.api.user.account;
 
-import com.eskiiimo.api.user.account.exception.SignInDto;
-import com.eskiiimo.api.user.account.exception.SignUpDto;
 import com.eskiiimo.api.common.RestDocsConfiguration;
 import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
 @Import(RestDocsConfiguration.class)
-class SignControllerTest {
+class AuthControllerTest {
     @Autowired
     MockMvc mockMvc;
 
@@ -99,6 +97,26 @@ class SignControllerTest {
                                 fieldWithPath("userEmail").description("이메일주소")
                         )
                         ))
+        ;
+    }
+
+    @Test
+    @WithMockUser(username = "tester")
+    void icCheckNo() throws Exception {
+        this.mockMvc.perform(post("/auth/idcheck/{checkId}","tester"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+                .andDo(document("idCheck"))
+        ;
+    }
+
+    @Test
+    @WithMockUser(username = "tester")
+    void icCheckOk() throws Exception {
+        this.mockMvc.perform(post("/auth/idcheck/{checkId}","test"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("idCheckOk"))
         ;
     }
 }

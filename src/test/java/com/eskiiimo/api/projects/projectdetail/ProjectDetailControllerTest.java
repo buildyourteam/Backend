@@ -128,9 +128,10 @@ class ProjectDetailControllerTest {
 
 
     @Test
-    @WithMockUser(username="testuser")
+    @WithMockUser(username="projectLeader")
     @TestDescription("정상적으로 프로젝트를 생성하는 테스트")
     public void createProject() throws Exception {
+        this.generateUser("projectLeader");
         ProjectDetailDto project = ProjectDetailDto.builder()
                 .projectName("project1")
                 .teamName("Team1")
@@ -147,9 +148,9 @@ class ProjectDetailControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(document("create-project",
                         links(
-                                linkWithRel("self").description("link to self"),
-                                linkWithRel("create-project").description("link to create project"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("createdProject").description("생성된 프로젝트 링크"),
+                                linkWithRel("profile").description("API 명세서")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -172,27 +173,6 @@ class ProjectDetailControllerTest {
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-                        ),
-                        responseFields(
-                                fieldWithPath("projectName").description("프로젝트 이름"),
-                                fieldWithPath("teamName").description("팀명"),
-                                fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
-                                fieldWithPath("dday").description("마감일까지 남은 일"),
-                                fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
-                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember.developer").description("팀원 현황"),
-                                fieldWithPath("currentMember.designer").description("팀원 현황"),
-                                fieldWithPath("currentMember.planner").description("팀원 현황"),
-                                fieldWithPath("currentMember.etc").description("팀원 현황"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.create-project.href").description("프로젝트 생성 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
 
@@ -323,27 +303,6 @@ class ProjectDetailControllerTest {
         project.update();
         this.projectRepository.save(project);
         return project;
-
-    }
-
-    private void generateProject(int index) {
-
-        ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet current = new ProjectMemberSet(2,1,1,2);
-
-        Project project = Project.builder()
-                .projectId((long)index)
-                .projectName("project"+index)
-                .teamName("project team"+index)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(current)
-                .needMember(need_yes)
-                .status(Status.RECRUTING)
-                .build();
-
-        this.projectRepository.save(project);
 
     }
 
