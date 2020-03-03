@@ -5,6 +5,7 @@ import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +30,20 @@ public class ProjectApplyService {
                 .build();
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
+    }
+
+    public boolean applyProject(String projectId, ProjectApplyDto apply, String visitorId) {
+    }
+
+    public Page<ProjectApplicantDto> getApplicants(String projectId, String visitorId) {
+    }
+
+    public ProjectApplyDto getApply(String projectId, String userId, String visitorId) {
+    }
+
+    public ProjectApplyDto acceptApply(String projectId, String userId, String visitorId) {
+    }
+
+    public ProjectApplyDto rejectApply(String projectId, String userId, String visitorId) {
     }
 }
