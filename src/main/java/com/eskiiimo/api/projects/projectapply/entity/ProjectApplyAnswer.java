@@ -1,5 +1,6 @@
-package com.eskiiimo.api.projects;
+package com.eskiiimo.api.projects.projectapply.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -12,12 +13,13 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="projectAnswerId")
+@EqualsAndHashCode(of="answerId")
 @Entity
-public class ProjectAnswer {
+public class ProjectApplyAnswer {
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long projectAnswerId;
+    private Long answerId;
     private String answer;
 
 }

@@ -7,10 +7,10 @@ import org.springframework.hateoas.Link;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-public class ProjectApplyResource extends EntityModel<ProjectApplyDto> {
+public class ProjectApplicantResource extends EntityModel<ProjectApplicantDto> {
 
-    public ProjectApplyResource(ProjectApplyDto applicant,String userId, Link... links) {
+    public ProjectApplicantResource(ProjectApplicantDto applicant, Link... links) {
         super(applicant, links);
-        add(linkTo(ProjectApplyController.class).slash(userId).withSelfRel());
+        add(linkTo(ProjectApplyController.class).slash(applicant.getUserId()).withSelfRel());
     }
 }

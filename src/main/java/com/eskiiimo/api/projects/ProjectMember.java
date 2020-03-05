@@ -4,8 +4,6 @@ import com.eskiiimo.api.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -27,11 +25,6 @@ public class ProjectMember {
     @ManyToOne
     @JoinColumn(name="accountId")
     private User user;
-
-    @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "projectMemberId")
-    private List<ProjectAnswer> answers = new ArrayList<ProjectAnswer>();
 
     @ManyToOne
     @JoinColumn(name = "projectId")

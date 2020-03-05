@@ -1,5 +1,7 @@
 package com.eskiiimo.api.projects;
 
+import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
+import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -40,12 +42,18 @@ public class Project{
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
     private ProjectMemberSet needMember;
+
+    @Builder.Default
+    @OneToMany
+    @JsonIgnore
+    @JoinColumn(name = "projectId")
+    private List<ProjectApply> applies = new ArrayList<ProjectApply>();
+
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "projectId")
-    private List<ProjectQuestion> questions = new ArrayList<ProjectQuestion>();
-
+    private List<ProjectApplyQuestion> projectApplyQuestions = new ArrayList<ProjectApplyQuestion>();
 
     @Builder.Default
     @OneToMany(mappedBy = "project")
