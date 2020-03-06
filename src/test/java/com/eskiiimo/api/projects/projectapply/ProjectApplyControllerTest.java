@@ -135,6 +135,30 @@ class ProjectApplyControllerTest {
                 .andDo(print())
         ;
     }
+    @Test
+    @Transactional
+    @WithMockUser(username = "tester")
+    void getApplicantsNoApply() throws Exception {
+        Project project = this.generateProject(1);
+        this.joinProjectLeader(project.getProjectId(),"tester");
+
+        this.mockMvc.perform(get("/projects/{projectId}/apply", project.getProjectId()))
+                .andExpect(status().isNotFound())
+                .andDo(print())
+        ;
+    }
+    @Test
+    @Transactional
+    @WithMockUser(username = "testers")
+    void getApplicantsWrongUser() throws Exception {
+        Project project = this.generateProject(1);
+        this.joinProjectLeader(project.getProjectId(),"tester");
+
+        this.mockMvc.perform(get("/projects/{projectId}/apply", project.getProjectId()))
+                .andExpect(status().isForbidden())
+                .andDo(print())
+        ;
+    }
 
     @Test
     @Transactional

@@ -88,8 +88,6 @@ public class ProjectApplyService {
                         .build();
                 applicants.add(projectApplicantDto);
             }
-            if(applicants.isEmpty())
-                return null;
             return applicants;
         }
         else

@@ -62,6 +62,8 @@ public class ProjectApplyController {
         // 지원자 리스트 쿼리
         List<ProjectApplicantDto> applicants  = this.projectApplyService.getApplicants(projectId,visitorId);
         if(applicants==null)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if(applicants.isEmpty())
             return ResponseEntity.notFound().build();
         //Add Link
         List<ProjectApplicantResource> projectApplicantResources = new ArrayList<ProjectApplicantResource>();
