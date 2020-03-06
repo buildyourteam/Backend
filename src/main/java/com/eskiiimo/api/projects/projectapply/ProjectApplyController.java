@@ -35,7 +35,7 @@ public class ProjectApplyController {
         if(!this.projectApplyService.applyProject(projectId,apply,visitorId))
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-        return ResponseEntity.created(linkTo(ProjectApplyController.class,projectId).slash(visitorId).toUri()).build();
+        return ResponseEntity.created(linkTo(ProjectApplyController.class,projectId).slash(visitorId).toUri()).body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
     }
     @PutMapping
     ResponseEntity updateApply(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply){
@@ -48,9 +48,8 @@ public class ProjectApplyController {
         if(!this.projectApplyService.updateApply(projectId,apply,visitorId))
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#updateApply").withRel("self"));
     }
-    //프로젝트 소유자가 아닐때는 403으로 반환하도록 수정해야함
     @GetMapping
     ResponseEntity getApplicants(@PathVariable Long projectId, PagedResourcesAssembler<ProjectApplicantDto> assembler){
         // 계정 확인
@@ -73,7 +72,7 @@ public class ProjectApplyController {
         }
 
         ProjectApplicantsResource projectApplicantsResource =new ProjectApplicantsResource(projectApplicantResources,projectId);
-        projectApplicantsResource.add(linkTo(DocsController.class).slash("#resourcesApplicants").withRel("profile"));
+        projectApplicantsResource.add(linkTo(DocsController.class).slash("#getApplicants").withRel("profile"));
         return ResponseEntity.ok(projectApplicantsResource);
     }
     @GetMapping("/{userId}")
@@ -93,7 +92,7 @@ public class ProjectApplyController {
         ProjectApplyResource projectApplyResource = new ProjectApplyResource(projectApplyDto,projectId,userId);
         projectApplyResource.add(linkTo(ProjectApplyController.class,projectId).slash(userId).withRel("acceptApply"));
         projectApplyResource.add(linkTo(ProjectApplyController.class,projectId).slash(userId).withRel("rejectApply"));
-        projectApplyResource.add(linkTo(DocsController.class).slash("#resourcesApplicants").withRel("profile"));
+        projectApplyResource.add(linkTo(DocsController.class).slash("#getApply").withRel("profile"));
 
         return ResponseEntity.ok(projectApplyResource);
     }
@@ -107,7 +106,7 @@ public class ProjectApplyController {
 
         //지원서 쿼리
         if(this.projectApplyService.acceptApply(projectId,userId,visitorId))
-            return ResponseEntity.ok(HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#acceptApply").withRel("self"));
         else
             return ResponseEntity.badRequest().build();
     }
@@ -121,7 +120,7 @@ public class ProjectApplyController {
 
         //지원서 쿼리
        if(this.projectApplyService.rejectApply(projectId,userId,visitorId))
-            return ResponseEntity.ok(HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#rejecttApply").withRel("self"));
        else
             return ResponseEntity.badRequest().build();
     }

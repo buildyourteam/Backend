@@ -23,7 +23,6 @@ public class ProjectApply {
     @Enumerated(EnumType.STRING)
     private ProjectApplyStatus status;
     private String selfDescription;
-    private Boolean canUploadFile;
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
 

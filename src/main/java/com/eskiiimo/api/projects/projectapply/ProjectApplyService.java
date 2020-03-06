@@ -110,7 +110,6 @@ public class ProjectApplyService {
                             .questions(project.getQuestions())
                             .answers(projectApply.getAnswers())
                             .selfDescription(projectApply.getSelfDescription())
-                            .canUploadFile(projectApply.getCanUploadFile())
                             .status(projectApply.getStatus())
                             .role(projectApply.getRole())
                             .build();

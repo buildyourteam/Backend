@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -64,23 +71,34 @@ class ProjectApplyControllerTest {
         answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
         ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
                 .role(ProjectRole.DEVELOPER)
-                .canUploadFile(Boolean.TRUE)
                 .selfDescription("안녕하세요? 저는 그냥 개발자입니다.")
                 .answers(answers)
                 .build();
 
-        this.mockMvc.perform(post("/projects/{projectId}/apply",project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/projects/{projectId}/apply",project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
-        .andDo(print())
+                .andDo(print())
+                .andDo(document("applyProject",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("userName").description("유저이름(NULL)"),
+                                fieldWithPath("status").description("상태(NULL)"),
+                                fieldWithPath("questions").description("지원서 질문(NULL)"),
+                                fieldWithPath("answers").description("지원서 응답"),
+                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("selfDescription").description("자기소개")
+                        )
+                        ))
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"tester"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("userName").value("tester"))
                 .andExpect(jsonPath("role").value("DEVELOPER"))
-                .andExpect(jsonPath("canUploadFile").value("true"))
                 .andExpect(jsonPath("selfDescription").value("안녕하세요? 저는 그냥 개발자입니다."))
                 .andExpect(jsonPath("answers[0]").value("1번 응답"))
                 .andExpect(jsonPath("answers[1]").value("2번 응답"))
@@ -102,17 +120,29 @@ class ProjectApplyControllerTest {
         answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
         ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
                 .role(ProjectRole.DESIGNER)
-                .canUploadFile(Boolean.TRUE)
                 .selfDescription("안녕하세요? 저는 그냥 개발자가 아니라 디자이너입니다.")
                 .answers(answers)
                 .build();
 
-        this.mockMvc.perform(put("/projects/{projectId}/apply",project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply",project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
+                .andDo(document("updateApply",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("userName").description("유저이름"),
+                                fieldWithPath("status").description("상태(NULL)"),
+                                fieldWithPath("questions").description("지원서 질문"),
+                                fieldWithPath("answers").description("지원서 응답"),
+                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("selfDescription").description("자기소개")
+                        )
+                ))
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"tester"))
                 .andExpect(status().isOk())
@@ -130,9 +160,27 @@ class ProjectApplyControllerTest {
         this.generateApply((long)1, this.generateUser("testApplicant1"));
         this.generateApply((long)1, this.generateUser("testApplicant2"));
 
-        this.mockMvc.perform(get("/projects/{projectId}/apply", project.getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply", project.getProjectId()))
                 .andExpect(status().isOk())
                 .andDo(print())
+                .andDo(document("getApplicants",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("_embedded.projectApplicantDtoList[].userId").description("유저Id"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[].userName").description("유저이름"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[]status").description("상태"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[]role").description("지원할 역할"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[]._links.self.href").description("해당 지원자의 지원서 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        ),
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("profile").description("Api 명세서")
+                        )
+                ))
         ;
     }
     @Test
@@ -168,9 +216,34 @@ class ProjectApplyControllerTest {
         this.joinProjectLeader(project.getProjectId(),"tester");
         this.generateApply(project.getProjectId(), this.generateUser("testApplicant"));
 
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
                 .andExpect(status().isOk())
                 .andDo(print())
+                .andDo(document("getApply",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디"),
+                                parameterWithName("userId").description("지원자 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("userName").description("유저이름"),
+                                fieldWithPath("status").description("상태"),
+                                fieldWithPath("questions").description("질문"),
+                                fieldWithPath("answers").description("응답"),
+                                fieldWithPath("selfDescription").description("자기소개"),
+                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.acceptApply.href").description("지원서 승인하기"),
+                                fieldWithPath("_links.rejectApply.href").description("지원서 거절하기"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        ),
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("acceptApply").description("지원서 승인하기"),
+                                linkWithRel("rejectApply").description("지원서 거절하기"),
+                                linkWithRel("profile").description("Api 명세서")
+                        )
+                ))
+        ;
         ;
 
     }
@@ -182,9 +255,15 @@ class ProjectApplyControllerTest {
         Project project = this.generateProject(1);
         this.joinProjectLeader(project.getProjectId(),"tester");
         this.generateApply(project.getProjectId(), this.generateUser("testApplicant"));
-        this.mockMvc.perform(put("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
                 .andExpect(status().isOk())
                 .andDo(print())
+                .andDo(document("acceptApply",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디"),
+                                parameterWithName("userId").description("지원자 아이디")
+                        )
+                ))
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
                 .andExpect(status().isOk())
@@ -204,8 +283,14 @@ class ProjectApplyControllerTest {
         Project project = this.generateProject(1);
         this.joinProjectLeader(project.getProjectId(),"tester");
         this.generateApply(project.getProjectId(), this.generateUser("testApplicant"));
-        this.mockMvc.perform(delete("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
                 .andExpect(status().isOk())
+                .andDo(document("rejectApply",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디"),
+                                parameterWithName("userId").description("지원자 아이디")
+                        )
+                ))
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
                 .andExpect(status().isOk())
@@ -271,7 +356,6 @@ class ProjectApplyControllerTest {
         answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
         ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
                 .role(ProjectRole.DEVELOPER)
-                .canUploadFile(Boolean.TRUE)
                 .selfDescription("안녕하세요? 저는 그냥 개발자입니다.")
                 .answers(answers)
                 .build();

@@ -20,11 +20,10 @@ public class ProjectApplyDto {
     private List<String> questions;
     private List<String> answers;
     private String selfDescription;
-    private Boolean canUploadFile;
     private ProjectRole role;
 
     @Builder
-    public ProjectApplyDto(String userName, ProjectApplyStatus status, List<ProjectApplyQuestion> questions, List<ProjectApplyAnswer> answers, String selfDescription, Boolean canUploadFile, ProjectRole role){
+    public ProjectApplyDto(String userName, ProjectApplyStatus status, List<ProjectApplyQuestion> questions, List<ProjectApplyAnswer> answers, String selfDescription, ProjectRole role){
         this.userName = userName;
         this.status = status;
         if(questions!=null) {
@@ -38,7 +37,6 @@ public class ProjectApplyDto {
                 answerList.add(answer.getAnswer());
             this.answers = answerList;
         this.selfDescription = selfDescription;
-        this.canUploadFile = canUploadFile;
         this.role = role;
     }
     public ProjectApply toEntity(User user){
@@ -48,7 +46,6 @@ public class ProjectApplyDto {
         ProjectApply projectApply = ProjectApply.builder()
                 .answers(answers)
                 .selfDescription(this.selfDescription)
-                .canUploadFile(this.canUploadFile)
                 .status(ProjectApplyStatus.UNREAD)
                 .user(user)
                 .role(role)

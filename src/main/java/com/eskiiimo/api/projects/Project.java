@@ -43,6 +43,9 @@ public class Project{
     })
     private ProjectMemberSet needMember;
 
+    @JsonIgnore
+    private Boolean applyCanFile;
+
     @Builder.Default
     @OneToMany(cascade = {CascadeType.ALL})
     @JsonIgnore

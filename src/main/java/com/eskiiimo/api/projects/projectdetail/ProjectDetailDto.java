@@ -23,7 +23,7 @@ public class ProjectDetailDto {
     private ProjectField projectField;
 
     private ProjectMemberSet currentMember = new ProjectMemberSet();
-    private ProjectMemberSet needMember= new ProjectMemberSet();;
+    private ProjectMemberSet needMember= new ProjectMemberSet();
     private List<ProjectMemberResource> memberList = new ArrayList<ProjectMemberResource>();
 
 
