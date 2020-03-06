@@ -44,19 +44,19 @@ public class Project{
     private ProjectMemberSet needMember;
 
     @Builder.Default
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     @JsonIgnore
     @JoinColumn(name = "projectId")
     private List<ProjectApply> applies = new ArrayList<ProjectApply>();
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.ALL})
     @JsonIgnore
     @JoinColumn(name = "projectId")
-    private List<ProjectApplyQuestion> projectApplyQuestions = new ArrayList<ProjectApplyQuestion>();
+    private List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project",fetch = FetchType.EAGER)
     @JsonIgnore
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 

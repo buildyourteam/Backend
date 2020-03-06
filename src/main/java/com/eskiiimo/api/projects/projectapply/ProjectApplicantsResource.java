@@ -1,19 +1,17 @@
 package com.eskiiimo.api.projects.projectapply;
 
-import com.eskiiimo.api.index.DocsController;
-import com.eskiiimo.api.projects.projectsList.ProjectListController;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-public class ProjectApplicantsResource extends EntityModel<List<ProjectApplicantResource>> {
+public class ProjectApplicantsResource extends CollectionModel<List<ProjectApplicantResource>> {
 
-    public ProjectApplicantsResource(List<ProjectApplicantResource> applicant,Long projectId, Link... links) {
-        super(applicant, links);
-        add(linkTo(ProjectListController.class).slash(projectId+"/apply").withRel("self"));
-
+    public ProjectApplicantsResource(List<ProjectApplicantResource> applicants,Long projectId, Link... links) {
+        super(Collections.singleton(applicants), links);
+        add(linkTo(ProjectApplyController.class,projectId).withSelfRel());
     }
 }

@@ -7,6 +7,7 @@ import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,8 +17,8 @@ import java.util.List;
 public class ProjectApplyDto {
     private String userName;
     private ProjectApplyStatus status;
-    private List<ProjectApplyQuestion> questions;
-    private List<ProjectApplyAnswer> answers;
+    private List<String> questions;
+    private List<String> answers;
     private String selfDescription;
     private Boolean canUploadFile;
     private ProjectRole role;
@@ -26,15 +27,26 @@ public class ProjectApplyDto {
     public ProjectApplyDto(String userName, ProjectApplyStatus status, List<ProjectApplyQuestion> questions, List<ProjectApplyAnswer> answers, String selfDescription, Boolean canUploadFile, ProjectRole role){
         this.userName = userName;
         this.status = status;
-        this.questions = questions;
-        this.answers =answers;
+        if(questions!=null) {
+        List<String> questionList = new ArrayList<>();
+        for(ProjectApplyQuestion question : questions)
+            questionList.add(question.getQuestion());
+            this.questions = questionList;
+        }
+            List<String> answerList = new ArrayList<>();
+            for (ProjectApplyAnswer answer : answers)
+                answerList.add(answer.getAnswer());
+            this.answers = answerList;
         this.selfDescription = selfDescription;
         this.canUploadFile = canUploadFile;
         this.role = role;
     }
     public ProjectApply toEntity(User user){
+        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
+        for(String answer : this.answers)
+            answers.add(ProjectApplyAnswer.builder().answer(answer).build());
         ProjectApply projectApply = ProjectApply.builder()
-                .answers(this.answers)
+                .answers(answers)
                 .selfDescription(this.selfDescription)
                 .canUploadFile(this.canUploadFile)
                 .status(ProjectApplyStatus.UNREAD)

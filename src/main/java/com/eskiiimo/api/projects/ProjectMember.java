@@ -17,7 +17,9 @@ public class ProjectMember {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private  Long projectMemberId;
+    @Enumerated(EnumType.STRING)
     private ProjectRole role;
+    @Enumerated(EnumType.STRING)
     private TechnicalStack stack;
     @Lob
     private String selfDescription;

@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkT
 
 @Controller
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/projects/{project_id}/apply", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/projects/{projectId}/apply", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectApplyController {
     @Autowired
     ProjectApplyService projectApplyService;
@@ -35,7 +35,7 @@ public class ProjectApplyController {
         if(!this.projectApplyService.applyProject(projectId,apply,visitorId))
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return ResponseEntity.created(linkTo(ProjectApplyController.class,projectId).slash(visitorId).toUri()).build();
     }
     @PutMapping
     ResponseEntity updateApply(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply){
@@ -50,6 +50,7 @@ public class ProjectApplyController {
 
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
+    //프로젝트 소유자가 아닐때는 403으로 반환하도록 수정해야함
     @GetMapping
     ResponseEntity getApplicants(@PathVariable Long projectId, PagedResourcesAssembler<ProjectApplicantDto> assembler){
         // 계정 확인
@@ -63,12 +64,13 @@ public class ProjectApplyController {
         if(applicants==null)
             return ResponseEntity.notFound().build();
         //Add Link
-        List<ProjectApplicantResource> applicantsResource = new ArrayList<ProjectApplicantResource>();
-        for(ProjectApplicantDto projectApplicantDto : applicants){
-            ProjectApplicantResource projectApplicantResource = new ProjectApplicantResource(projectApplicantDto);
-            applicantsResource.add(projectApplicantResource);
+        List<ProjectApplicantResource> projectApplicantResources = new ArrayList<ProjectApplicantResource>();
+        for(ProjectApplicantDto projectApplicantDto: applicants){
+            ProjectApplicantResource projectApplicantResource = new ProjectApplicantResource(projectApplicantDto,projectId);
+            projectApplicantResources.add(projectApplicantResource);
         }
-        ProjectApplicantsResource projectApplicantsResource = new ProjectApplicantsResource(applicantsResource,projectId);
+
+        ProjectApplicantsResource projectApplicantsResource =new ProjectApplicantsResource(projectApplicantResources,projectId);
         projectApplicantsResource.add(linkTo(DocsController.class).slash("#resourcesApplicants").withRel("profile"));
         return ResponseEntity.ok(projectApplicantsResource);
     }
@@ -86,9 +88,9 @@ public class ProjectApplyController {
             return ResponseEntity.notFound().build();
 
         //Add Link
-        ProjectApplyResource projectApplyResource = new ProjectApplyResource(projectApplyDto,userId);
-        projectApplyResource.add(linkTo(ProjectApplyController.class).slash(userId).withRel("acceptApply"));
-        projectApplyResource.add(linkTo(ProjectApplyController.class).slash(userId).withRel("rejectApply"));
+        ProjectApplyResource projectApplyResource = new ProjectApplyResource(projectApplyDto,projectId,userId);
+        projectApplyResource.add(linkTo(ProjectApplyController.class,projectId).slash(userId).withRel("acceptApply"));
+        projectApplyResource.add(linkTo(ProjectApplyController.class,projectId).slash(userId).withRel("rejectApply"));
         projectApplyResource.add(linkTo(DocsController.class).slash("#resourcesApplicants").withRel("profile"));
 
         return ResponseEntity.ok(projectApplyResource);

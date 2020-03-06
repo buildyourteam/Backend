@@ -20,14 +20,15 @@ public class ProjectApply {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long applyId;
-
+    @Enumerated(EnumType.STRING)
     private ProjectApplyStatus status;
     private String selfDescription;
     private Boolean canUploadFile;
+    @Enumerated(EnumType.STRING)
     private ProjectRole role;
 
     @Builder.Default
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="applyId")
     private List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
     @ManyToOne

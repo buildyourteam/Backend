@@ -1,6 +1,7 @@
 package com.eskiiimo.api.user.account;
 
 import com.eskiiimo.api.common.RestDocsConfiguration;
+import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -27,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
+@Transactional
 @Import(RestDocsConfiguration.class)
 class AuthControllerTest {
     @Autowired
@@ -39,6 +42,7 @@ class AuthControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @Transactional
     void signin() throws Exception {
 
         SignUpDto signUpDto = SignUpDto.builder()
@@ -76,6 +80,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @Transactional
     void Signup() throws Exception {
         SignUpDto signUpDto = SignUpDto.builder()
                 .userId("testid")
@@ -101,8 +106,16 @@ class AuthControllerTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(username = "tester")
     void icCheckNo() throws Exception {
+        User user = User.builder()
+                .userName("테스터")
+                .userId("tester")
+                .userEmail("UserEmail")
+                .password("pasword")
+                .build();
+        this.userRepository.save(user);
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","tester"))
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
@@ -113,6 +126,13 @@ class AuthControllerTest {
     @Test
     @WithMockUser(username = "tester")
     void icCheckOk() throws Exception {
+        User user = User.builder()
+                .userName("테스터")
+                .userId("tester")
+                .userEmail("UserEmail")
+                .password("pasword")
+                .build();
+        this.userRepository.save(user);
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","test"))
                 .andExpect(status().isOk())
                 .andDo(print())

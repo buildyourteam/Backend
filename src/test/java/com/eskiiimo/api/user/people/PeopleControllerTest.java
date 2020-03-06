@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
+@Transactional
 @Import(RestDocsConfiguration.class)
 class PeopleControllerTest {
 
@@ -47,6 +49,7 @@ class PeopleControllerTest {
 
 
     @Test
+    @Transactional
     void getJobSeekers() throws Exception {
         IntStream.range(35,40).forEach(i -> {
             this.generatePeople(i);
@@ -60,6 +63,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @Transactional
     void getJobSeekers_level() throws Exception {
         IntStream.range(5,9).forEach(i -> {
             this.generatePeople(i);
@@ -76,6 +80,7 @@ class PeopleControllerTest {
 ;
     }
     @Test
+    @Transactional
     void getJobSeekers_role() throws Exception {
         IntStream.range(10,14).forEach(i -> {
             this.generatePeople(i);
@@ -90,6 +95,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @Transactional
     void getJobSeekers_area() throws Exception {
         IntStream.range(15,19).forEach(i -> {
             this.generatePeople(i);
@@ -105,6 +111,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @Transactional
     void getJobSeekers_levelAndRole() throws Exception {
         IntStream.range(20,24).forEach(i -> {
             this.generatePeople(i);
@@ -121,6 +128,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @Transactional
     void getJobSeekers_levelAndArea() throws Exception {
         IntStream.range(25,29).forEach(i -> {
             this.generatePeople(i);
@@ -138,6 +146,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @Transactional
     void getJobSeekers_RoleAndArea() throws Exception {
         IntStream.range(30,34).forEach(i -> {
             this.generatePeople(i);
@@ -154,6 +163,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @Transactional
     void getJobSeekers_LevelAndRoleAndArea() throws Exception {
         IntStream.range(0,4).forEach(i -> {
             this.generatePeople(i);

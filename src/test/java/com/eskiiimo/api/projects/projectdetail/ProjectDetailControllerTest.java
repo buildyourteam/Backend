@@ -47,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
+@Transactional
 @Import(RestDocsConfiguration.class)
 class ProjectDetailControllerTest {
 
@@ -70,6 +71,7 @@ class ProjectDetailControllerTest {
 
 
     @Test
+    @Transactional
     void getProjectDetail() throws Exception {
         // Given
         Project project = this.generateOneProject(2);
@@ -129,6 +131,7 @@ class ProjectDetailControllerTest {
 
     @Test
     @WithMockUser(username="projectLeader")
+    @Transactional
     @TestDescription("정상적으로 프로젝트를 생성하는 테스트")
     public void createProject() throws Exception {
         this.generateUser("projectLeader");
@@ -184,11 +187,12 @@ class ProjectDetailControllerTest {
     @Test
     @WithMockUser(username="testuser")
     @TestDescription("프로젝트를 정상적으로 수정")
+    @Transactional
     public void updateProject() throws Exception {
         // Given
-        Project project = this.generateOneProject(3);
-        this.joinProjectLeader((long)1,"testuser");
-        this.joinProjectMember((long)1,3);
+        Project project = this.generateOneProject(1);
+        this.joinProjectLeader(project.getProjectId(),"testuser");
+        this.joinProjectMember(project.getProjectId(),2);
         Optional<Project> byId = this.projectRepository.findById(project.getProjectId());
         Project project1 = byId.get();
         ProjectDetailDto projectDetailDto = this.modelMapper.map(project1, ProjectDetailDto.class);
@@ -262,10 +266,11 @@ class ProjectDetailControllerTest {
 
     @Test
     @WithMockUser(username="tester")
+    @Transactional
     @TestDescription("프로젝트를 정상적으로 삭제")
     public void deleteProject() throws Exception {
         // Given
-        Project project = this.generateOneProject(3);
+        Project project = this.generateOneProject(1);
         this.joinProjectLeader(project.getProjectId(),"tester");
 
         // When & Then
@@ -329,6 +334,7 @@ class ProjectDetailControllerTest {
                 .project(project)
                 .user(user)
                 .build();
+        project.getProjectMembers().add(projectMember);
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
     }

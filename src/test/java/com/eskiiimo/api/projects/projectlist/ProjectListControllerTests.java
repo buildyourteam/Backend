@@ -3,10 +3,6 @@ package com.eskiiimo.api.projects.projectlist;
 import com.eskiiimo.api.common.RestDocsConfiguration;
 import com.eskiiimo.api.common.TestDescription;
 import com.eskiiimo.api.projects.*;
-import com.eskiiimo.api.projects.projectsList.ProjectListDto;
-import com.eskiiimo.api.projects.ProjectMemberSet;
-import com.eskiiimo.api.projects.ProjectRepository;
-import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -20,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.stream.IntStream;
@@ -65,6 +62,7 @@ public class ProjectListControllerTests {
 
 
     @Test
+    @Transactional
     @TestDescription("검색기능사용 없이 전체리스트 조회")
     public void queryProjectsTotal() throws Exception {
         // Given
@@ -91,6 +89,7 @@ public class ProjectListControllerTests {
 
 
     @Test
+    @Transactional
     @TestDescription("직군별 and 분야별 프로젝트 리스트 조회하기")
     public void queryProjectsOccupationAndField() throws Exception {
         // Given
@@ -162,6 +161,7 @@ public class ProjectListControllerTests {
     }
 
     @Test
+    @Transactional
     @TestDescription("only 직군별 프로젝트 리스트 조회하기")
     public void queryProjectsOccupation() throws Exception {
         // Given
@@ -187,6 +187,7 @@ public class ProjectListControllerTests {
     }
 
     @Test
+    @Transactional
     @TestDescription("only 분야별로만 프로젝트 리스트 조회하기")
     public void queryProjectsField() throws Exception {
         // Given
@@ -212,6 +213,7 @@ public class ProjectListControllerTests {
     }
 
     @Test
+    @Transactional
     @TestDescription("마감임박한 프로젝트 리스트 조회")
     public void DeadlineProjectList() throws Exception {
         // Given

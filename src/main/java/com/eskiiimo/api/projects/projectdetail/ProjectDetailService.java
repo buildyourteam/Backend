@@ -2,7 +2,6 @@ package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.projectapply.ProjectApplyService;
-import com.eskiiimo.api.projects.projectsList.ProjectListDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -11,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
 
 @Service
 @RequiredArgsConstructor
