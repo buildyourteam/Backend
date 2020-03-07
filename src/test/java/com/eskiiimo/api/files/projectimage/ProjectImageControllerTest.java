@@ -17,6 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com",uriPort = 443)
+@Transactional
 @Import(RestDocsConfiguration.class)
 class ProjectImageControllerTest {
     @Autowired
@@ -47,6 +49,7 @@ class ProjectImageControllerTest {
     protected ProjectImageRepository projectImageRepository;
 
     @Test
+    @Transactional
     @WithMockUser(username="testuser")
     void uploadProjectImage() throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/api/files/testfiles/testimg.jpg");
@@ -84,6 +87,7 @@ class ProjectImageControllerTest {
 
 
     @Test
+    @Transactional
     void downloadProjectImage () throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/api/files/testfiles/testimg.jpg");
 

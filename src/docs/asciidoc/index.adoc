@@ -173,6 +173,49 @@ operation::update-project[snippets='path-parameters,curl-request,request-headers
 
 operation::delete-project[snippets='path-parameters,curl-request,http-request,request-headers']
 
+[[projectApply]]
+=== 프로젝트 지원하기
+
+`GET` 요청을 사용해서 프로젝트에 지원 할 수 있다.
+
+operation::applyProject[snippets='path-parameters,curl-request,request-fields,http-response']
+
+[[updateApply]]
+=== 프로젝트 지원서 수정하기
+
+`Put` 요청을 사용해서 프로젝트에 지원 할 수 있다.
+memberList 값을 꼭 null 처리하여 보내야 한다.
+
+operation::updateApply[snippets='path-parameters,curl-request,request-fields,http-response']
+
+[[getApplicants]]
+=== 프로젝트 지원자 리스트 조회하기
+
+`GET` 요청을 사용해서 프로젝트 지원자 명단을 확인 할 수 있다.
+
+operation::getApplicants[snippets='path-parameters,curl-request,http-response,response-fields,links']
+
+[[getApply]]
+=== 프로젝트 지원서 조회하기
+
+`GET` 요청을 사용해서 프로젝트 지원서를 확인 할 수 있다.
+
+operation::getApply[snippets='path-parameters,curl-request,http-response,response-fields,links']
+
+[[acceptApply]]
+=== 프로젝트 지원자 승인하기
+
+`Put` 요청을 사용해서 프로젝트 지원자를 승인 할 수 있다.
+
+operation::acceptApply[snippets='path-parameters,curl-request,http-response']
+
+[[acceptApply]]
+=== 프로젝트 지원자 거절하기
+
+`Delete` 요청을 사용해서 프로젝트 지원자를 거절 할 수 있다.
+
+operation::rejectApply[snippets='path-parameters,curl-request,http-response']
+
 [[resourcesPeople]]
 === 구인중인 사람들 목록 조회
 

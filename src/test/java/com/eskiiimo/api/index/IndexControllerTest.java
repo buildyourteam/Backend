@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -23,12 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
+@Transactional
 @Import(RestDocsConfiguration.class)
 class IndexControllerTest {
 
     @Autowired
     MockMvc mockMvc;
     @Test
+    @Transactional
     void mainIndex() throws Exception {
         this.mockMvc.perform(get("/index"))
                 .andExpect(jsonPath("_links.projectList.href").exists())
@@ -46,6 +49,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @Transactional
     void projectsIndex() throws Exception {
         this.mockMvc.perform(get("/index/projects"))
                 .andExpect(jsonPath("_links.projectList.href").exists())
@@ -59,6 +63,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @Transactional
     void projectDetailIndex() throws Exception {
         this.mockMvc.perform(get("/index/projects/1"))
                 .andExpect(jsonPath("_links.projectDetail.href").exists())
@@ -71,6 +76,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @Transactional
     void peopleIndex() throws Exception {
         this.mockMvc.perform(get("/index/people"))
                 .andExpect(jsonPath("_links.peopleList.href").exists())
@@ -83,6 +89,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @Transactional
     void profileIndex() throws Exception {
         this.mockMvc.perform(get("/index/profile/testUser"))
                 .andExpect(jsonPath("_links.profileDetail.href").exists())

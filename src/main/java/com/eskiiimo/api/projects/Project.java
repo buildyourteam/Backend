@@ -1,5 +1,7 @@
 package com.eskiiimo.api.projects;
 
+import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
+import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -40,15 +42,24 @@ public class Project{
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
     private ProjectMemberSet needMember;
+
+    @JsonIgnore
+    private Boolean applyCanFile;
+
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.ALL})
     @JsonIgnore
     @JoinColumn(name = "projectId")
-    private List<ProjectQuestion> questions = new ArrayList<ProjectQuestion>();
-
+    private List<ProjectApply> applies = new ArrayList<ProjectApply>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "project")
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JsonIgnore
+    @JoinColumn(name = "projectId")
+    private List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "project",fetch = FetchType.EAGER)
     @JsonIgnore
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
@@ -71,19 +82,6 @@ public class Project{
             this.projectStatus = projectStatus;
         }
 
-        long remainDay = ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate);
-        this.dday = remainDay;
-        if (this.dday <= -1) {
-            this.status = Status.RECRUTING;
-        }
-
-        if (this.getCurrentMember() == null) {
-            this.currentMember = new ProjectMemberSet(0, 0, 0, 0);
-        }
-
-        if (this.status == null) {
-            this.status = Status.RECRUTING;
-        }
 
     }
 
