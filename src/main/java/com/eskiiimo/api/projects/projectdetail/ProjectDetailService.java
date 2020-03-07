@@ -7,8 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,11 +20,11 @@ public class ProjectDetailService {
 
     @Transactional
     public Project storeProject(ProjectDetailDto projectDetailDto,String user_id) {
-        Project project = modelMapper.map(projectDetailDto, Project.class);
-        project.update();
+        Project project = new Project();
+        projectDetailDto.toEntity(project);
 
         Project newProject = this.projectRepository.save(project);
-        this.projectApplyService.addLeader(project,user_id);
+        this.projectApplyService.addLeader(newProject,user_id);
         return newProject;
     }
 
@@ -60,11 +58,9 @@ public class ProjectDetailService {
         if (existingProject.isEmpty()) {
             return null;
         }
-        Project pr = existingProject.get();
-        pr.update();
-        this.modelMapper.map(projectDetailDto, pr);
+        Project project = existingProject.get();
         Boolean isLeader=Boolean.FALSE;
-        for(ProjectMember projectMember : pr.getProjectMembers()){
+        for(ProjectMember projectMember : project.getProjectMembers()){
             if(projectMember.getRole().equals(ProjectRole.LEADER)){
                 if(projectMember.getUser().getUserId().equals(userId)) {
                     isLeader = Boolean.TRUE;
@@ -74,8 +70,10 @@ public class ProjectDetailService {
         }
         if(isLeader==Boolean.FALSE)
             return null;
-        this.projectRepository.save(pr);
-        ProjectDetailDto projectDetailDto1 = this.modelMapper.map(pr, ProjectDetailDto.class);
+        else
+            projectDetailDto.toEntity(project);
+        Project project1 = this.projectRepository.save(project);
+        ProjectDetailDto projectDetailDto1 = this.projectToDto(project1);
 
         return projectDetailDto1;
     }
@@ -83,31 +81,30 @@ public class ProjectDetailService {
     @Transactional
     public ProjectDetailDto getProject(Long project_id){
         Optional<Project> optionalProject = this.projectRepository.findById(project_id);
-        if (optionalProject.isEmpty()) {
+        if (optionalProject.isEmpty())
             return null;
-        }
         Project project = optionalProject.get();
-
-        ProjectDetailDto projectDetailDto = modelMapper.map(project,ProjectDetailDto.class);
-        List<ProjectMember> projectMemberList = this.projectMemberRepository.findAllByProject_ProjectId(project_id);
-        if(projectMemberList.isEmpty()){
-            projectDetailDto.setMemberList(null);
-            return projectDetailDto;
+            return this.projectToDto(project);
         }
-        else{
-            List<ProjectMemberResource> projectMemberListResource = new ArrayList<ProjectMemberResource>();
+    public ProjectDetailDto projectToDto(Project project){
+        ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
+                .projectName(project.getProjectName())
+                .teamName(project.getTeamName())
+                .endDate(project.getEndDate())
+                .description(project.getDescription())
+                .status(project.getStatus())
+                .needMember(project.getNeedMember())
+                .memberList(project.getProjectMembers())
+                .questions(project.getQuestions())
+                .applyCanFile(project.getApplyCanFile())
+                .currentMember(project.getCurrentMember())
+                .dday(project.getDday())
+                .projectField(project.getProjectField())
+                .build();
 
-            for(ProjectMember projectMember: projectMemberList){
-                ProjectMemberDto projectmember = ProjectMemberDto.builder()
-                        .userName(projectMember.getUser().getUserName())
-                        .role(projectMember.getRole())
-                        .stack(projectMember.getStack())
-                        .build();
-                ProjectMemberResource projectMemberResource = new ProjectMemberResource(projectmember,projectMember.getUser().getUserId());
-                projectMemberListResource.add(projectMemberResource);
-            }
-            projectDetailDto.setMemberList(projectMemberListResource);
-            return projectDetailDto;
-        }
+        return projectDetailDto;
+
     }
-}
+
+    }
+

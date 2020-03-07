@@ -184,6 +184,7 @@ operation::applyProject[snippets='path-parameters,curl-request,request-fields,ht
 === 프로젝트 지원서 수정하기
 
 `Put` 요청을 사용해서 프로젝트에 지원 할 수 있다.
+memberList 값을 꼭 null 처리하여 보내야 한다.
 
 operation::updateApply[snippets='path-parameters,curl-request,request-fields,http-response']
 

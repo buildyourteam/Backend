@@ -23,6 +23,7 @@ public class ProjectApplyService {
     private final ProjectRepository projectRepository;
     private final ProjectApplyRepository projectApplyRepository;
     private final ObjectMapper objectMapper;
+
     @Transactional
     public void addLeader(Project project, String userId){
         Optional<User> optionalUser = this.userRepository.findByUserId(userId);
@@ -32,6 +33,7 @@ public class ProjectApplyService {
                 .user(user)
                 .project(project)
                 .build();
+        project.getProjectMembers().add(projectMember);
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
     }

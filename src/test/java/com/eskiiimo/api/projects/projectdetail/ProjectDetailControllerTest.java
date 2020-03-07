@@ -5,9 +5,11 @@ import com.eskiiimo.api.common.TestDescription;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.ProjectMemberSet;
 import com.eskiiimo.api.projects.ProjectRepository;
+import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
@@ -26,6 +28,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
@@ -116,6 +121,8 @@ class ProjectDetailControllerTest {
                                 fieldWithPath("memberList[].stack").description("프로젝트 팀원의 기술스택"),
                                 fieldWithPath("memberList[].level").description("프로젝트 팀원의 레벨"),
                                 fieldWithPath("memberList[]._links.self.href").description("프로젝트 팀원의 프로필"),
+                                fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
+                                fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("_links.self.href").description("Self 링크"),
                                 fieldWithPath("_links.apply.href").description("프로젝트 지원 링크"),
                                 fieldWithPath("_links.profile.href").description("API 명세서")
@@ -135,12 +142,18 @@ class ProjectDetailControllerTest {
     @TestDescription("정상적으로 프로젝트를 생성하는 테스트")
     public void createProject() throws Exception {
         this.generateUser("projectLeader");
+        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+        questions.add(ProjectApplyQuestion.builder().question("question1").build());
+        questions.add(ProjectApplyQuestion.builder().question("question2").build());
         ProjectDetailDto project = ProjectDetailDto.builder()
                 .projectName("project1")
                 .teamName("Team1")
                 .endDate(LocalDateTime.of(2020,02,20,11,11))
                 .description("Hi this is project1.")
                 .needMember(new ProjectMemberSet(3,4,4,5))
+                .projectField(ProjectField.WEB)
+                .applyCanFile(Boolean.TRUE)
+                .questions(questions)
                 .build();
 
         mockMvc.perform(post("/projects")
@@ -169,6 +182,8 @@ class ProjectDetailControllerTest {
                                 fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("currentMember").description("팀원 현황"),
+                                fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
+                                fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("needMember.developer").description("필요한 개발자 수"),
                                 fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
                                 fieldWithPath("needMember.planner").description("필요한 기획자 수"),
@@ -178,8 +193,9 @@ class ProjectDetailControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
                         )
                 ))
-
         ;
+        mockMvc.perform(get("/projects/4"))
+        .andDo(print());
     }
 
 
@@ -195,7 +211,21 @@ class ProjectDetailControllerTest {
         this.joinProjectMember(project.getProjectId(),2);
         Optional<Project> byId = this.projectRepository.findById(project.getProjectId());
         Project project1 = byId.get();
-        ProjectDetailDto projectDetailDto = this.modelMapper.map(project1, ProjectDetailDto.class);
+        System.out.println(this.objectMapper.writeValueAsString(project.getProjectMembers()));
+        ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
+                .projectName(project1.getProjectName())
+                .teamName(project1.getTeamName())
+                .endDate(project1.getEndDate())
+                .description(project1.getDescription())
+                .status(project1.getStatus())
+                .needMember(project1.getNeedMember())
+                .questions(project1.getQuestions())
+                .applyCanFile(project1.getApplyCanFile())
+                .currentMember(project1.getCurrentMember())
+                .dday(project1.getDday())
+                .projectField(project1.getProjectField())
+                .build();
+        System.out.println(this.objectMapper.writeValueAsString(projectDetailDto));
         projectDetailDto.setProjectName("Hi project....");
 
 
@@ -225,6 +255,8 @@ class ProjectDetailControllerTest {
                                 fieldWithPath("dday").description("마감일까지 남은 일"),
                                 fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
+                                fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
                                 fieldWithPath("currentMember.planner").description("현재 기획자 수"),
@@ -238,7 +270,6 @@ class ProjectDetailControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
                         ),
                         responseFields(
-//                                fieldWithPath("projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
                                 fieldWithPath("projectName").description("프로젝트 이름"),
                                 fieldWithPath("teamName").description("팀명"),
                                 fieldWithPath("endDate").description("마감일"),
@@ -247,6 +278,8 @@ class ProjectDetailControllerTest {
                                 fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
+                                fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
                                 fieldWithPath("currentMember.planner").description("현재 기획자 수"),
@@ -255,12 +288,16 @@ class ProjectDetailControllerTest {
                                 fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
                                 fieldWithPath("needMember.planner").description("필요한 기획자 수"),
                                 fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
+                                fieldWithPath("memberList[].userName").description("프로젝트 팀원의 이름"),
+                                fieldWithPath("memberList[].role").description("프로젝트 팀원의 역할"),
+                                fieldWithPath("memberList[].stack").description("프로젝트 팀원의 기술스택"),
+                                fieldWithPath("memberList[].level").description("프로젝트 팀원의 레벨"),
+                                fieldWithPath("memberList[]._links.self.href").description("프로젝트 팀원의 프로필"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
         ;
-
     }
 
 
@@ -294,7 +331,9 @@ class ProjectDetailControllerTest {
     private Project generateOneProject(int index) {
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
         ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
-
+        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+        questions.add(ProjectApplyQuestion.builder().question("question1").build());
+        questions.add(ProjectApplyQuestion.builder().question("question2").build());
         Project project = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
@@ -304,6 +343,9 @@ class ProjectDetailControllerTest {
                 .needMember(need_yes)
                 .status(Status.RECRUTING)
                 .projectField(ProjectField.APP)
+                .questions(questions)
+                .dday(ChronoUnit.DAYS.between(LocalDateTime.now(), LocalDateTime.of(2020,04,30,23,59)))
+                .applyCanFile(Boolean.TRUE)
                 .build();
         project.update();
         this.projectRepository.save(project);
@@ -322,7 +364,9 @@ class ProjectDetailControllerTest {
                 .selfDescription("개발자 입니다.")
                 .user(user)
                 .build();
+        project.getProjectMembers().add(projectMember);
         this.projectMemberRepository.save(projectMember);
+        this.projectRepository.save(project);
     }
     private void joinProjectLeader(Long index,String memberno){
         Optional<Project> optionalProject = this.projectRepository.findById(index);

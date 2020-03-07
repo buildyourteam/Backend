@@ -82,19 +82,6 @@ public class Project{
             this.projectStatus = projectStatus;
         }
 
-        long remainDay = ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate);
-        this.dday = remainDay;
-        if (this.dday <= -1) {
-            this.status = Status.RECRUTING;
-        }
-
-        if (this.getCurrentMember() == null) {
-            this.currentMember = new ProjectMemberSet(0, 0, 0, 0);
-        }
-
-        if (this.status == null) {
-            this.status = Status.RECRUTING;
-        }
 
     }
 
