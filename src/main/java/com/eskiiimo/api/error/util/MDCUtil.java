@@ -1,4 +1,4 @@
-package com.eskiiimo.api.logback.util;
+package com.eskiiimo.api.error.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

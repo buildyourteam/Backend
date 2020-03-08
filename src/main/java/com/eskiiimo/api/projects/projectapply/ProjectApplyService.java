@@ -1,10 +1,14 @@
 package com.eskiiimo.api.projects.projectapply;
 
 import com.eskiiimo.api.projects.*;
+import com.eskiiimo.api.error.exception.ApplyNotFoundException;
+import com.eskiiimo.api.error.exception.ProjectNotFoundException;
+import com.eskiiimo.api.error.exception.YouAreNotReaderException;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyAnswer;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
+import com.eskiiimo.api.error.exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +30,8 @@ public class ProjectApplyService {
 
     @Transactional
     public void addLeader(Project project, String userId){
-        Optional<User> optionalUser = this.userRepository.findByUserId(userId);
-        User user = optionalUser.get();
+        User user =  userRepository.findByUserId(userId)
+                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
         ProjectMember projectMember = ProjectMember.builder()
                 .role(ProjectRole.LEADER)
                 .user(user)
@@ -38,15 +42,12 @@ public class ProjectApplyService {
         this.projectRepository.save(project);
     }
     @Transactional
-    public boolean applyProject(Long projectId, ProjectApplyDto apply, String visitorId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if(optionalProject.isEmpty())
-            return Boolean.FALSE;
-        Project project = optionalProject.get();
-        Optional<User> optionalUser = userRepository.findByUserId(visitorId);
-        if(optionalUser.isEmpty())
-            return Boolean.FALSE;
-        ProjectApply projectApplyEntity = apply.toEntity(optionalUser.get());
+    public boolean applyProject(Long projectId, ProjectApplyDto apply, String visitorId){
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        User user =  userRepository.findByUserId(visitorId)
+                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
+        ProjectApply projectApplyEntity = apply.toEntity(user);
         project.getApplies().add(projectApplyEntity);
         this.projectApplyRepository.save(projectApplyEntity);
         this.projectRepository.save(project);
@@ -54,12 +55,10 @@ public class ProjectApplyService {
     }
     @Transactional
     public boolean updateApply(Long projectId, ProjectApplyDto apply, String visitorId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if(optionalProject.isEmpty())
-            return Boolean.FALSE;
-        Project project = optionalProject.get();
-        Optional<ProjectApply> optionalApply = projectApplyRepository.findByUser_UserId(visitorId);
-        ProjectApply projectApply = optionalApply.get();
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        ProjectApply projectApply = projectApplyRepository.findByUser_UserId(visitorId)
+                .orElseThrow(()->new ApplyNotFoundException("지원정보가 존재하지 않습니다."));
         project.getApplies().remove(projectApply);
         projectApply.setSelfDescription(apply.getSelfDescription());
         projectApply.setRole(apply.getRole());
@@ -74,11 +73,10 @@ public class ProjectApplyService {
     }
     @Transactional
     public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId){
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if(optionalProject.isEmpty())
-            return null;
-        Project project =  optionalProject.get();
-        if(this.isLeader(project,visitorId)){
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        if(!this.isLeader(project,visitorId))
+            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
             List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
 
             for(ProjectApply projectApply : project.getApplies()){
@@ -91,16 +89,11 @@ public class ProjectApplyService {
                 applicants.add(projectApplicantDto);
             }
             return applicants;
-        }
-        else
-            return null;
     }
     @Transactional
     public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if(optionalProject.isEmpty())
-            return null;
-        Project project =  optionalProject.get();
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(this.isLeader(project,visitorId)) {
             for(ProjectApply projectApply : project.getApplies()){
                 if(projectApply.getUser().getUserId().equals(userId)){
@@ -124,10 +117,8 @@ public class ProjectApplyService {
     }
     @Transactional
     public Boolean acceptApply(Long projectId, String userId, String visitorId){
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if(optionalProject.isEmpty())
-            return null;
-        Project project =  optionalProject.get();
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(isLeader(project,visitorId)){
             ProjectRole memberRole=null;
             for(ProjectApply projectApply : project.getApplies()){
@@ -159,10 +150,8 @@ public class ProjectApplyService {
     }
     @Transactional
     public Boolean rejectApply(Long projectId, String userId, String visitorId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if (optionalProject.isEmpty())
-            return null;
-        Project project = optionalProject.get();
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(isLeader(project,visitorId)) {
             for (ProjectApply projectApply : project.getApplies()) {
                 if (projectApply.getUser().getUserId().equals(userId)) {

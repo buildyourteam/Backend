@@ -1,8 +1,8 @@
 package com.eskiiimo.api.configs;
 
 
-import com.eskiiimo.api.logback.filters.LogbackMdcFilter;
-import com.eskiiimo.api.logback.filters.MultiReadableHttpServletRequestFilter;
+import com.eskiiimo.api.error.filters.LogbackMdcFilter;
+import com.eskiiimo.api.error.filters.MultiReadableHttpServletRequestFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.eskiiimo.api.logback.util;
+package com.eskiiimo.api.error.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;

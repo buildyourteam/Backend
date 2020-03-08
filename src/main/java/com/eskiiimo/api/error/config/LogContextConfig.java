@@ -1,8 +1,8 @@
-package com.eskiiimo.api.logback.config;
+package com.eskiiimo.api.error.config;
 
 import ch.qos.logback.classic.LoggerContext;
-import com.eskiiimo.api.logback.appender.CustomLogbackAppender;
-import com.eskiiimo.api.logback.entity.ErrorLogService;
+import com.eskiiimo.api.error.appender.CustomLogbackAppender;
+import com.eskiiimo.api.error.entity.ErrorLogService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

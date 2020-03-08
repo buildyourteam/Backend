@@ -1,4 +1,4 @@
-package com.eskiiimo.api.logback.entity;
+package com.eskiiimo.api.error.entity;
 
 import lombok.Getter;
 import lombok.Setter;

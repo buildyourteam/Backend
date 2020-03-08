@@ -1,4 +1,4 @@
-package com.eskiiimo.api.logback.util;
+package com.eskiiimo.api.error.util;
 
 import eu.bitwalker.useragentutils.Browser;
 import org.springframework.web.context.request.RequestContextHolder;

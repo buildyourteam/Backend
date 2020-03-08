@@ -32,9 +32,7 @@ public class ProjectApplyController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
         //지원서 저장
-        if(!this.projectApplyService.applyProject(projectId,apply,visitorId))
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-
+       this.projectApplyService.applyProject(projectId,apply,visitorId);
         return ResponseEntity.created(linkTo(ProjectApplyController.class,projectId).slash(visitorId).toUri()).body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
     }
     @PutMapping
@@ -44,10 +42,8 @@ public class ProjectApplyController {
         if(authentication==null)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
-        //지원서 저장
-        if(!this.projectApplyService.updateApply(projectId,apply,visitorId))
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-
+        //지원서 수정
+        this.projectApplyService.updateApply(projectId,apply,visitorId);
         return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#updateApply").withRel("self"));
     }
     @GetMapping
@@ -60,10 +56,6 @@ public class ProjectApplyController {
 
         // 지원자 리스트 쿼리
         List<ProjectApplicantDto> applicants  = this.projectApplyService.getApplicants(projectId,visitorId);
-        if(applicants==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        if(applicants.isEmpty())
-            return ResponseEntity.notFound().build();
         //Add Link
         List<ProjectApplicantResource> projectApplicantResources = new ArrayList<ProjectApplicantResource>();
         for(ProjectApplicantDto projectApplicantDto: applicants){
