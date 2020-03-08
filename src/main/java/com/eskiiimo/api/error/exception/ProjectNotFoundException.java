@@ -1,4 +1,6 @@
-package com.eskiiimo.api.projects.exception;
+package com.eskiiimo.api.error.exception;
+
+import javassist.NotFoundException;
 
 public class ProjectNotFoundException extends RuntimeException {
     public ProjectNotFoundException(String message) {

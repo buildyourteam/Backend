@@ -1,4 +1,4 @@
-package com.eskiiimo.api.logback.config;
+package com.eskiiimo.api.error.config;
 
 import ch.qos.logback.classic.Level;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.eskiiimo.api.user.exception;
+package com.eskiiimo.api.error.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

@@ -1,4 +1,4 @@
-package com.eskiiimo.api.logback.util;
+package com.eskiiimo.api.error.util;
 
 
 import javax.servlet.ServletRequest;

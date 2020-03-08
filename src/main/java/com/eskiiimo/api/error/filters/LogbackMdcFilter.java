@@ -1,8 +1,8 @@
-package com.eskiiimo.api.logback.filters;
+package com.eskiiimo.api.error.filters;
 
-import com.eskiiimo.api.logback.util.HttpUtils;
-import com.eskiiimo.api.logback.util.MDCUtil;
-import com.eskiiimo.api.logback.util.RequestWrapper;
+import com.eskiiimo.api.error.util.HttpUtils;
+import com.eskiiimo.api.error.util.MDCUtil;
+import com.eskiiimo.api.error.util.RequestWrapper;
 import org.slf4j.MDC;
 
 import javax.servlet.*;

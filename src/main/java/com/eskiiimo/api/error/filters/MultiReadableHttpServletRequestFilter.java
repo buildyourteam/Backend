@@ -1,6 +1,6 @@
-package com.eskiiimo.api.logback.filters;
+package com.eskiiimo.api.error.filters;
 
-import com.eskiiimo.api.logback.util.MultiReadableHttpServletRequest;
+import com.eskiiimo.api.error.util.MultiReadableHttpServletRequest;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
