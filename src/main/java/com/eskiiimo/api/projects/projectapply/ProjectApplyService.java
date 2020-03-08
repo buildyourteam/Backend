@@ -1,10 +1,12 @@
 package com.eskiiimo.api.projects.projectapply;
 
 import com.eskiiimo.api.projects.*;
+import com.eskiiimo.api.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyAnswer;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
+import com.eskiiimo.api.user.exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,15 +40,10 @@ public class ProjectApplyService {
         this.projectRepository.save(project);
     }
     @Transactional
-    public boolean applyProject(Long projectId, ProjectApplyDto apply, String visitorId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if(optionalProject.isEmpty())
-            return Boolean.FALSE;
-        Project project = optionalProject.get();
-        Optional<User> optionalUser = userRepository.findByUserId(visitorId);
-        if(optionalUser.isEmpty())
-            return Boolean.FALSE;
-        ProjectApply projectApplyEntity = apply.toEntity(optionalUser.get());
+    public boolean applyProject(Long projectId, ProjectApplyDto apply, String visitorId) throws Exception {
+        Project project = projectRepository.findById(projectId).orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다. 요청된 프로젝트 ID : "+projectId));
+        User user =  userRepository.findByUserId(visitorId).orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다. 요청된 사용자 ID : "+visitorId));
+        ProjectApply projectApplyEntity = apply.toEntity(user);
         project.getApplies().add(projectApplyEntity);
         this.projectApplyRepository.save(projectApplyEntity);
         this.projectRepository.save(project);

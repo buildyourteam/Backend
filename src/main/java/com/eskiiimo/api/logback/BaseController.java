@@ -1,5 +1,7 @@
 package com.eskiiimo.api.logback;
 
+import com.eskiiimo.api.user.User;
+import com.eskiiimo.api.user.exception.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,12 @@ public class BaseController {
     public ResponseEntity handleException(Throwable throwable) {
         logging(throwable);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseBody
+    public ResponseEntity handleNotFoundUser(UserNotFoundException userNotFoundException){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userNotFoundException);
     }
 
     protected void logging(Throwable throwable) {

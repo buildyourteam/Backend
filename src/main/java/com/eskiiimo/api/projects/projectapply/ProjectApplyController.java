@@ -25,7 +25,7 @@ public class ProjectApplyController {
 
 
     @PostMapping
-    ResponseEntity applyProject(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply){
+    ResponseEntity applyProject(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply) throws Exception{
         // 계정 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication==null)
