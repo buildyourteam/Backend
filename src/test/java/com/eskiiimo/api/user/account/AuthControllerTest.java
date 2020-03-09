@@ -64,7 +64,7 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(signInDto)))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("X-AUTH-TOKEN"))
+                .andExpect(header().exists("authToken"))
                 .andDo(print())
                 .andDo(document("signin",
                         requestFields(
@@ -72,7 +72,7 @@ class AuthControllerTest {
                                 fieldWithPath("password").description("비밀번호")
                         ),
                         responseHeaders(
-                                headerWithName("X-AUTH-TOKEN").description("로그인 토큰")
+                                headerWithName("authToken").description("로그인 토큰")
                         )
                 ))
         ;

@@ -1,5 +1,7 @@
 package com.eskiiimo.api.projects.projectdetail;
 
+import com.eskiiimo.api.error.exception.ProjectNotFoundException;
+import com.eskiiimo.api.error.exception.YouAreNotReaderException;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.projectapply.ProjectApplyService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,6 @@ public class ProjectDetailService {
     public Project storeProject(ProjectDetailDto projectDetailDto,String user_id) {
         Project project = new Project();
         projectDetailDto.toEntity(project);
-
         Project newProject = this.projectRepository.save(project);
         this.projectApplyService.addLeader(newProject,user_id);
         return newProject;
@@ -30,48 +31,25 @@ public class ProjectDetailService {
 
     @Transactional
     public Boolean deleteProject(Long id,String userId) {
-        Optional<Project> optionalProjectProject = this.projectRepository.findById(id);
-        Project project = optionalProjectProject.get();
-        Boolean isLeader=Boolean.FALSE;
-        for(ProjectMember projectMember : project.getProjectMembers()){
-            if(projectMember.getRole().equals(ProjectRole.LEADER)){
-                if(projectMember.getUser().getUserId().equals(userId)) {
-                    isLeader = Boolean.TRUE;
-                    break;
-                }
-            }
-        }
-        if(isLeader) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        if(!this.isLeader(project,userId))
+            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
             for(ProjectMember projectMember : project.getProjectMembers()){
                 this.projectMemberRepository.delete(projectMember);
             }
             this.projectRepository.deleteByProjectId(id);
             return Boolean.TRUE;
-        }
-        else
-            return Boolean.FALSE;
+
     }
 
     @Transactional
     public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto,String userId) {
-        Optional<Project> existingProject = this.projectRepository.findById(project_id);
-        if (existingProject.isEmpty()) {
-            return null;
-        }
-        Project project = existingProject.get();
-        Boolean isLeader=Boolean.FALSE;
-        for(ProjectMember projectMember : project.getProjectMembers()){
-            if(projectMember.getRole().equals(ProjectRole.LEADER)){
-                if(projectMember.getUser().getUserId().equals(userId)) {
-                    isLeader = Boolean.TRUE;
-                    break;
-                }
-            }
-        }
-        if(isLeader==Boolean.FALSE)
-            return null;
-        else
-            projectDetailDto.toEntity(project);
+        Project project = projectRepository.findById(project_id)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        if(!this.isLeader(project,userId))
+            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+        projectDetailDto.toEntity(project);
         Project project1 = this.projectRepository.save(project);
         ProjectDetailDto projectDetailDto1 = this.projectToDto(project1);
 
@@ -80,10 +58,8 @@ public class ProjectDetailService {
 
     @Transactional
     public ProjectDetailDto getProject(Long project_id){
-        Optional<Project> optionalProject = this.projectRepository.findById(project_id);
-        if (optionalProject.isEmpty())
-            return null;
-        Project project = optionalProject.get();
+        Project project = projectRepository.findById(project_id)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
             return this.projectToDto(project);
         }
     public ProjectDetailDto projectToDto(Project project){
@@ -105,6 +81,15 @@ public class ProjectDetailService {
         return projectDetailDto;
 
     }
-
+    public Boolean isLeader(Project project,String visitorId){
+        for(ProjectMember projectMember : project.getProjectMembers()){
+            if(projectMember.getRole().equals(ProjectRole.LEADER)){
+                if(projectMember.getUser().getUserId().equals(visitorId)) {
+                    return Boolean.TRUE;
+                }
+            }
+        }
+        return Boolean.FALSE;
+    }
     }
 

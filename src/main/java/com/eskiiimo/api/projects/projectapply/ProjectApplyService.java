@@ -1,14 +1,11 @@
 package com.eskiiimo.api.projects.projectapply;
 
+import com.eskiiimo.api.error.exception.*;
 import com.eskiiimo.api.projects.*;
-import com.eskiiimo.api.error.exception.ApplyNotFoundException;
-import com.eskiiimo.api.error.exception.ProjectNotFoundException;
-import com.eskiiimo.api.error.exception.YouAreNotReaderException;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyAnswer;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
-import com.eskiiimo.api.error.exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -88,7 +85,9 @@ public class ProjectApplyService {
                         .build();
                 applicants.add(projectApplicantDto);
             }
-            return applicants;
+        if(applicants.isEmpty())
+            throw new ApplicantNotFoundException("지원자가 없습니다.");
+        return applicants;
     }
     @Transactional
     public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
