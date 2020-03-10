@@ -1,34 +1,22 @@
 package com.eskiiimo.api.user.profile;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
-import com.eskiiimo.api.projects.ProjectRole;
-import com.eskiiimo.api.projects.TechnicalStack;
-import com.eskiiimo.api.user.*;
-import com.eskiiimo.api.common.TestDescription;
+import com.eskiiimo.api.common.BaseControllerTest;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.eskiiimo.api.user.UsersStack;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -37,18 +25,12 @@ import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.li
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
-@Transactional
-@Import(RestDocsConfiguration.class)
-class ProfileControllerTest {
+
+@DisplayName("프로필")
+class ProfileControllerTest extends BaseControllerTest {
 
     @Autowired
     UserRepository profileRepository;
@@ -58,16 +40,10 @@ class ProfileControllerTest {
     @Autowired
     ProjectRepository projectRepository;
 
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
 
     @Test
     @Transactional
-    @TestDescription("본인의 프로필페이지를 조회했을때")
+    @DisplayName("본인의 프로필 조회")
     @WithMockUser(username="user1")
     void getMyProfile() throws Exception {
         this.generateProfile(1);
@@ -103,7 +79,7 @@ class ProfileControllerTest {
 
     @Test
     @Transactional
-    @TestDescription("프로필페이지를 조회했을때")
+    @DisplayName("프로필 조회")
     void getProfile() throws Exception {
         this.generateProfile(1);
 
@@ -136,6 +112,7 @@ class ProfileControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("프로필 수정")
     @WithMockUser(username="user1")
     void updateProfile() throws Exception {
         this.generateProfile(1);
@@ -190,7 +167,7 @@ class ProfileControllerTest {
 
     @Test
     @Transactional
-    @TestDescription("사용자가 참여중인 프로젝트 리스트 가져오기")
+    @DisplayName("사용자가 참여중인 프로젝트 리스트 가져오기")
     public void getRunningProjectList() throws Exception {
         // Given
         User user1=this.generateProfile(1);
@@ -259,7 +236,7 @@ class ProfileControllerTest {
 
     @Test
     @Transactional
-    @TestDescription("사용자가 참여했던 프로젝트 리스트 가져오기")
+    @DisplayName("사용자가 참여했던 프로젝트 리스트 가져오기")
     public void getEndedProjectList() throws Exception {
         // Given
         User user1=this.generateProfile(1);
@@ -329,7 +306,7 @@ class ProfileControllerTest {
 
     @Test
     @Transactional
-    @TestDescription("사용자가 기획한 프로젝트 리스트 가져오기")
+    @DisplayName("사용자가 기획한 프로젝트 리스트 가져오기")
     public void getPlannedProjectList() throws Exception {
         // Given
         User user1=this.generateProfile(1);

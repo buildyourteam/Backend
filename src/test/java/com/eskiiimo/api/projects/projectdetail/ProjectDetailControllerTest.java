@@ -1,30 +1,18 @@
 package com.eskiiimo.api.projects.projectdetail;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
-import com.eskiiimo.api.common.TestDescription;
+import com.eskiiimo.api.common.BaseControllerTest;
 import com.eskiiimo.api.projects.*;
-import com.eskiiimo.api.projects.ProjectMemberSet;
-import com.eskiiimo.api.projects.ProjectRepository;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -34,12 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,13 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
-@Transactional
-@Import(RestDocsConfiguration.class)
-class ProjectDetailControllerTest {
+
+@DisplayName("프로젝트 상세 페이지")
+class ProjectDetailControllerTest extends BaseControllerTest {
 
     @Autowired
     ProjectRepository projectRepository;
@@ -65,17 +47,8 @@ class ProjectDetailControllerTest {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
-    ModelMapper modelMapper;
-
-
     @Test
+    @DisplayName("프로젝트 상세 페이지 확인하기")
     @Transactional
     void getProjectDetail() throws Exception {
         // Given
@@ -139,7 +112,7 @@ class ProjectDetailControllerTest {
     @Test
     @WithMockUser(username="projectLeader")
     @Transactional
-    @TestDescription("정상적으로 프로젝트를 생성하는 테스트")
+    @DisplayName("프로젝트 생성하기")
     public void createProject() throws Exception {
         this.generateUser("projectLeader");
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
@@ -202,7 +175,7 @@ class ProjectDetailControllerTest {
 
     @Test
     @WithMockUser(username="testuser")
-    @TestDescription("프로젝트를 정상적으로 수정")
+    @DisplayName("프로젝트 수정하기")
     @Transactional
     public void updateProject() throws Exception {
         // Given
@@ -294,7 +267,7 @@ class ProjectDetailControllerTest {
     @Test
     @WithMockUser(username="tester")
     @Transactional
-    @TestDescription("프로젝트를 정상적으로 삭제")
+    @DisplayName("프로젝트 삭제하기")
     public void deleteProject() throws Exception {
         // Given
         Project project = this.generateOneProject(1);

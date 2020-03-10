@@ -1,26 +1,19 @@
 package com.eskiiimo.api.projects.projectapply;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
+import com.eskiiimo.api.common.BaseControllerTest;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyAnswer;
 import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -34,18 +27,14 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
-@Transactional
-@Import(RestDocsConfiguration.class)
-class ProjectApplyControllerTest {
+
+@DisplayName("프로젝트 지원하기")
+class ProjectApplyControllerTest extends BaseControllerTest {
     @Autowired
     ProjectRepository projectRepository;
     @Autowired
@@ -54,13 +43,10 @@ class ProjectApplyControllerTest {
     ProjectApplyRepository projectApplyRepository;
     @Autowired
     ProjectMemberRepository projectMemberRepository;
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    ObjectMapper objectMapper;
 
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원하기")
     @WithMockUser(username = "tester")
     void applyProject() throws Exception{
         Project project = this.generateProject(1);
@@ -109,6 +95,7 @@ class ProjectApplyControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원서 수정하기")
     @WithMockUser(username = "tester")
     void updateApply() throws Exception {
         Project project = this.generateProject(1);
@@ -152,13 +139,14 @@ class ProjectApplyControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원자 확인하기")
     @WithMockUser(username = "tester")
     void getApplicants() throws Exception {
         Project project = this.generateProject(1);
         this.joinProjectLeader(project.getProjectId(),"tester");
 
-        this.generateApply((long)1, this.generateUser("testApplicant1"));
-        this.generateApply((long)1, this.generateUser("testApplicant2"));
+        this.generateApply(project.getProjectId(), this.generateUser("testApplicant1"));
+        this.generateApply(project.getProjectId(), this.generateUser("testApplicant2"));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply", project.getProjectId()))
                 .andExpect(status().isOk())
@@ -185,6 +173,7 @@ class ProjectApplyControllerTest {
     }
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원자 확인하기_지원자가 없을때")
     @WithMockUser(username = "tester")
     void getApplicantsNoApply() throws Exception {
         Project project = this.generateProject(1);
@@ -197,6 +186,7 @@ class ProjectApplyControllerTest {
     }
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원자 확인하기_권한없는 사용자")
     @WithMockUser(username = "testers")
     void getApplicantsWrongUser() throws Exception {
         Project project = this.generateProject(1);
@@ -210,6 +200,7 @@ class ProjectApplyControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원서 확인하기")
     @WithMockUser(username = "tester")
     void getApply() throws Exception {
         Project project = this.generateProject(1);
@@ -244,12 +235,12 @@ class ProjectApplyControllerTest {
                         )
                 ))
         ;
-        ;
 
     }
 
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원자 수락하기")
     @WithMockUser(username = "tester")
     void acceptMember() throws Exception {
         Project project = this.generateProject(1);
@@ -278,6 +269,7 @@ class ProjectApplyControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("프로젝트 지원자 거절하기")
     @WithMockUser(username = "tester")
     void rejectMember() throws Exception {
         Project project = this.generateProject(1);

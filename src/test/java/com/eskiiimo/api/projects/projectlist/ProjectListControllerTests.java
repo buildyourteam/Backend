@@ -1,21 +1,12 @@
 package com.eskiiimo.api.projects.projectlist;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
-import com.eskiiimo.api.common.TestDescription;
+import com.eskiiimo.api.common.BaseControllerTest;
 import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.user.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.modelmapper.ModelMapper;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -35,24 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
-@Import(RestDocsConfiguration.class)
-public class ProjectListControllerTests {
-
-    @Autowired
-    MockMvc mockMvc;
+@DisplayName("프로젝트 리스트")
+class ProjectListControllerTests extends BaseControllerTest {
 
     @Autowired
     ProjectRepository projectRepository;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
-    ModelMapper modelMapper;
 
     @Autowired
     ProjectMemberRepository projectMemberRepository;
@@ -63,8 +41,8 @@ public class ProjectListControllerTests {
 
     @Test
     @Transactional
-    @TestDescription("검색기능사용 없이 전체리스트 조회")
-    public void queryProjectsTotal() throws Exception {
+    @DisplayName("검색기능사용 없이 전체리스트 조회")
+    void queryProjectsTotal() throws Exception {
         // Given
         IntStream.range(0,30).forEach(i -> {
             this.generateEvent(i);
@@ -90,8 +68,8 @@ public class ProjectListControllerTests {
 
     @Test
     @Transactional
-    @TestDescription("직군별 and 분야별 프로젝트 리스트 조회하기")
-    public void queryProjectsOccupationAndField() throws Exception {
+    @DisplayName("직군별 and 분야별 프로젝트 리스트 조회하기")
+    void queryProjectsOccupationAndField() throws Exception {
         // Given
         this.generateEvent(0);
         this.generateEvent(1);
@@ -162,8 +140,8 @@ public class ProjectListControllerTests {
 
     @Test
     @Transactional
-    @TestDescription("only 직군별 프로젝트 리스트 조회하기")
-    public void queryProjectsOccupation() throws Exception {
+    @DisplayName("only 직군별 프로젝트 리스트 조회하기")
+    void queryProjectsOccupation() throws Exception {
         // Given
         this.generateEvent(0);
         this.generateEvent(1);
@@ -188,8 +166,8 @@ public class ProjectListControllerTests {
 
     @Test
     @Transactional
-    @TestDescription("only 분야별로만 프로젝트 리스트 조회하기")
-    public void queryProjectsField() throws Exception {
+    @DisplayName("only 분야별로만 프로젝트 리스트 조회하기")
+    void queryProjectsField() throws Exception {
         // Given
         this.generateEvent(0);
         this.generateEvent(1);
@@ -214,8 +192,8 @@ public class ProjectListControllerTests {
 
     @Test
     @Transactional
-    @TestDescription("마감임박한 프로젝트 리스트 조회")
-    public void DeadlineProjectList() throws Exception {
+    @DisplayName("마감임박한 프로젝트 리스트 조회")
+    void DeadlineProjectList() throws Exception {
         // Given
         this.generateProjectDeadline(0);
 
