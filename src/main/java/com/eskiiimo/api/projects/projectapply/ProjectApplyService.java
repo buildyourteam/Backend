@@ -130,16 +130,22 @@ public class ProjectApplyService {
                     break;
                 }
             }
-            Optional<User> optionalUser = userRepository.findByUserId(userId);
-            if(optionalUser.isEmpty())
-                return Boolean.FALSE;
-            User user = optionalUser.get();
+            User user =  userRepository.findByUserId(visitorId)
+                    .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
             ProjectMember projectMember = ProjectMember.builder()
                     .role(memberRole)
                     .user(user)
                     .project(project)
                     .build();
             project.getProjectMembers().add(projectMember);
+            if(projectMember.getRole()==ProjectRole.DEVELOPER)
+                project.getCurrentMember().setDeveloper(project.getCurrentMember().getDeveloper()+1);
+            else if(projectMember.getRole()==ProjectRole.DESIGNER)
+                project.getCurrentMember().setDesigner(project.getCurrentMember().getDesigner()+1);
+            else if(projectMember.getRole()==ProjectRole.PLANNER)
+                project.getCurrentMember().setPlanner(project.getCurrentMember().getPlanner()+1);
+            else if(projectMember.getRole()==ProjectRole.ETC)
+                project.getCurrentMember().setEtc(project.getCurrentMember().getEtc()+1);
             this.projectMemberRepository.save(projectMember);
             this.projectRepository.save(project);
             return Boolean.TRUE;

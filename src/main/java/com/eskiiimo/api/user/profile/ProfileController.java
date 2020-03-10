@@ -36,8 +36,6 @@ public class ProfileController {
     @GetMapping("/{user_id}")
     public ResponseEntity getProfile(@PathVariable String user_id){
         ProfileDto profileDto = profileService.getProfile(user_id);
-        if(profileDto == null)
-            return ResponseEntity.notFound().build();
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication!=null) {

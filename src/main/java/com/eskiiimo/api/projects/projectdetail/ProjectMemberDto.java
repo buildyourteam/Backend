@@ -2,10 +2,12 @@ package com.eskiiimo.api.projects.projectdetail;
 
 import com.eskiiimo.api.projects.ProjectRole;
 import com.eskiiimo.api.projects.TechnicalStack;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class ProjectMemberDto {
     private String userName;
     private ProjectRole role;

@@ -209,10 +209,8 @@ class ProjectDetailControllerTest {
         Project project = this.generateOneProject(1);
         this.joinProjectLeader(project.getProjectId(),"testuser");
         this.joinProjectMember(project.getProjectId(),2);
-        Optional<Project> byId = this.projectRepository.findById(project.getProjectId());
-        Project project1 = byId.get();
-        System.out.println(this.objectMapper.writeValueAsString(project.getProjectMembers()));
-        ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
+        Project project1 = this.projectRepository.findById(project.getProjectId()).get();
+        UpdateDto updateDto = UpdateDto.builder()
                 .projectName(project1.getProjectName())
                 .teamName(project1.getTeamName())
                 .endDate(project1.getEndDate())
@@ -221,18 +219,15 @@ class ProjectDetailControllerTest {
                 .needMember(project1.getNeedMember())
                 .questions(project1.getQuestions())
                 .applyCanFile(project1.getApplyCanFile())
-                .currentMember(project1.getCurrentMember())
-                .dday(project1.getDday())
                 .projectField(project1.getProjectField())
                 .build();
-        System.out.println(this.objectMapper.writeValueAsString(projectDetailDto));
-        projectDetailDto.setProjectName("Hi project....");
+        updateDto.setProjectName("Hi project....");
 
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(this.objectMapper.writeValueAsString(projectDetailDto)))
+                .content(this.objectMapper.writeValueAsString(updateDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("update-project",
@@ -252,18 +247,13 @@ class ProjectDetailControllerTest {
                                 fieldWithPath("endDate").description("마감일"),
                                 fieldWithPath("description").description("프로젝트에 대한 설명"),
                                 fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
-                                fieldWithPath("dday").description("마감일까지 남은 일"),
-                                fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
-                                fieldWithPath("currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
-                                fieldWithPath("currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("currentMember.etc").description("현재 기타 수"),
                                 fieldWithPath("needMember.developer").description("필요한 개발자 수"),
                                 fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
                                 fieldWithPath("needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
                                 fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
                         ),
                         responseHeaders(

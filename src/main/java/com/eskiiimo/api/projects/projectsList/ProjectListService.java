@@ -1,5 +1,6 @@
 package com.eskiiimo.api.projects.projectsList;
 
+import com.eskiiimo.api.error.exception.ProjectNotFoundException;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
 import com.eskiiimo.api.projects.ProjectMemberRepository;
@@ -30,9 +31,8 @@ public class ProjectListService {
     */
     public Page<Project> getAllByField(String occupation, ProjectField field, Pageable pageable) {
         Page<Project> page = this.projectRepository.findAll(pageable);
-        if (page.isEmpty()) {
-            return null;
-        }
+        if (page.isEmpty())
+            throw new ProjectNotFoundException("프로젝트가 존재하지 않습니다.");
         if (occupation != null) {
             if (occupation.equals("developer")) {
 
@@ -75,11 +75,9 @@ public class ProjectListService {
     }
 
     public Page<Project> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
-//        this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
         Page<Project> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
-        if (page.isEmpty()) {
-            return null;
-        }
+        if (page.isEmpty())
+            throw new ProjectNotFoundException("프로젝트가 존재하지 않습니다.");
         return page;
     }
 

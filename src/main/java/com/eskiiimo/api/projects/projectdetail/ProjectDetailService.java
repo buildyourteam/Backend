@@ -44,12 +44,12 @@ public class ProjectDetailService {
     }
 
     @Transactional
-    public ProjectDetailDto updateProject(Long project_id, ProjectDetailDto projectDetailDto,String userId) {
+    public ProjectDetailDto updateProject(Long project_id, UpdateDto updateDto,String userId) {
         Project project = projectRepository.findById(project_id)
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(!this.isLeader(project,userId))
             throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
-        projectDetailDto.toEntity(project);
+        updateDto.toEntity(project);
         Project project1 = this.projectRepository.save(project);
         ProjectDetailDto projectDetailDto1 = this.projectToDto(project1);
 
