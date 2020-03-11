@@ -216,6 +216,41 @@ operation::acceptApply[snippets='path-parameters,curl-request,http-response']
 
 operation::rejectApply[snippets='path-parameters,curl-request,http-response']
 
+[[projectRecruit]]
+=== 프로젝트 영입하기
+
+`GET` 요청을 사용해서 프로젝트에 영입할 수 있다.
+
+operation::projectRecruit[snippets='path-parameters,curl-request,request-fields,http-response']
+
+[[getRecruits]]
+=== 프로젝트 영입 리스트 조회하기
+
+`GET` 요청을 사용해서 프로젝트 영입 명단을 확인 할 수 있다.
+
+operation::getRecruits[snippets='path-parameters,curl-request,http-response,response-fields,links']
+
+[[getRecruit]]
+=== 프로젝트 영입 조회하기
+
+`GET` 요청을 사용해서 프로젝트 영입을 확인 할 수 있다.
+
+operation::getRecruit[snippets='path-parameters,curl-request,http-response,response-fields,links']
+
+[[acceptRecruit]]
+=== 프로젝트 영입 승인하기
+
+`Put` 요청을 사용해서 프로젝트 영입을 승인 할 수 있다.
+
+operation::acceptRecruit[snippets='path-parameters,curl-request,http-response']
+
+[[rejectRecruit]]
+=== 프로젝트 영입 거절하기
+
+`Delete` 요청을 사용해서 프로젝트 영입을 거절 할 수 있다.
+
+operation::rejectRecruit[snippets='path-parameters,curl-request,http-response']
+
 [[resourcesPeople]]
 === 구인중인 사람들 목록 조회
 

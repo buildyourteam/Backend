@@ -17,6 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -57,13 +63,26 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
                 .selfDescription("프로젝트 영입하고 싶습니다.")
                 .role(ProjectRole.DEVELOPER)
                 .build();
-
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","tester", project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectRecruitDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("projectRecruit",
+                        pathParameters(
+                                parameterWithName("userId").description("유저 아이디"),
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("userName").description("유저이름"),
+                                fieldWithPath("status").description("상태"),
+                                fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
+                                fieldWithPath("projectName").description("영입 제안 프로젝트 이름"),
+                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("selfDescription").description("자기소개")
+                        )
+                ));
     }
 
     @Test
@@ -80,7 +99,25 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit", "tester"))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("getRecruits",
+                        pathParameters(
+                                parameterWithName("userId").description("유저 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("_embedded.projectRecruitDtoList[].userName").description("유저이름"),
+                                fieldWithPath("_embedded.projectRecruitDtoList[].selfDescription").description("자기소개"),
+                                fieldWithPath("_embedded.projectRecruitDtoList[].role").description("지원할 역할"),
+                                fieldWithPath("_embedded.projectRecruitDtoList[].status").description("상태"),
+                                fieldWithPath("_embedded.projectRecruitDtoList[].projectId").description("영입 제안 프로젝트 Id"),
+                                fieldWithPath("_embedded.projectRecruitDtoList[].projectName").description("영입 제안 프로젝트 이름"),
+                                fieldWithPath("_embedded.projectRecruitDtoList[]._links.self.href").description("self 링크")
+                        ),
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("profile").description("Api 명세서")
+                        )
+                ));
     }
 
 
@@ -100,7 +137,28 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value("READ"))
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("getRecruit",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디"),
+                                parameterWithName("userId").description("지원자 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("userName").description("유저이름"),
+                                fieldWithPath("status").description("상태"),
+                                fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
+                                fieldWithPath("projectName").description("영입 제안 프로젝트 이름"),
+                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("selfDescription").description("자기소개")
+                        ),
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("acceptRecruit").description("영입 승인하기"),
+                                linkWithRel("rejectRecruit").description("영입 거절하기"),
+                                linkWithRel("profile").description("Api 명세서")
+                        )
+                ))
+        ;
 
     }
 
@@ -118,7 +176,13 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("acceptRecruit",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디"),
+                                parameterWithName("userId").description("지원자 아이디")
+                        )
+                ));
 
         this.mockMvc.perform(get("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isOk())
@@ -140,7 +204,14 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("rejectRecruit",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디"),
+                                parameterWithName("userId").description("지원자 아이디")
+                        )
+                ))
+        ;
 
         this.mockMvc.perform(get("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isNotFound());
