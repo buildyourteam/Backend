@@ -47,17 +47,20 @@ public class ProfileService {
     }
 
     public Page<Project> getRunning(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Status(user_id, Status.RUNNING.toString(), pageable);
-        return page;
+        //Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Status(user_id, Status.RUNNING.toString(), pageable);
+        //return page;
+        return null;
     }
 
     public Page<Project> getEnded(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Status(user_id, Status.ENDED.toString(), pageable);
-        return page;
+        //Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Status(user_id, Status.ENDED.toString(), pageable);
+        //return page;
+        return null;
     }
 
     public Page<Project> getPlanner(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Plan(user_id, Boolean.TRUE, pageable);
-        return page;
+        //Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Plan(user_id, Boolean.TRUE, pageable);
+        //return page;
+        return null;
     }
 }

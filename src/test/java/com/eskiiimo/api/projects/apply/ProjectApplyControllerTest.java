@@ -308,7 +308,6 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                 .projectField(ProjectField.APP)
                 .questions(questions)
                 .build();
-        project.update();
         this.projectRepository.save(project);
         return project;
 

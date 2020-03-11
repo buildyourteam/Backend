@@ -5,6 +5,7 @@ import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.apply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,7 +168,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                         )
                 ))
         ;
-        mockMvc.perform(get("/projects/4"))
+        mockMvc.perform(get("/projects/12"))
         .andDo(print());
     }
 
@@ -310,7 +311,6 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .dday(ChronoUnit.DAYS.between(LocalDateTime.now(), LocalDateTime.of(2020,04,30,23,59)))
                 .applyCanFile(Boolean.TRUE)
                 .build();
-        project.update();
         this.projectRepository.save(project);
         return project;
 

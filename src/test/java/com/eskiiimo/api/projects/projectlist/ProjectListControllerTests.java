@@ -270,7 +270,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .needMember(need_yes)
                 .projectField(ProjectField.APP)
                 .build();
-        project.update();
 
         Project project1 = Project.builder()
                 .projectName("project"+index)
@@ -281,7 +280,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .needMember(need_zero)
                 .projectField(ProjectField.WEB)
                 .build();
-        project1.update();
 
         Project project2 = Project.builder()
                 .projectName("project"+index)
@@ -292,7 +290,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .needMember(need_yes)
                 .projectField(ProjectField.WEB)
                 .build();
-        project2.update();
 
         this.projectRepository.save(project);
         this.projectRepository.save(project1);
@@ -313,7 +310,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .currentMember(currentMember)
                 .needMember(need_yes)
                 .build();
-        project.update();
 
         Project project1 = Project.builder()
                 .projectName("project"+index)
@@ -323,7 +319,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .build();
-        project1.update();
 
         Project project2 = Project.builder()
                 .projectName("project"+index)
@@ -333,7 +328,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .build();
-        project2.update();
 
         this.projectRepository.save(project);
         this.projectRepository.save(project1);
