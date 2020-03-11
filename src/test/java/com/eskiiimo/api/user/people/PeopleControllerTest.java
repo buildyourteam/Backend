@@ -1,27 +1,20 @@
 package com.eskiiimo.api.user.people;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
+import com.eskiiimo.api.common.BaseControllerTest;
 import com.eskiiimo.api.projects.ProjectRole;
 import com.eskiiimo.api.projects.TechnicalStack;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.eskiiimo.api.user.UsersStack;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -33,22 +26,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
-@Transactional
-@Import(RestDocsConfiguration.class)
-class PeopleControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+@DisplayName("피플")
+class PeopleControllerTest extends BaseControllerTest {
 
     @Autowired
     UserRepository userRepository;
 
 
     @Test
+    @DisplayName("팀을 구하는 사람들")
     @Transactional
     void getJobSeekers() throws Exception {
         IntStream.range(35,40).forEach(i -> {
@@ -63,6 +50,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @DisplayName("팀을 구하는 사람들_레벨")
     @Transactional
     void getJobSeekers_level() throws Exception {
         IntStream.range(5,9).forEach(i -> {
@@ -80,6 +68,7 @@ class PeopleControllerTest {
 ;
     }
     @Test
+    @DisplayName("팀을 구하는 사람들_역할")
     @Transactional
     void getJobSeekers_role() throws Exception {
         IntStream.range(10,14).forEach(i -> {
@@ -95,6 +84,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @DisplayName("팀을 구하는 사람들_지역")
     @Transactional
     void getJobSeekers_area() throws Exception {
         IntStream.range(15,19).forEach(i -> {
@@ -111,6 +101,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @DisplayName("팀을 구하는 사람들_레벨_역할")
     @Transactional
     void getJobSeekers_levelAndRole() throws Exception {
         IntStream.range(20,24).forEach(i -> {
@@ -128,6 +119,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @DisplayName("팀을 구하는 사람들_레벨_지역")
     @Transactional
     void getJobSeekers_levelAndArea() throws Exception {
         IntStream.range(25,29).forEach(i -> {
@@ -146,6 +138,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @DisplayName("팀을 구하는 사람들_역할_지역")
     @Transactional
     void getJobSeekers_RoleAndArea() throws Exception {
         IntStream.range(30,34).forEach(i -> {
@@ -163,6 +156,7 @@ class PeopleControllerTest {
                 .andDo(print());
     }
     @Test
+    @DisplayName("팀을 구하는 사람들_레벨_역할_지역")
     @Transactional
     void getJobSeekers_LevelAndRoleAndArea() throws Exception {
         IntStream.range(0,4).forEach(i -> {

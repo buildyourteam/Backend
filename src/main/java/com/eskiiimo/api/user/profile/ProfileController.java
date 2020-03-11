@@ -2,8 +2,8 @@ package com.eskiiimo.api.user.profile;
 
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.projectsList.ProjectListResource;
-import com.eskiiimo.api.projects.projectsList.ProjectListService;
+import com.eskiiimo.api.projects.list.ProjectListResource;
+import com.eskiiimo.api.projects.list.ProjectListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,8 +36,6 @@ public class ProfileController {
     @GetMapping("/{user_id}")
     public ResponseEntity getProfile(@PathVariable String user_id){
         ProfileDto profileDto = profileService.getProfile(user_id);
-        if(profileDto == null)
-            return ResponseEntity.notFound().build();
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication!=null) {

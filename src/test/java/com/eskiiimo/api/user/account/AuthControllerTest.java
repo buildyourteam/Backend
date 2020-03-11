@@ -1,23 +1,17 @@
 package com.eskiiimo.api.user.account;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
+import com.eskiiimo.api.common.BaseControllerTest;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -25,23 +19,14 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
-@Transactional
-@Import(RestDocsConfiguration.class)
-class AuthControllerTest {
-    @Autowired
-    MockMvc mockMvc;
 
+@DisplayName("인증")
+class AuthControllerTest extends BaseControllerTest {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
     @Test
+    @DisplayName("로그인")
     @Transactional
     void signin() throws Exception {
 
@@ -64,7 +49,7 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(signInDto)))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("X-AUTH-TOKEN"))
+                .andExpect(header().exists("authToken"))
                 .andDo(print())
                 .andDo(document("signin",
                         requestFields(
@@ -72,7 +57,7 @@ class AuthControllerTest {
                                 fieldWithPath("password").description("비밀번호")
                         ),
                         responseHeaders(
-                                headerWithName("X-AUTH-TOKEN").description("로그인 토큰")
+                                headerWithName("authToken").description("로그인 토큰")
                         )
                 ))
         ;
@@ -80,6 +65,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("로그아웃")
     @Transactional
     void Signup() throws Exception {
         SignUpDto signUpDto = SignUpDto.builder()
@@ -107,6 +93,7 @@ class AuthControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("아이디 중복체크_중복일때")
     @WithMockUser(username = "tester")
     void icCheckNo() throws Exception {
         User user = User.builder()
@@ -124,6 +111,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("아이디 중복체크_사용가능")
     @WithMockUser(username = "tester")
     void icCheckOk() throws Exception {
         User user = User.builder()

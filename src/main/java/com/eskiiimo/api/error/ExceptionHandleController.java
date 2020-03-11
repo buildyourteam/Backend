@@ -42,6 +42,12 @@ public class ExceptionHandleController {
     public ErrorResponse handleNotFoundApply(ApplyNotFoundException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
     }
+    @ExceptionHandler(ApplicantNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleNotFoundApplicants(ApplicantNotFoundException exception){
+        return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
+    }
     @ExceptionHandler(YouAreNotReaderException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody

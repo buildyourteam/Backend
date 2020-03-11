@@ -1,7 +1,7 @@
 package com.eskiiimo.api.index;
 
-import com.eskiiimo.api.projects.projectdetail.ProjectDetailController;
-import com.eskiiimo.api.projects.projectsList.ProjectListController;
+import com.eskiiimo.api.projects.detail.ProjectDetailController;
+import com.eskiiimo.api.projects.list.ProjectListController;
 import com.eskiiimo.api.user.people.PeopleController;
 import com.eskiiimo.api.user.profile.ProfileController;
 import org.springframework.beans.factory.annotation.Autowired;

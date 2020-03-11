@@ -1,21 +1,14 @@
 package com.eskiiimo.api.files.projectimage;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.eskiiimo.api.common.BaseControllerTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,24 +25,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com",uriPort = 443)
-@Transactional
-@Import(RestDocsConfiguration.class)
-class ProjectImageControllerTest {
-    @Autowired
-    protected MockMvc mockMvc;
-
-    @Autowired
-    protected ObjectMapper objectMapper;
+@DisplayName("프로젝트 이미지")
+class ProjectImageControllerTest extends BaseControllerTest {
 
     @Autowired
     protected ProjectImageRepository projectImageRepository;
 
     @Test
     @Transactional
+    @DisplayName("프로젝트 이미지 업로드")
     @WithMockUser(username="testuser")
     void uploadProjectImage() throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/api/files/testfiles/testimg.jpg");
@@ -87,6 +71,7 @@ class ProjectImageControllerTest {
 
 
     @Test
+    @DisplayName("프로젝트 이미지 다운로드")
     @Transactional
     void downloadProjectImage () throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/api/files/testfiles/testimg.jpg");
