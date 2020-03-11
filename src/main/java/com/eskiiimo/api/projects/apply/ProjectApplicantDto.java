@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectapply;
+package com.eskiiimo.api.projects.apply;
 
 import com.eskiiimo.api.projects.ProjectRole;
 import lombok.*;

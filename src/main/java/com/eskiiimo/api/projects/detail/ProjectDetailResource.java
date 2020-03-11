@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectdetail;
+package com.eskiiimo.api.projects.detail;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

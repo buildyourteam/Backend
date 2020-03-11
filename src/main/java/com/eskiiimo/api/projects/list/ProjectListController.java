@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectsList;
+package com.eskiiimo.api.projects.list;
 
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;

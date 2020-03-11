@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectapply;
+package com.eskiiimo.api.projects.apply;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectapply.entity;
+package com.eskiiimo.api.projects.apply.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

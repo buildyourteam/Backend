@@ -1,15 +1,13 @@
-package com.eskiiimo.api.projects.projectdetail;
+package com.eskiiimo.api.projects.detail;
 
 import com.eskiiimo.api.error.exception.ProjectNotFoundException;
 import com.eskiiimo.api.error.exception.YouAreNotReaderException;
 import com.eskiiimo.api.projects.*;
-import com.eskiiimo.api.projects.projectapply.ProjectApplyService;
+import com.eskiiimo.api.projects.apply.ProjectApplyService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

@@ -2,8 +2,8 @@ package com.eskiiimo.api.user.profile;
 
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.projectsList.ProjectListResource;
-import com.eskiiimo.api.projects.projectsList.ProjectListService;
+import com.eskiiimo.api.projects.list.ProjectListResource;
+import com.eskiiimo.api.projects.list.ProjectListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,6 @@
-package com.eskiiimo.api.projects.projectapply;
+package com.eskiiimo.api.projects.apply;
 
-import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
+import com.eskiiimo.api.projects.apply.entity.ProjectApply;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

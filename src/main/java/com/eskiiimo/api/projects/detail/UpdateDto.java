@@ -1,11 +1,10 @@
-package com.eskiiimo.api.projects.projectdetail;
+package com.eskiiimo.api.projects.detail;
 
 import com.eskiiimo.api.projects.*;
-import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
+import com.eskiiimo.api.projects.apply.entity.ProjectApplyQuestion;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 

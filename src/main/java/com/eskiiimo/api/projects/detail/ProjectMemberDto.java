@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectdetail;
+package com.eskiiimo.api.projects.detail;
 
 import com.eskiiimo.api.projects.ProjectRole;
 import com.eskiiimo.api.projects.TechnicalStack;

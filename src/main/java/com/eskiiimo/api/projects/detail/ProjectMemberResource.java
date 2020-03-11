@@ -1,9 +1,8 @@
-package com.eskiiimo.api.projects.projectdetail;
+package com.eskiiimo.api.projects.detail;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 @Getter

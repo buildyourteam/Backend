@@ -1,19 +1,14 @@
-package com.eskiiimo.api.projects.projectsList;
+package com.eskiiimo.api.projects.list;
 
 import com.eskiiimo.api.error.exception.ProjectNotFoundException;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectField;
-import com.eskiiimo.api.projects.ProjectMemberRepository;
 import com.eskiiimo.api.projects.ProjectRepository;
-import com.eskiiimo.api.projects.projectdetail.ProjectDetailDto;
-import com.eskiiimo.api.projects.projectdetail.ProjectDetailService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 

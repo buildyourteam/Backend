@@ -1,4 +1,4 @@
-package com.eskiiimo.api.projects.projectapply;
+package com.eskiiimo.api.projects.apply;
 
 import com.eskiiimo.api.index.DocsController;
 import org.springframework.beans.factory.annotation.Autowired;

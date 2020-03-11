@@ -1,9 +1,8 @@
-package com.eskiiimo.api.projects.projectdetail;
+package com.eskiiimo.api.projects.detail;
 
 import com.eskiiimo.api.common.ErrorResource;
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.ProjectMember;
 import com.eskiiimo.api.projects.ProjectRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
 import java.net.URI;

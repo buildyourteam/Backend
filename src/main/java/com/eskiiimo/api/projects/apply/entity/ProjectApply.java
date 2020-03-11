@@ -1,7 +1,7 @@
-package com.eskiiimo.api.projects.projectapply.entity;
+package com.eskiiimo.api.projects.apply.entity;
 
 import com.eskiiimo.api.projects.ProjectRole;
-import com.eskiiimo.api.projects.projectapply.ProjectApplyStatus;
+import com.eskiiimo.api.projects.apply.ProjectApplyStatus;
 import com.eskiiimo.api.user.User;
 import lombok.*;
 

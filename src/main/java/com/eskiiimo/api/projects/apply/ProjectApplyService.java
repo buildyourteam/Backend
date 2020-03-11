@@ -1,9 +1,9 @@
-package com.eskiiimo.api.projects.projectapply;
+package com.eskiiimo.api.projects.apply;
 
 import com.eskiiimo.api.error.exception.*;
 import com.eskiiimo.api.projects.*;
-import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
-import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyAnswer;
+import com.eskiiimo.api.projects.apply.entity.ProjectApply;
+import com.eskiiimo.api.projects.apply.entity.ProjectApplyAnswer;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
