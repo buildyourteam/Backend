@@ -5,7 +5,6 @@ import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import com.eskiiimo.api.user.UsersStack;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

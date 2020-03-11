@@ -1,7 +1,10 @@
 package com.eskiiimo.api.user;
 
 import com.eskiiimo.api.projects.TechnicalStack;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 

@@ -5,7 +5,6 @@ import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.apply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
