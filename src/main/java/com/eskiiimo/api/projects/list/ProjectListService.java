@@ -71,8 +71,6 @@ public class ProjectListService {
 
     public Page<Project> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
         Page<Project> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
-        if (page.isEmpty())
-            throw new ProjectNotFoundException("프로젝트가 존재하지 않습니다.");
         return page;
     }
 
