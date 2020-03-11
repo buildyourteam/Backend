@@ -42,6 +42,8 @@ public class Project{
     })
     private ProjectMemberSet needMember;
 
+    private String leaderId;
+
     @JsonIgnore
     private Boolean applyCanFile;
 

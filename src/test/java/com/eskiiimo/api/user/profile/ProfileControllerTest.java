@@ -40,7 +40,8 @@ class ProfileControllerTest extends BaseControllerTest {
 
     @Autowired
     ProjectRepository projectRepository;
-
+    @Autowired
+    ProjectMemberRepository projectMemberRepository;
 
     @Test
     @Transactional
@@ -168,20 +169,22 @@ class ProfileControllerTest extends BaseControllerTest {
 
     @Test
     @Transactional
-    @Disabled
     @DisplayName("사용자가 참여중인 프로젝트 리스트 가져오기")
     public void getRunningProjectList() throws Exception {
         // Given
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        this.generateProject(1, user1.getUserId(), Status.RUNNING);
-        this.generateProject(2, user1.getUserId(), Status.RECRUTING);
-        this.generateProject(3, user1.getUserId(), Status.RUNNING);
+        Project project1 =  this.generateProject(1, user1, Status.RUNNING);
+        Project project2 =  this.generateProject(2, user1, Status.RECRUTING);
+        Project project3 =  this.generateProject(3, user1, Status.RUNNING);
 
-        this.generateProject(4, user2.getUserId(), Status.RUNNING);
-        this.generateProject(5, user2.getUserId(), Status.RECRUTING);
-        this.generateProject(6, user2.getUserId(), Status.RUNNING);
+        Project project4 =  this.generateProject(4, user2, Status.RUNNING);
+        Project project5 =  this.generateProject(5, user2, Status.RECRUTING);
+        Project project6 =  this.generateProject(6, user2, Status.RUNNING);
+
+        this.joinProject(project4,user1,Boolean.FALSE);
+        this.joinProject(project6,user1,Boolean.TRUE);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/running")
@@ -214,6 +217,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
                                 fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
@@ -238,20 +242,22 @@ class ProfileControllerTest extends BaseControllerTest {
 
     @Test
     @Transactional
-    @Disabled
     @DisplayName("사용자가 참여했던 프로젝트 리스트 가져오기")
     public void getEndedProjectList() throws Exception {
         // Given
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        this.generateProject(1, user1.getUserId(), Status.ENDED);
-        this.generateProject(2, user1.getUserId(), Status.ENDED);
-        this.generateProject(3, user1.getUserId(), Status.RUNNING);
+        Project project1 = this.generateProject(1, user1, Status.ENDED);
+        Project project2 = this.generateProject(2, user1, Status.ENDED);
+        Project project3 = this.generateProject(3, user1, Status.RUNNING);
 
-        this.generateProject(4, user2.getUserId(), Status.ENDED);
-        this.generateProject(5, user2.getUserId(), Status.RECRUTING);
-        this.generateProject(6, user2.getUserId(), Status.RUNNING);
+        Project project4 = this.generateProject(4, user2, Status.ENDED);
+        Project project5 = this.generateProject(5, user2, Status.RECRUTING);
+        Project project6 = this.generateProject(6, user2, Status.RUNNING);
+
+        this.joinProject(project4,user1,Boolean.TRUE);
+        this.joinProject(project5,user1,Boolean.FALSE);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/ended")
@@ -284,6 +290,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
                                 fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
@@ -309,20 +316,19 @@ class ProfileControllerTest extends BaseControllerTest {
 
     @Test
     @Transactional
-    @Disabled
     @DisplayName("사용자가 기획한 프로젝트 리스트 가져오기")
     public void getPlannedProjectList() throws Exception {
         // Given
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        this.generateProject(1, user1.getUserId(), Status.RUNNING);
-        this.generateProject(2, user1.getUserId(), Status.RECRUTING);
-        this.generateProject(3, user1.getUserId(), Status.RUNNING);
+        this.generateProject(1, user1, Status.RUNNING);
+        this.generateProject(2, user1, Status.RECRUTING);
+        this.generateProject(3, user1, Status.RUNNING);
 
-        this.generateProject(4, user2.getUserId(), Status.RUNNING);
-        this.generateProject(5, user2.getUserId(), Status.RECRUTING);
-        this.generateProject(6, user2.getUserId(), Status.RUNNING);
+        this.generateProject(4, user2, Status.RUNNING);
+        this.generateProject(5, user2, Status.RECRUTING);
+        this.generateProject(6, user2, Status.RUNNING);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/plan")
@@ -355,6 +361,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
                                 fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
@@ -378,7 +385,78 @@ class ProfileControllerTest extends BaseControllerTest {
 
     }
 
-    private Project generateProject(int index, String user_id, Status status) {
+    @Test
+    @Transactional
+    @DisplayName("사용자가 기여한 모든 프로젝트 리스트 가져오기")
+    public void getAllProjectList() throws Exception {
+        // Given
+        User user1=this.generateProfile(1);
+        User user2 = this.generateProfile(2);
+
+        Project project1 = this.generateProject(1, user1, Status.RUNNING);
+        Project project2 = this.generateProject(2, user1, Status.RECRUTING);
+        Project project3 = this.generateProject(3, user1, Status.RUNNING);
+        Project project4 = this.generateProject(4, user2, Status.RECRUTING);
+        Project project5 = this.generateProject(5, user2, Status.RUNNING);
+
+        this.joinProject(project4,user1,Boolean.TRUE);
+        this.joinProject(project5,user1,Boolean.FALSE);
+
+        // When & Then
+        this.mockMvc.perform(get("/profile/user1/projects")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "projectName,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("get-all-projects",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("page"),
+                                parameterWithName("size").description("number of projects per page"),
+                                parameterWithName("sort").description("sort")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        responseFields(
+
+                                fieldWithPath("_embedded.projectList[].projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
+                                fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
+                                fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
+                                fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
+                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
+                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
+                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서"),
+                                fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
+                                fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("페이지 수")
+
+                        )
+                ))
+
+        ;
+
+    }
+    private Project generateProject(int index, User user, Status status) {
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
         ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
 
@@ -391,11 +469,33 @@ class ProfileControllerTest extends BaseControllerTest {
                 .needMember(need_yes)
                 .status(status)
                 .projectField(ProjectField.APP)
+                .leaderId(user.getUserId())
                 .build();
+        ProjectMember projectMember = ProjectMember.builder()
+                .project(project)
+                .user(user)
+                .role(ProjectRole.DEVELOPER)
+                .selfDescription("프로젝트 팀장입니다.")
+                .hide(Boolean.FALSE)
+                .build();
+        project.getProjectMembers().add(projectMember);
+        this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
         return project;
     }
+    private void joinProject(Project project, User user, Boolean hide){
+        ProjectMember projectMember = ProjectMember.builder()
+                .project(project)
+                .user(user)
+                .role(ProjectRole.DEVELOPER)
+                .selfDescription("프로젝트 팀장입니다.")
+                .hide(hide)
+                .build();
+        project.getProjectMembers().add(projectMember);
 
+        this.projectMemberRepository.save(projectMember);
+        this.projectRepository.save(project);
+    }
 
     private User generateProfile(int index){
         List<UsersStack> stacks = new ArrayList<UsersStack>();

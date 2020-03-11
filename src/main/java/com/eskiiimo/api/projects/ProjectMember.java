@@ -24,6 +24,8 @@ public class ProjectMember {
     @Lob
     private String selfDescription;
 
+    Boolean hide;
+
     @ManyToOne
     @JoinColumn(name="accountId")
     private User user;

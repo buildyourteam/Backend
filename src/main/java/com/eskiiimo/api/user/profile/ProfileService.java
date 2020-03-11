@@ -1,9 +1,9 @@
 package com.eskiiimo.api.user.profile;
 
+import com.eskiiimo.api.error.exception.ProjectMemberNotFoundException;
+import com.eskiiimo.api.error.exception.ProjectNotFoundException;
 import com.eskiiimo.api.error.exception.UserNotFoundException;
-import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.ProjectRepository;
-import com.eskiiimo.api.projects.Status;
+import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,8 @@ public class ProfileService {
 
     @Autowired
     ProjectRepository projectRepository;
+    @Autowired
+    ProjectMemberRepository projectMemberRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -47,20 +49,46 @@ public class ProfileService {
     }
 
     public Page<Project> getRunning(String user_id, Pageable pageable) {
-        //Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Status(user_id, Status.RUNNING.toString(), pageable);
-        //return page;
-        return null;
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id,Boolean.FALSE, Status.RUNNING, pageable);
+        return page;
     }
 
     public Page<Project> getEnded(String user_id, Pageable pageable) {
-        //Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Status(user_id, Status.ENDED.toString(), pageable);
-        //return page;
-        return null;
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id, Boolean.FALSE,Status.ENDED, pageable);
+        return page;
     }
 
     public Page<Project> getPlanner(String user_id, Pageable pageable) {
-        //Page<Project> page = this.projectRepository.findAllByProjectStatus_UserIdAndProjectStatus_Plan(user_id, Boolean.TRUE, pageable);
-        //return page;
-        return null;
+        Page<Project> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(user_id, Boolean.FALSE,pageable);
+        return page;
+    }
+
+    public Page<Project> getAllProjects(String user_id, Pageable pageable) {
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserId(user_id,pageable);
+        return page;
+    }
+
+    public void reShowProject(String user_id, Long projectId) {
+        Project project = this.projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        ProjectMember projectMember = this.projectMemberRepository.findByProject_ProjectIdAndUser_UserId(projectId,user_id)
+                .orElseThrow(()->new ProjectMemberNotFoundException("프로젝트에 소속되어있지 않습니다."));
+        project.getProjectMembers().remove(projectMember);
+        projectMember.setHide(Boolean.FALSE);
+        project.getProjectMembers().add(projectMember);
+        this.projectMemberRepository.save(projectMember);
+        this.projectRepository.save(project);
+    }
+
+    public void hideProject(String user_id, Long projectId) {
+        Project project = this.projectRepository.findById(projectId)
+                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        ProjectMember projectMember = this.projectMemberRepository.findByProject_ProjectIdAndUser_UserId(projectId,user_id)
+                .orElseThrow(()->new ProjectMemberNotFoundException("프로젝트에 소속되어있지 않습니다."));
+        project.getProjectMembers().remove(projectMember);
+        projectMember.setHide(Boolean.TRUE);
+        project.getProjectMembers().add(projectMember);
+        this.projectMemberRepository.save(projectMember);
+        this.projectRepository.save(project);
     }
 }
