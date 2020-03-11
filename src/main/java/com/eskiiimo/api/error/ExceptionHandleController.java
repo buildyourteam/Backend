@@ -1,9 +1,6 @@
 package com.eskiiimo.api.error;
 
-import com.eskiiimo.api.error.exception.ApplyNotFoundException;
-import com.eskiiimo.api.error.exception.ProjectNotFoundException;
-import com.eskiiimo.api.error.exception.YouAreNotReaderException;
-import com.eskiiimo.api.error.exception.UserNotFoundException;
+import com.eskiiimo.api.error.exception.*;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +52,18 @@ public class ExceptionHandleController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleNotSupprotException(HttpRequestMethodNotSupportedException exception){
+        return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
+    }
+    @ExceptionHandler(RecruitNotAuthException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse handleRecruitNotAuth(RecruitNotAuthException exception){
+        return new ErrorResponse(HttpStatus.FORBIDDEN,exception);
+    }
+    @ExceptionHandler(RecruitNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleNotFoundRecruit(RecruitNotFoundException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
     }
 
