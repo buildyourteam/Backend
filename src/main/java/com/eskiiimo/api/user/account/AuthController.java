@@ -30,7 +30,7 @@ public class AuthController {
     public ResponseEntity signin(@RequestBody SignInDto signInDto) {
         User user = authService.signin(signInDto);
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-        header.add("X-AUTH-TOKEN", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
+        header.add("authToken", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
 
         return new ResponseEntity(header, HttpStatus.OK);
     }

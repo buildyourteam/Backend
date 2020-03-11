@@ -1,36 +1,23 @@
 package com.eskiiimo.api.index;
 
-import com.eskiiimo.api.common.RestDocsConfiguration;
+import com.eskiiimo.api.common.BaseControllerTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
-@Transactional
-@Import(RestDocsConfiguration.class)
-class IndexControllerTest {
+@DisplayName("인덱스")
+class IndexControllerTest  extends BaseControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+
     @Test
+    @DisplayName("메인 페이지 인덱스")
     @Transactional
     void mainIndex() throws Exception {
         this.mockMvc.perform(get("/index"))
@@ -49,6 +36,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @DisplayName("프로젝트 리스트 페이지 인덱스")
     @Transactional
     void projectsIndex() throws Exception {
         this.mockMvc.perform(get("/index/projects"))
@@ -63,6 +51,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @DisplayName("프로젝트 상세 페이지 인덱스")
     @Transactional
     void projectDetailIndex() throws Exception {
         this.mockMvc.perform(get("/index/projects/1"))
@@ -76,6 +65,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @DisplayName("피플 페이지 인덱스")
     @Transactional
     void peopleIndex() throws Exception {
         this.mockMvc.perform(get("/index/people"))
@@ -89,6 +79,7 @@ class IndexControllerTest {
     }
 
     @Test
+    @DisplayName("프로필 페이지 인덱스")
     @Transactional
     void profileIndex() throws Exception {
         this.mockMvc.perform(get("/index/profile/testUser"))

@@ -1,13 +1,12 @@
 package com.eskiiimo.api.projects;
 
-import com.eskiiimo.api.projects.projectapply.entity.ProjectApply;
-import com.eskiiimo.api.projects.projectapply.entity.ProjectApplyQuestion;
+import com.eskiiimo.api.projects.apply.entity.ProjectApply;
+import com.eskiiimo.api.projects.apply.entity.ProjectApplyQuestion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 

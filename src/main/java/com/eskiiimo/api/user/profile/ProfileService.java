@@ -1,5 +1,6 @@
 package com.eskiiimo.api.user.profile;
 
+import com.eskiiimo.api.error.exception.UserNotFoundException;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectRepository;
 import com.eskiiimo.api.projects.Status;
@@ -30,22 +31,16 @@ public class ProfileService {
 
     @Transactional
     public ProfileDto getProfile(String user_id) {
-        Optional<User> optionalUser = this.userRepository.findByUserId(user_id);
-        if (optionalUser.isEmpty()) {
-            return null;
-        }
-        User profile = optionalUser.get();
+        User profile =  userRepository.findByUserId(user_id)
+                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
         ProfileDto profileDto = profile.toProfileDto();
         return profileDto;
     }
 
     @Transactional
     public ProfileDto updateProfile(String user_id, ProfileDto updateData) {
-        Optional<User> optionalUser = this.userRepository.findByUserId(user_id);
-        if (optionalUser.isEmpty()) {
-            return null;
-        }
-        User profile = optionalUser.get();
+        User profile =  userRepository.findByUserId(user_id)
+                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
         updateData.updateProfile(profile);
         this.userRepository.save(profile);
         return updateData;
