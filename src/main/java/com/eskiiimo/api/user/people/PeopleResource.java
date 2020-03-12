@@ -3,8 +3,6 @@ package com.eskiiimo.api.user.people;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 public class PeopleResource extends EntityModel<People> {
 
     public PeopleResource(People people, Link... links) {

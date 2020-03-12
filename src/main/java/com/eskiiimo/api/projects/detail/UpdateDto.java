@@ -1,6 +1,9 @@
 package com.eskiiimo.api.projects.detail;
 
-import com.eskiiimo.api.projects.*;
+import com.eskiiimo.api.projects.Project;
+import com.eskiiimo.api.projects.ProjectField;
+import com.eskiiimo.api.projects.ProjectMemberSet;
+import com.eskiiimo.api.projects.Status;
 import com.eskiiimo.api.projects.apply.entity.ProjectApplyQuestion;
 import lombok.*;
 

@@ -1,8 +1,8 @@
 package com.eskiiimo.api.projects.apply;
 
 import com.eskiiimo.api.projects.ProjectRole;
-import com.eskiiimo.api.projects.apply.entity.ProjectApplyAnswer;
 import com.eskiiimo.api.projects.apply.entity.ProjectApply;
+import com.eskiiimo.api.projects.apply.entity.ProjectApplyAnswer;
 import com.eskiiimo.api.projects.apply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import lombok.*;
