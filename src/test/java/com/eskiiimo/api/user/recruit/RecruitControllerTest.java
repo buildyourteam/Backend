@@ -237,9 +237,9 @@ class RecruitControllerTest extends BaseControllerTest {
                 .needMember(need_yes)
                 .status(Status.RECRUTING)
                 .projectField(ProjectField.APP)
+//                .leaderId()
 //                .questions(questions)
                 .build();
-        project.update();
         this.projectRepository.save(project);
         return project;
 
