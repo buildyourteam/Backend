@@ -1,12 +1,8 @@
-package com.eskiiimo.api.user.projectrecruit;
+package com.eskiiimo.api.user.recruit;
 
 import com.eskiiimo.api.index.DocsController;
-import com.eskiiimo.api.projects.Project;
-import com.eskiiimo.api.projects.detail.ProjectDetailController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,14 +18,14 @@ import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkT
 @Controller
 @CrossOrigin(origins = "*")
 @RequestMapping(value = "/profile/{userId}/recruit", produces = MediaTypes.HAL_JSON_VALUE)
-public class ProjectRecruitController {
+public class RecruitController {
     @Autowired
-    ProjectRecruitService projectRecruitService;
+    RecruitService recruitService;
 
     // 프로젝트에 영입하기
     @PostMapping("/{projectId}")
     public ResponseEntity recruitProject(@PathVariable String userId, @PathVariable Long projectId,
-                                  @RequestBody ProjectRecruitDto recruit) {
+                                  @RequestBody RecruitDto recruit) {
         // 계정 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication==null)
@@ -38,10 +34,10 @@ public class ProjectRecruitController {
 
         // 프로젝트 영입제안
         try{
-            this.projectRecruitService.recruitProject(userId, recruit, projectId, visitorId);
-            return ResponseEntity.created(linkTo(ProjectRecruitController.class, userId).slash(projectId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
+            this.recruitService.recruitProject(userId, recruit, projectId, visitorId);
+            return ResponseEntity.created(linkTo(RecruitController.class, userId).slash(projectId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
         }catch(IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
     }
@@ -54,15 +50,15 @@ public class ProjectRecruitController {
         if(authentication==null)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
-        List<ProjectRecruitDto> recruitList=this.projectRecruitService.getRecruitList(userId, visitorId);
-        List<ProjectRecruitResource> projectRecruitResources=new ArrayList<ProjectRecruitResource>();
-        for(ProjectRecruitDto projectRecruitDto : recruitList){
-            ProjectRecruitResource projectRecruitResource = new ProjectRecruitResource(projectRecruitDto, userId);
-            projectRecruitResources.add(projectRecruitResource);
+        List<RecruitDto> recruitList=this.recruitService.getRecruitList(userId, visitorId);
+        List<RecruitResource> recruitResources =new ArrayList<RecruitResource>();
+        for(RecruitDto recruitDto : recruitList){
+            RecruitResource recruitResource = new RecruitResource(recruitDto, userId);
+            recruitResources.add(recruitResource);
         }
-        ProjectRecruitListResource projectRecruitListResource = new ProjectRecruitListResource(projectRecruitResources, userId);
-        projectRecruitListResource.add(linkTo(DocsController.class).slash("#getRecruits").withRel("profile"));
-        return ResponseEntity.ok(projectRecruitListResource);
+        RecruitListResource recruitListResource = new RecruitListResource(recruitResources, userId);
+        recruitListResource.add(linkTo(DocsController.class).slash("#getRecruits").withRel("profile"));
+        return ResponseEntity.ok(recruitListResource);
     }
 
     // 나한테 온 영입제안 확인하기(열람시 읽음상태로 전환)
@@ -73,12 +69,12 @@ public class ProjectRecruitController {
         if(authentication==null)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
-        ProjectRecruitDto projectRecruitDto = this.projectRecruitService.getRecruit(userId, projectId, visitorId);
-        ProjectRecruitResource projectRecruitResource = new ProjectRecruitResource(projectRecruitDto, userId);
-        projectRecruitResource.add(linkTo(ProjectRecruitController.class, userId).slash(projectId).withRel("acceptRecruit"));
-        projectRecruitResource.add(linkTo(ProjectRecruitController.class, userId).slash(projectId).withRel("rejectRecruit"));
-        projectRecruitResource.add(linkTo(DocsController.class).slash("#getRecruit").withRel("profile"));
-        return ResponseEntity.ok(projectRecruitResource);
+        RecruitDto recruitDto = this.recruitService.getRecruit(userId, projectId, visitorId);
+        RecruitResource recruitResource = new RecruitResource(recruitDto, userId);
+        recruitResource.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("acceptRecruit"));
+        recruitResource.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("rejectRecruit"));
+        recruitResource.add(linkTo(DocsController.class).slash("#getRecruit").withRel("profile"));
+        return ResponseEntity.ok(recruitResource);
     }
 
     // 영입제안 승락하기
@@ -90,10 +86,10 @@ public class ProjectRecruitController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
         try{
-            this.projectRecruitService.acceptRecruit(userId, projectId, visitorId);
+            this.recruitService.acceptRecruit(userId, projectId, visitorId);
             return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#acceptRecruit").withRel("self"));
         }catch(IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
     }
@@ -107,10 +103,10 @@ public class ProjectRecruitController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
         try{
-            this.projectRecruitService.rejectRecruit(userId, projectId, visitorId);
+            this.recruitService.rejectRecruit(userId, projectId, visitorId);
             return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#rejectRecruit").withRel("self"));
         }catch(IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

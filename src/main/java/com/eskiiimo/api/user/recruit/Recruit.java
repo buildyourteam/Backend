@@ -1,4 +1,4 @@
-package com.eskiiimo.api.user.projectrecruit;
+package com.eskiiimo.api.user.recruit;
 
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectRole;
@@ -14,12 +14,12 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(of="recruitId")
 @Entity
-public class ProjectRecruit {
+public class Recruit {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long recruitId;
     @Enumerated(EnumType.STRING)
-    private ProjectRecruitStatus status;
+    private RecruitStatus status;
     private String selfDescription;
     @Enumerated(EnumType.STRING)
     private ProjectRole role;

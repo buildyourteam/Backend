@@ -1,4 +1,4 @@
-package com.eskiiimo.api.user.projectrecruit;
+package com.eskiiimo.api.user.recruit;
 
 import com.eskiiimo.api.common.BaseControllerTest;
 import com.eskiiimo.api.projects.*;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("프로젝트 영입하기")
-class ProjectRecruitControllerTest extends BaseControllerTest {
+class RecruitControllerTest extends BaseControllerTest {
     @Autowired
     UserRepository profileRepository;
 
@@ -47,7 +47,7 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
     ProjectMemberRepository projectMemberRepository;
 
     @Autowired
-    ProjectRecruitRepository projectRecruitRepository;
+    RecruitRepository recruitRepository;
 
     @Test
     @Transactional
@@ -56,7 +56,7 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
     void recruitProject() throws Exception {
         Project project = this.generateProject(1);
         this.joinProjectLeader(project.getProjectId(), "tester");
-        ProjectRecruitDto projectRecruitDto = ProjectRecruitDto.builder()
+        RecruitDto recruitDto = RecruitDto.builder()
 //                .project(project)
                 .projectId(project.getProjectId())
                 .userName("tester")
@@ -64,7 +64,7 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
                 .role(ProjectRole.DEVELOPER)
                 .build();
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","tester", project.getProjectId())
-                .content(objectMapper.writeValueAsString(projectRecruitDto))
+                .content(objectMapper.writeValueAsString(recruitDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
@@ -105,13 +105,15 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
                                 parameterWithName("userId").description("유저 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("_embedded.projectRecruitDtoList[].userName").description("유저이름"),
-                                fieldWithPath("_embedded.projectRecruitDtoList[].selfDescription").description("자기소개"),
-                                fieldWithPath("_embedded.projectRecruitDtoList[].role").description("지원할 역할"),
-                                fieldWithPath("_embedded.projectRecruitDtoList[].status").description("상태"),
-                                fieldWithPath("_embedded.projectRecruitDtoList[].projectId").description("영입 제안 프로젝트 Id"),
-                                fieldWithPath("_embedded.projectRecruitDtoList[].projectName").description("영입 제안 프로젝트 이름"),
-                                fieldWithPath("_embedded.projectRecruitDtoList[]._links.self.href").description("self 링크")
+                                fieldWithPath("_embedded.recruitDtoList[].userName").description("유저이름"),
+                                fieldWithPath("_embedded.recruitDtoList[].selfDescription").description("자기소개"),
+                                fieldWithPath("_embedded.recruitDtoList[].role").description("지원할 역할"),
+                                fieldWithPath("_embedded.recruitDtoList[].status").description("상태"),
+                                fieldWithPath("_embedded.recruitDtoList[].projectId").description("영입 제안 프로젝트 Id"),
+                                fieldWithPath("_embedded.recruitDtoList[].projectName").description("영입 제안 프로젝트 이름"),
+                                fieldWithPath("_embedded.recruitDtoList[]._links.self.href").description("self 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
                         ),
                         links(
                                 linkWithRel("self").description("self 링크"),
@@ -149,7 +151,12 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
                                 fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
                                 fieldWithPath("projectName").description("영입 제안 프로젝트 이름"),
                                 fieldWithPath("role").description("지원할 역할"),
-                                fieldWithPath("selfDescription").description("자기소개")
+                                fieldWithPath("selfDescription").description("자기소개"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.acceptRecruit.href").description("영입 승인하기"),
+                                fieldWithPath("_links.rejectRecruit.href").description("영입 거절하기"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+
                         ),
                         links(
                                 linkWithRel("self").description("self 링크"),
@@ -214,7 +221,8 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
         ;
 
         this.mockMvc.perform(get("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("REJECT"));
     }
 
     private Project generateProject(int index) {
@@ -261,14 +269,14 @@ class ProjectRecruitControllerTest extends BaseControllerTest {
         return user;
     }
     private void generateRecruit(User user01, Project project01) {
-        ProjectRecruitDto projectRecruitDto = ProjectRecruitDto.builder()
+        RecruitDto recruitDto = RecruitDto.builder()
 //                .project(project01)
                 .projectId(project01.getProjectId())
                 .userName("tester")
                 .selfDescription("프로젝트 영입하고 싶습니다.")
                 .role(ProjectRole.DEVELOPER)
                 .build();
-        ProjectRecruit projectRecruit=projectRecruitDto.toEntity(user01, project01);
-        this.projectRecruitRepository.save(projectRecruit);
+        Recruit recruit = recruitDto.toEntity(user01, project01);
+        this.recruitRepository.save(recruit);
     }
 }
