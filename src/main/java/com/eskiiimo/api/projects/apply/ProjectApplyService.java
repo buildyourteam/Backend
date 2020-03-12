@@ -32,6 +32,7 @@ public class ProjectApplyService {
                 .role(ProjectRole.LEADER)
                 .user(user)
                 .project(project)
+                .hide(Boolean.FALSE)
                 .build();
         project.getProjectMembers().add(projectMember);
         this.projectMemberRepository.save(projectMember);
@@ -135,6 +136,7 @@ public class ProjectApplyService {
                     .role(memberRole)
                     .user(user)
                     .project(project)
+                    .hide(Boolean.FALSE)
                     .build();
             project.getProjectMembers().add(projectMember);
             if(projectMember.getRole()==ProjectRole.DEVELOPER)

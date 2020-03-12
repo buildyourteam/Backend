@@ -91,4 +91,31 @@ public class ProfileController {
 
         return ResponseEntity.ok(pagedResources);
     }
+
+    // 사용자가 기여한 모든 프로젝트 리스트 가져오기
+    @GetMapping("/{user_id}/projects")
+    public ResponseEntity  getAllProjects(@PathVariable(value = "user_id") String user_id,
+                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+        Page<Project> page = this.profileService.getAllProjects(user_id, pageable);
+        PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesAllProjectList").withRel("profile"));
+
+        return ResponseEntity.ok(pagedResources);
+    }
+    // 숨긴 프로젝트 살리기
+    @PutMapping("/{user_id}/projects/{projectId}")
+    public ResponseEntity  reShowProject(@PathVariable(value = "user_id") String user_id,
+                                          @PathVariable(value = "projectId") Long projectId,
+                                          Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+        this.profileService.reShowProject(user_id,projectId);
+        return ResponseEntity.ok().build();
+    }
+    // 프로젝트 숨기기
+    @DeleteMapping("/{user_id}/projects/{projectId}")
+    public ResponseEntity  hideProject(@PathVariable(value = "user_id") String user_id,
+                                        @PathVariable(value = "projectId") Long projectId,
+                                          Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+        this.profileService.hideProject(user_id,projectId);
+        return ResponseEntity.ok().build();
+    }
 }

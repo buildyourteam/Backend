@@ -115,6 +115,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
                                 fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
@@ -230,6 +231,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
                                 fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
+                                fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
                                 fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
@@ -270,7 +272,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .needMember(need_yes)
                 .projectField(ProjectField.APP)
                 .build();
-        project.update();
 
         Project project1 = Project.builder()
                 .projectName("project"+index)
@@ -281,7 +282,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .needMember(need_zero)
                 .projectField(ProjectField.WEB)
                 .build();
-        project1.update();
 
         Project project2 = Project.builder()
                 .projectName("project"+index)
@@ -292,7 +292,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .needMember(need_yes)
                 .projectField(ProjectField.WEB)
                 .build();
-        project2.update();
 
         this.projectRepository.save(project);
         this.projectRepository.save(project1);
@@ -313,7 +312,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .currentMember(currentMember)
                 .needMember(need_yes)
                 .build();
-        project.update();
 
         Project project1 = Project.builder()
                 .projectName("project"+index)
@@ -323,7 +321,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .build();
-        project1.update();
 
         Project project2 = Project.builder()
                 .projectName("project"+index)
@@ -333,7 +330,6 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .build();
-        project2.update();
 
         this.projectRepository.save(project);
         this.projectRepository.save(project1);

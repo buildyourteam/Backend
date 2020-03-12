@@ -95,7 +95,7 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("area","seoul")
+                .param("area","Seoul")
         )
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());

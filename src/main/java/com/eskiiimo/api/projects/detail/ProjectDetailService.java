@@ -22,6 +22,7 @@ public class ProjectDetailService {
     public Project storeProject(ProjectDetailDto projectDetailDto,String user_id) {
         Project project = new Project();
         projectDetailDto.toEntity(project);
+        project.setLeaderId(user_id);
         Project newProject = this.projectRepository.save(project);
         this.projectApplyService.addLeader(newProject,user_id);
         return newProject;

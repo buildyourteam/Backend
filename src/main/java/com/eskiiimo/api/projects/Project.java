@@ -42,6 +42,8 @@ public class Project{
     })
     private ProjectMemberSet needMember;
 
+    private String leaderId;
+
     @JsonIgnore
     private Boolean applyCanFile;
 
@@ -62,26 +64,9 @@ public class Project{
     @JsonIgnore
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
-
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JsonIgnore
-    private ProjectStatus projectStatus;
-
     public void addMember(ProjectMember member){
         this.projectMembers.add(member);
         if(member.getProject() != this)
             member.setProject(this);
     }
-    public void update() {
-        if (this.projectStatus == null) {
-            ProjectStatus projectStatus = ProjectStatus.builder()
-//                .userId()
-                    .plan(Boolean.TRUE)
-                    .build();
-            this.projectStatus = projectStatus;
-        }
-
-
-    }
-
 }
