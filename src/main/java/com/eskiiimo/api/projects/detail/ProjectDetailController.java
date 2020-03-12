@@ -75,7 +75,7 @@ public class ProjectDetailController {
             recruitResources.add(recruitResource);
         }
         RecruitListResource recruitListResource = new RecruitListResource(recruitResources, visitorId);
-        recruitListResource.add(linkTo(DocsController.class).slash("#getRecruits").withRel("profile"));
+        recruitListResource.add(linkTo(DocsController.class).slash("#getSendRecruits").withRel("profile"));
         return ResponseEntity.ok(recruitListResource);
     }
 
