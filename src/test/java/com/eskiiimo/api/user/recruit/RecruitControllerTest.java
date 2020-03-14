@@ -264,6 +264,7 @@ class RecruitControllerTest extends BaseControllerTest {
                 .user(user)
                 .build();
         project.getProjectMembers().add(projectMember);
+        project.setLeaderId(member);
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
         return user;

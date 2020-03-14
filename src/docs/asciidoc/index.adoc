@@ -230,6 +230,14 @@ operation::projectRecruit[snippets='path-parameters,curl-request,request-fields,
 
 operation::getRecruits[snippets='path-parameters,curl-request,http-response,response-fields,links']
 
+[[getSendRecruits]]
+=== 내가 보낸 프로젝트 영입 리스트 조회하기
+
+`GET` 요청을 사용해서 내가 보낸 프로젝트 영입 명단을 확인 할 수 있다.
+
+operation::getSendRecruits[snippets='path-parameters,curl-request,http-response,response-fields,links']
+
+
 [[getRecruit]]
 === 프로젝트 영입 조회하기
 

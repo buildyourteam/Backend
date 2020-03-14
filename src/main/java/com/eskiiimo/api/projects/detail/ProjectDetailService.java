@@ -80,16 +80,16 @@ public class ProjectDetailService {
         this.userRepository.findByUserId(visitorId)
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
 
-        if (visitorId.equals(project.getLeaderId())){
-            List<RecruitDto> recruitDtos = new ArrayList<RecruitDto>();
-            List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(project_id);
-            for(Recruit recruit : recruits){
-                RecruitDto recruitDto = this.modelMapper.map(recruit, RecruitDto.class);
-                recruitDtos.add(recruitDto);
-            }
-            return recruitDtos;
+        if (!visitorId.equals(project.getLeaderId())){
+            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
         }
-        throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+        List<RecruitDto> recruitDtos = new ArrayList<RecruitDto>();
+        List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(project_id);
+        for(Recruit recruit : recruits){
+            RecruitDto recruitDto = this.modelMapper.map(recruit, RecruitDto.class);
+            recruitDtos.add(recruitDto);
+        }
+        return recruitDtos;
     }
 
     public ProjectDetailDto projectToDto(Project project){

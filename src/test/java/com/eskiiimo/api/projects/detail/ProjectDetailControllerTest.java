@@ -5,6 +5,7 @@ import com.eskiiimo.api.projects.*;
 import com.eskiiimo.api.projects.apply.entity.ProjectApplyQuestion;
 import com.eskiiimo.api.user.User;
 import com.eskiiimo.api.user.UserRepository;
+import com.eskiiimo.api.user.recruit.RecruitDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,83 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         ;
     }
 
+
+    @Test
+    @Transactional
+    @DisplayName("내가 보낸 영입제안 리스트 확인하기")
+    @WithMockUser(username = "tester")
+    public void getRecruits() throws Exception{
+        Project project = this.generateProject(1);
+        Long project_id = project.getProjectId();
+        this.joinProjectLeader(project_id,"tester");
+
+
+        User user01 = User.builder()
+                .userName("유저01")
+                .userId("user01")
+                .password("testpassword")
+                .build();
+        this.userRepository.save(user01);
+        User user02 = User.builder()
+                .userName("유저02")
+                .userId("user02")
+                .password("testpassword2")
+                .build();
+        this.userRepository.save(user02);
+
+        RecruitDto recruitDto1 = RecruitDto.builder()
+//                .project(project)
+                .projectId(project_id)
+                .userName("user01")
+                .selfDescription("프로젝트 영입하고 싶습니다.")
+                .role(ProjectRole.DEVELOPER)
+                .build();
+        RecruitDto recruitDto2 = RecruitDto.builder()
+//                .project(project)
+                .projectId(project_id)
+                .userName("user02")
+                .selfDescription("프로젝트 영입하고 싶습니다.")
+                .role(ProjectRole.DEVELOPER)
+                .build();
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","user01", project_id)
+                .content(objectMapper.writeValueAsString(recruitDto1))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON))
+                .andExpect(status().isCreated())
+                .andDo(print());
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","user02", project_id)
+                .content(objectMapper.writeValueAsString(recruitDto2))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON))
+                .andExpect(status().isCreated())
+                .andDo(print());
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", project_id))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("getSendRecruits",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("_embedded.recruitDtoList[].userName").description("유저이름"),
+                                fieldWithPath("_embedded.recruitDtoList[].selfDescription").description("자기소개"),
+                                fieldWithPath("_embedded.recruitDtoList[].role").description("지원할 역할"),
+                                fieldWithPath("_embedded.recruitDtoList[].status").description("상태"),
+                                fieldWithPath("_embedded.recruitDtoList[].projectId").description("영입 제안 프로젝트 Id"),
+                                fieldWithPath("_embedded.recruitDtoList[].projectName").description("영입 제안 프로젝트 이름"),
+                                fieldWithPath("_embedded.recruitDtoList[]._links.self.href").description("self 링크"),
+                                fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profile.href").description("Api 명세서")
+                        ),
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("profile").description("Api 명세서")
+                        )
+                ));
+        ;
+    }
 
 
 
@@ -330,10 +408,35 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
     }
-    private void joinProjectLeader(Long index,String memberno){
+
+    private Project generateProject(int index) {
+        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
+        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+//        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+//        questions.add(ProjectApplyQuestion.builder().question("1번 질문").build());
+//        questions.add(ProjectApplyQuestion.builder().question("2번 질문").build());
+//        questions.add(ProjectApplyQuestion.builder().question("3번 질문").build());
+        Project project = Project.builder()
+                .projectName("project"+index)
+                .teamName("project team"+index*2)
+                .endDate(LocalDateTime.of(2020,04,30,23,59))
+                .description("need yes 입니다.")
+                .currentMember(currentMember)
+//                .leaderId("tester")
+                .needMember(need_yes)
+                .status(Status.RECRUTING)
+                .projectField(ProjectField.APP)
+//                .questions(questions)
+                .build();
+        this.projectRepository.save(project);
+        return project;
+
+    }
+
+    private void joinProjectLeader(Long index,String memberId){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        User user = generateUser(memberno);
+        User user = generateUser(memberId);
         ProjectMember projectMember = ProjectMember.builder()
                 .role(ProjectRole.LEADER)
                 .stack(TechnicalStack.SPRINGBOOT)
@@ -341,6 +444,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .user(user)
                 .build();
         project.getProjectMembers().add(projectMember);
+        project.setLeaderId(memberId);
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
     }

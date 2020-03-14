@@ -4,6 +4,8 @@ import com.eskiiimo.api.common.ErrorResource;
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectRole;
+import com.eskiiimo.api.projects.list.ProjectListController;
+import com.eskiiimo.api.projects.list.ProjectListResource;
 import com.eskiiimo.api.user.recruit.RecruitDto;
 import com.eskiiimo.api.user.recruit.RecruitListResource;
 import com.eskiiimo.api.user.recruit.RecruitResource;
@@ -74,9 +76,9 @@ public class ProjectDetailController {
             RecruitResource recruitResource = new RecruitResource(recruitDto, visitorId);
             recruitResources.add(recruitResource);
         }
-        RecruitListResource recruitListResource = new RecruitListResource(recruitResources, visitorId);
-        recruitListResource.add(linkTo(DocsController.class).slash("#getSendRecruits").withRel("profile"));
-        return ResponseEntity.ok(recruitListResource);
+        RecruitsResource recruitsResource = new RecruitsResource(recruitResources, project_id);
+        recruitsResource.add(linkTo(DocsController.class).slash("#getSendRecruits").withRel("profile"));
+        return ResponseEntity.ok(recruitsResource);
     }
 
     @PostMapping
