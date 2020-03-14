@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mariadb://192.168.0.100:3307/Eskimo?useUnicode=true&characterEncoding=utf8
-    username: eskimo
-    password: Eskimo2020Dev!
+    url: jdbc:mariadb://egloo-db.cpzre0w7slou.ap-northeast-2.rds.amazonaws.com:3306/Eskimo?useUnicode=true&characterEncoding=utf8
+    username: admin
+    password: Admin!123
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
