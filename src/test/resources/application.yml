@@ -21,7 +21,7 @@ spring:
       enabled: true
       force: true
 jwt:
-  secretKey: govlepel@$&amp;
+    secretKey: govlepel@$&amp;
 log:
   slack:
     enabled: true

@@ -60,7 +60,7 @@ public class Project{
     private List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "project",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project")
     @JsonIgnore
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 

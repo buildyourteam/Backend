@@ -60,6 +60,18 @@ public class ExceptionHandleController {
     public ErrorResponse handleNotSupprotException(HttpRequestMethodNotSupportedException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
     }
+    @ExceptionHandler(RecruitNotAuthException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse handleRecruitNotAuth(RecruitNotAuthException exception){
+        return new ErrorResponse(HttpStatus.FORBIDDEN,exception);
+    }
+    @ExceptionHandler(RecruitNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleNotFoundRecruit(RecruitNotFoundException exception){
+        return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
+    }
 
     protected void logging(Throwable throwable) {
         if (logger.isErrorEnabled()) {

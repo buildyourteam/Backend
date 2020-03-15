@@ -4,6 +4,11 @@ import com.eskiiimo.api.common.ErrorResource;
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectRole;
+import com.eskiiimo.api.projects.list.ProjectListController;
+import com.eskiiimo.api.projects.list.ProjectListResource;
+import com.eskiiimo.api.user.recruit.RecruitDto;
+import com.eskiiimo.api.user.recruit.RecruitListResource;
+import com.eskiiimo.api.user.recruit.RecruitResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -21,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
 
@@ -54,6 +61,24 @@ public class ProjectDetailController {
             projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id+"/apply").withRel("apply"));
         projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectGet").withRel("profile"));
         return ResponseEntity.ok(projectDetailResource);
+    }
+
+    // 내가 보낸 영입제안 리스트
+    @GetMapping(value="/{project_id}/recruits")
+    public ResponseEntity getRecruits(@PathVariable Long project_id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication==null)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        String visitorId = authentication.getName();
+        List<RecruitDto> recruits=this.projectDetailService.getRecruits(visitorId, project_id);
+        List<RecruitResource> recruitResources =new ArrayList<RecruitResource>();
+        for(RecruitDto recruitDto : recruits){
+            RecruitResource recruitResource = new RecruitResource(recruitDto, visitorId);
+            recruitResources.add(recruitResource);
+        }
+        RecruitsResource recruitsResource = new RecruitsResource(recruitResources, project_id);
+        recruitsResource.add(linkTo(DocsController.class).slash("#getSendRecruits").withRel("profile"));
+        return ResponseEntity.ok(recruitsResource);
     }
 
     @PostMapping
