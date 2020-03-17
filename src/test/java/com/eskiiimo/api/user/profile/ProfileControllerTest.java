@@ -55,6 +55,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("query-my-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
+                                linkWithRel("profileImage").description("프로필 이미지"),
                                 linkWithRel("updateProfile").description("프로필 업데이트"),
                                 linkWithRel("profile").description("Api 명세서")
                         ),
@@ -70,6 +71,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("level").description("레벨"),
                                 fieldWithPath("description").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
@@ -90,6 +92,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("query-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
+                                linkWithRel("profileImage").description("프로필 이미지"),
                                 linkWithRel("profile").description("Api 명세서")
                         ),
                         pathParameters(
@@ -104,6 +107,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("level").description("레벨"),
                                 fieldWithPath("description").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
@@ -137,6 +141,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("update-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
+                                linkWithRel("profileImage").description("프로필 이미지"),
                                 linkWithRel("profile").description("Api 명세서")
                         ),
                         pathParameters(
@@ -160,6 +165,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("level").description("레벨"),
                                 fieldWithPath("description").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
+                                fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
@@ -226,6 +232,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
@@ -299,6 +306,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
@@ -370,6 +378,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
@@ -442,6 +451,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
+                                fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
