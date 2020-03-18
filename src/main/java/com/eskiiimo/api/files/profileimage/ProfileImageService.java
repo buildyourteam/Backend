@@ -4,6 +4,7 @@ package com.eskiiimo.api.files.profileimage;
 import com.eskiiimo.api.files.FileService;
 import com.eskiiimo.api.files.FileUploadDto;
 import com.eskiiimo.api.files.FileUploadProperties;
+import com.eskiiimo.api.files.exception.FileDownloadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,9 @@ public class ProfileImageService {
     public FileUploadDto storeProfileImage(String user_id, MultipartFile file){
         String fileName = fileService.storeFile(file,this.profileImageLocation,user_id);
 
-        ProfileImage profileImage = ProfileImage.builder()
-                .userId(user_id)
-                .filePath(this.profileImageLocation.resolve(fileName).toString())
-                .build();
+        ProfileImage profileImage = this.profileImageRepository.findByUserId(user_id).orElse(new ProfileImage());
+                profileImage.setUserId(user_id);
+                profileImage.setFilePath(this.profileImageLocation.resolve(fileName).toString());
         profileImageRepository.save(profileImage);
         FileUploadDto fileUploadDto= FileUploadDto.builder()
                 .fileName(fileName)
@@ -61,7 +61,8 @@ public class ProfileImageService {
 
 
     public Resource getProfileImage(String userId){
-        ProfileImage profileImage = profileImageRepository.findByUserId(userId);
+        ProfileImage profileImage = this.profileImageRepository.findByUserId(userId)
+                .orElseThrow(()-> new FileDownloadException("프로필 이미지가 존재하지 않습니다."));
         Path filePath = Paths.get(profileImage.getFilePath());
         return fileService.loadFileAsResource(filePath);
     }
