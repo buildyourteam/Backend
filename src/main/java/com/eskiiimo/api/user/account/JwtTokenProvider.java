@@ -59,7 +59,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
     // Request의 Header에서 token 파싱
     public String resolveToken(HttpServletRequest req) {
-        return req.getHeader("authToken");
+        return req.getHeader("authtoken");
     }
 
     // Jwt 토큰의 유효성 + 만료일자 확인

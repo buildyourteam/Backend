@@ -197,6 +197,7 @@ class PeopleControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.peopleList[].area").description("유저의 활동지역"),
                                 fieldWithPath("_embedded.peopleList[].level").description("유저의 레벨"),
                                 fieldWithPath("_embedded.peopleList[]._links.self.href").description("유저의 프로필 링크"),
+                                fieldWithPath("_embedded.peopleList[]._links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.self.href").description("Self 링크"),
                                 fieldWithPath("_links.first.href").description("리스트 첫번째 페이지"),
                                 fieldWithPath("_links.next.href").description("다음 리스트"),
