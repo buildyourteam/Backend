@@ -41,7 +41,7 @@ public class FileService {
         try {
             // 파일명에 부적합 문자가 있는지 확인한다.
             if(fileName.contains(".."))
-                throw new com.eskiiimo.api.files.exception.FileUploadException("파일명에 부적합 문자가 포함되어 있습니다. " + fileName);
+                throw new com.eskiiimo.api.files.exception.FileNameException("파일명에 부적합 문자가 포함되어 있습니다. " + fileName);
 
             Path targetLocation = location.resolve(fileName);
 
