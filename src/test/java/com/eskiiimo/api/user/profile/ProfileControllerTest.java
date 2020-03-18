@@ -455,6 +455,63 @@ class ProfileControllerTest extends BaseControllerTest {
         ;
 
     }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "user1")
+    @DisplayName("프로젝트 숨기기")
+    public void hideProject() throws Exception {
+        // Given
+        User user1=this.generateProfile(1);
+        User user2 = this.generateProfile(2);
+
+        Project project4 = this.generateProject(4, user2, Status.RUNNING);
+        Project project5 = this.generateProject(5, user2, Status.RUNNING);
+
+        this.joinProject(project4,user1,Boolean.FALSE);
+        this.joinProject(project5,user1,Boolean.FALSE);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/projects/{projectId}",user1.getUserId(),project4.getProjectId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("hideProject",
+                        pathParameters(
+                                parameterWithName("userId").description("사용자 아이디"),
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        )))
+
+        ;
+
+    }
+    @Test
+    @Transactional
+    @WithMockUser(username = "user1")
+    @DisplayName("숨긴 프로젝트 취소하기")
+    public void reShowProject() throws Exception {
+        // Given
+        User user1=this.generateProfile(1);
+        User user2 = this.generateProfile(2);
+
+        Project project4 = this.generateProject(4, user2, Status.RUNNING);
+        Project project5 = this.generateProject(5, user2, Status.RUNNING);
+
+        this.joinProject(project4,user1,Boolean.FALSE);
+        this.joinProject(project5,user1,Boolean.FALSE);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/projects/{projectId}",user1.getUserId(),project4.getProjectId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("reshowProject",
+                        pathParameters(
+                                parameterWithName("userId").description("사용자 아이디"),
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        )))
+
+        ;
+
+    }
     private Project generateProject(int index, User user, Status status) {
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
         ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);

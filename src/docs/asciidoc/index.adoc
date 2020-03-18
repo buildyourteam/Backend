@@ -284,7 +284,7 @@ operation::get-running-project[snippets='curl-request,http-request,http-response
 [[resourcesPlannedProjectList]]
 === 사용자가 기획한 프로젝트
 
-`Get` 요청을 사용해서 사용자가 참여중인 프로젝트를 조회 할 수 있다.
+`Get` 요청을 사용해서 사용자가 기획한 프로젝트를 조회 할 수 있다.
 
 operation::get-planned-project[snippets='curl-request,http-request,http-response,response-fields,links']
 
@@ -292,10 +292,31 @@ operation::get-planned-project[snippets='curl-request,http-request,http-response
 [[resourcesEndedProjectList]]
 === 사용자가 참여했던 프로젝트
 
-`Get` 요청을 사용해서 사용자가 참여중인 프로젝트를 조회 할 수 있다.
+`Get` 요청을 사용해서 사용자가 참여했던 프로젝트를 조회 할 수 있다.
 
 operation::get-ended-project[snippets='curl-request,http-request,http-response,response-fields,links']
 
+
+[[resourcesEndedProjectList]]
+=== 사용자가 참여한 모든 프로젝트
+
+`Get` 요청을 사용해서 사용자 참여한 모든 프로젝트를 조회 할 수 있다.
+
+operation::get-all-projects[snippets='curl-request,http-request,http-response,response-fields,links']
+
+[[hideProject]]
+=== 프로젝트 숨기기
+
+`Delete` 요청을 사용해서 프로젝트를 숨길 수 있다.
+
+operation::hideProject[snippets='path-parameters,curl-request,http-response']
+
+[[reshowProject]]
+=== 프로젝트 지원자 거절하기
+
+`Put` 요청을 사용해서 숨긴 프로젝트를 다시 보이게 할 수 있다.
+
+operation::reshowProject[snippets='path-parameters,curl-request,http-response']
 
 [[resourcesProfileUpdate]]
 === 프로필 업데이트

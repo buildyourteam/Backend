@@ -26,8 +26,6 @@ public class ProjectListService {
     */
     public Page<Project> getAllByField(String occupation, ProjectField field, Pageable pageable) {
         Page<Project> page = this.projectRepository.findAll(pageable);
-        if (page.isEmpty())
-            throw new ProjectNotFoundException("프로젝트가 존재하지 않습니다.");
         if (occupation != null) {
             if (occupation.equals("developer")) {
 
