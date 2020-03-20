@@ -27,14 +27,32 @@ public class ProfileDto {
     private String description;
 
     public void updateProfile(User User) {
-        List<UsersStack> stackList = new ArrayList<UsersStack>();
+        List<UsersStack> removeList = new ArrayList<UsersStack>();
+        //Compare Stack List and Remove User's Stacks
+        for(UsersStack usersStack: User.getStacks()){
+            Boolean checkRemove=Boolean.TRUE;
+            for(TechnicalStack stack : this.stacks){
+                if(usersStack.getStack().equals(stack)){
+                    this.stacks.remove(stack);
+                    checkRemove=Boolean.FALSE;
+                    break;
+                }
+            }
+            if(checkRemove)
+                removeList.add(usersStack);
+        }
+        // Remove User's Stacks
+        for(UsersStack stack : removeList)
+            User.getStacks().remove(stack);
+
+        // add User's Stacks
+
         for(TechnicalStack stack : this.stacks){
             UsersStack usersStack = new UsersStack();
             usersStack.setStack(stack);
-            stackList.add(usersStack);
+            User.getStacks().add(usersStack);
         }
             User.setRole(this.role);
-            User.setStacks(stackList);
             User.setContact(this.contact);
             User.setArea(this.area);
             User.setLevel(this.level);

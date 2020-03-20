@@ -41,7 +41,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL,orphanRemoval=true)
     @JoinColumn(name ="account_id")
     private List<UsersStack> stacks = new ArrayList<UsersStack>();
     private String contact;

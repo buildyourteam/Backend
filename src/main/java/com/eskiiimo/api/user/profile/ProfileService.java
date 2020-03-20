@@ -42,8 +42,7 @@ public class ProfileService {
         User profile =  userRepository.findByUserId(user_id)
                 .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
         updateData.updateProfile(profile);
-        this.userRepository.save(profile);
-        return updateData;
+        return  this.userRepository.save(profile).toProfileDto();
     }
 
     public Page<Project> getRunning(String user_id, Pageable pageable) {
