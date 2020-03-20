@@ -60,12 +60,20 @@ public class ProfileService {
         Page<Project> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(user_id, Boolean.FALSE,pageable);
         return page;
     }
-
-    public Page<Project> getAllProjects(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserId(user_id,pageable);
+    public Page<Project> getHiddenRunning(String user_id, Pageable pageable) {
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id,Boolean.TRUE, Status.RUNNING, pageable);
         return page;
     }
 
+    public Page<Project> getHiddenEnded(String user_id, Pageable pageable) {
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id, Boolean.TRUE,Status.ENDED, pageable);
+        return page;
+    }
+
+    public Page<Project> getHiddenPlanner(String user_id, Pageable pageable) {
+        Page<Project> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(user_id, Boolean.TRUE,pageable);
+        return page;
+    }
     public void reShowProject(String user_id, Long projectId) {
         Project project = this.projectRepository.findById(projectId)
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));

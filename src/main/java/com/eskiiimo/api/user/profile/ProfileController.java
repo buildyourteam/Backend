@@ -92,13 +92,34 @@ public class ProfileController {
         return ResponseEntity.ok(pagedResources);
     }
 
-    // 사용자가 기여한 모든 프로젝트 리스트 가져오기
-    @GetMapping("/{user_id}/projects")
-    public ResponseEntity  getAllProjects(@PathVariable(value = "user_id") String user_id,
-                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
-        Page<Project> page = this.profileService.getAllProjects(user_id, pageable);
+    //사용자가 참여 중인 숨겨진 프로젝트 리스트 가져오기
+    @GetMapping("/{user_id}/running/hidden")
+    public ResponseEntity  getRunningHiddenProjects(@PathVariable(value = "user_id") String user_id,
+                                              Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+        Page<Project> page = this.profileService.getHiddenRunning(user_id, pageable);
         PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
-        pagedResources.add(linkTo(DocsController.class).slash("#resourcesAllProjectList").withRel("profile"));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesRunningHiddenProjectList").withRel("profile"));
+
+        return ResponseEntity.ok(pagedResources);
+    }
+    //사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기
+    @GetMapping("/{user_id}/ended/hidden")
+    public ResponseEntity  getEndedHiddenProjects(@PathVariable(value = "user_id") String user_id,
+                                            Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+        Page<Project> page = this.profileService.getHiddenEnded(user_id, pageable);
+        PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesEndedHiddenProjectList").withRel("profile"));
+
+        return ResponseEntity.ok(pagedResources);
+    }
+
+    // 사용자가 기획한 숨겨진 프로젝트 리스트 가져오기
+    @GetMapping("/{user_id}/plan/hidden")
+    public ResponseEntity  getMyPlanHiddenProjects(@PathVariable(value = "user_id") String user_id,
+                                             Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+        Page<Project> page = this.profileService.getHiddenPlanner(user_id, pageable);
+        PagedModel<ProjectListResource> pagedResources = assembler.toModel(page, e -> new ProjectListResource(e));
+        pagedResources.add(linkTo(DocsController.class).slash("#resourcesPlannedHiddenProjectList").withRel("profile"));
 
         return ResponseEntity.ok(pagedResources);
     }
