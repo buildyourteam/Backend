@@ -1,7 +1,8 @@
 package com.eskiiimo.api.error;
 
 import com.eskiiimo.api.error.exception.*;
-import javassist.NotFoundException;
+import com.eskiiimo.api.files.exception.FileDownloadException;
+import com.eskiiimo.api.files.exception.FileNameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -70,6 +71,18 @@ public class ExceptionHandleController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleNotFoundRecruit(RecruitNotFoundException exception){
+        return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
+    }
+    @ExceptionHandler(FileNameException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleCantUploadFile(FileNameException exception){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST,exception);
+    }
+    @ExceptionHandler(FileDownloadException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleNotFoundFile(FileDownloadException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
     }
 

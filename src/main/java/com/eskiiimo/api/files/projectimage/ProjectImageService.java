@@ -4,6 +4,7 @@ package com.eskiiimo.api.files.projectimage;
 import com.eskiiimo.api.files.FileService;
 import com.eskiiimo.api.files.FileUploadDto;
 import com.eskiiimo.api.files.FileUploadProperties;
+import com.eskiiimo.api.files.exception.FileDownloadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,9 @@ public class ProjectImageService {
     public FileUploadDto storeProjectImage(Long projectid, MultipartFile file){
         String fileName = fileService.storeFile(file,this.projectImageLocation,projectid.toString());
 
-        ProjectImage projectImage = new ProjectImage(projectid,this.projectImageLocation.resolve(fileName).toString());
+        ProjectImage projectImage = this.projectImageRepository.findByProjectid(projectid).orElse(new ProjectImage());
+        projectImage.setProjectid(projectid);
+        projectImage.setFilePath(this.projectImageLocation.resolve(fileName).toString());
         projectImageRepository.save(projectImage);
         FileUploadDto fileUploadDto= FileUploadDto.builder()
                 .fileName(fileName)
@@ -55,7 +58,8 @@ public class ProjectImageService {
 
 
     public Resource getProjectImage(Long projectid){
-        ProjectImage projectImage =projectImageRepository.findByProjectid(projectid);
+        ProjectImage projectImage =this.projectImageRepository.findByProjectid(projectid)
+                .orElseThrow(()->new FileDownloadException("프로필 이미지가 존재하지 않습니다."));
         Path filePath = Paths.get(projectImage.getFilePath());
         return fileService.loadFileAsResource(filePath);
     }
