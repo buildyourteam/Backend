@@ -201,7 +201,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         ProjectDetailDto project = ProjectDetailDto.builder()
                 .projectName("project1")
                 .teamName("Team1")
-                .endDate(LocalDateTime.of(2020,02,20,11,11))
+                .endDate(LocalDateTime.of(2020,05,20,11,11))
                 .description("Hi this is project1.")
                 .needMember(new ProjectMemberSet(3,4,4,5))
                 .projectField(ProjectField.WEB)

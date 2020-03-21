@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,12 @@ public class Project{
 
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long projectId;
+    @Size(min = 0, max = 150)
     private String projectName;
+    @Size(min = 0, max = 20)
     private String teamName;
     private LocalDateTime endDate;
+    @Size(min = 0, max = 10000)
     private String description;
     private long dday;
     @Builder.Default

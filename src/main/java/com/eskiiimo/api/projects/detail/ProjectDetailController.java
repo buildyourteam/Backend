@@ -4,6 +4,7 @@ import com.eskiiimo.api.common.ErrorResource;
 import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.ProjectRole;
+import com.eskiiimo.api.projects.ProjectValidator;
 import com.eskiiimo.api.projects.list.ProjectListController;
 import com.eskiiimo.api.projects.list.ProjectListResource;
 import com.eskiiimo.api.user.recruit.RecruitDto;
@@ -42,6 +43,8 @@ public class ProjectDetailController {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    ProjectValidator projectValidator;
 
     @GetMapping(value = "/{project_id}")
     public ResponseEntity getProjectDetail(@PathVariable Long project_id){
@@ -90,10 +93,15 @@ public class ProjectDetailController {
         if(errors.hasErrors()) {
             return badRequest(errors);
         }
-
         /*
         ProjectDetail validator
          */
+
+        this.projectValidator.validate(projectDetailDto, errors);
+        if(errors.hasErrors()) {
+            return badRequest(errors);
+        }
+
         Project newProject = this.projectDetailService.storeProject(projectDetailDto,userId);
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectDetailController.class).slash(newProject.getProjectId());
         URI createdUri = selfLinkBuilder.toUri();
