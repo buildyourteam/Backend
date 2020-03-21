@@ -37,7 +37,6 @@ public class ProfileDto {
             User.setStacks(stackList);
             User.setContact(this.contact);
             User.setArea(this.area);
-            User.setLevel(this.level);
             User.setDescription(this.description);
     }
 
