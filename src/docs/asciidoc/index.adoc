@@ -296,13 +296,28 @@ operation::get-planned-project[snippets='curl-request,http-request,http-response
 
 operation::get-ended-project[snippets='curl-request,http-request,http-response,response-fields,links']
 
+[[resourcesRunningHiddenProjectList]]
+=== 사용자가 참여중인 숨겨진 프로젝트
 
-[[resourcesEndedProjectList]]
-=== 사용자가 참여한 모든 프로젝트
+`Get` 요청을 사용해서 사용자가 참여중인 프로젝트를 조회 할 수 있다.
 
-`Get` 요청을 사용해서 사용자 참여한 모든 프로젝트를 조회 할 수 있다.
+operation::get-running-hidden-project[snippets='curl-request,http-request,http-response,response-fields,links']
 
-operation::get-all-projects[snippets='curl-request,http-request,http-response,response-fields,links']
+
+[[resourcesPlannedHiddenProjectList]]
+=== 사용자가 기획한 숨겨진 프로젝트
+
+`Get` 요청을 사용해서 사용자가 기획한 프로젝트를 조회 할 수 있다.
+
+operation::get-planned-hidden-project[snippets='curl-request,http-request,http-response,response-fields,links']
+
+
+[[resourcesEndeHiddendProjectList]]
+=== 사용자가 참여했던 숨겨진 프로젝트
+
+`Get` 요청을 사용해서 사용자가 참여했던 프로젝트를 조회 할 수 있다.
+
+operation::get-ended-hidden-project[snippets='curl-request,http-request,http-response,response-fields,links']
 
 [[hideProject]]
 === 프로젝트 숨기기
