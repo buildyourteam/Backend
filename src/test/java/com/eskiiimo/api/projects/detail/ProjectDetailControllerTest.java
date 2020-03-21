@@ -251,6 +251,33 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username="projectLeader")
+    @Transactional
+    @DisplayName("프로젝트 생성 실패")
+    public void createProjectFailed() throws Exception {
+        this.generateUser("projectLeader");
+        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+        questions.add(ProjectApplyQuestion.builder().question("question1").build());
+        questions.add(ProjectApplyQuestion.builder().question("question2").build());
+        ProjectDetailDto project = ProjectDetailDto.builder()
+                .projectName("project1")
+                .teamName("Team1")
+                .endDate(LocalDateTime.of(2020,02,20,11,11))
+                .description("Hi this is project1.")
+                .needMember(new ProjectMemberSet(3,4,4,5))
+                .projectField(ProjectField.WEB)
+                .applyCanFile(Boolean.TRUE)
+                .questions(questions)
+                .build();
+
+        mockMvc.perform(post("/projects")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(project)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 
 
     @Test
