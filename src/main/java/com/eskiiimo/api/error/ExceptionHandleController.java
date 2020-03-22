@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @ControllerAdvice
 public class ExceptionHandleController {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionHandleController.class);
@@ -84,6 +90,18 @@ public class ExceptionHandleController {
     @ResponseBody
     public ErrorResponse handleNotFoundFile(FileDownloadException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND,exception);
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity handleValidation(ConstraintViolationException exception){
+        Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
+        Set<String> messages = new HashSet<>(constraintViolations.size());
+        messages.addAll(constraintViolations.stream()
+                .map(constraintViolation -> String.format("%s value '%s' %s", constraintViolation.getPropertyPath(),
+                        constraintViolation.getInvalidValue(), constraintViolation.getMessage()))
+                .collect(Collectors.toList()));
+        return new ResponseEntity<>(messages, HttpStatus.BAD_REQUEST);
     }
 
     protected void logging(Throwable throwable) {
