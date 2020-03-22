@@ -10,6 +10,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +34,10 @@ public class User implements UserDetails {
     private String userId;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false, length = 100)
+    @NotBlank
     private String password;
+    @Size(min = 0, max = 20)
+    @NotNull
     private String userName;
     private String userEmail;
     private String area;
@@ -45,6 +51,7 @@ public class User implements UserDetails {
     @JoinColumn(name ="account_id")
     private List<UsersStack> stacks = new ArrayList<UsersStack>();
     private String contact;
+    @Size(min = 0, max = 10000)
     private String description;
 
     @ElementCollection(fetch = FetchType.EAGER)

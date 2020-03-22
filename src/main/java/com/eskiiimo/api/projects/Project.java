@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +25,16 @@ public class Project{
 
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long projectId;
+    @NotNull
+    @Size(min = 0, max = 150)
     private String projectName;
+    @NotNull
+    @Size(min = 0, max = 20)
     private String teamName;
+    @NotNull
     private LocalDateTime endDate;
+    @Size(min = 0, max = 10000)
+    @NotBlank
     private String description;
     private long dday;
     @Builder.Default
@@ -32,6 +43,7 @@ public class Project{
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
     @Embedded
+    @NotNull
     private ProjectMemberSet currentMember;
     @Embedded
     @AttributeOverrides({
@@ -40,6 +52,7 @@ public class Project{
             @AttributeOverride(name="planner", column = @Column(name="needPlanner")),
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
+    @NotNull
     private ProjectMemberSet needMember;
 
     private String leaderId;
