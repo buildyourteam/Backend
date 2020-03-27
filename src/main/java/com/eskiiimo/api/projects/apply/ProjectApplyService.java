@@ -130,7 +130,7 @@ public class ProjectApplyService {
                     break;
                 }
             }
-            User user =  userRepository.findByUserId(visitorId)
+            User user =  userRepository.findByUserId(userId)
                     .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
             ProjectMember projectMember = ProjectMember.builder()
                     .role(memberRole)

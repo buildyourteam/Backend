@@ -56,6 +56,7 @@ public class ProjectDetailController {
         if(myProject){
             projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("updateProject"));
             projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("deleteProject"));
+            projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id+"/apply").withRel("applicants"));
         }
         else
             projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id+"/apply").withRel("apply"));
