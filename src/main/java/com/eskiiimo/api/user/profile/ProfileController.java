@@ -4,6 +4,7 @@ import com.eskiiimo.api.index.DocsController;
 import com.eskiiimo.api.projects.Project;
 import com.eskiiimo.api.projects.list.ProjectListResource;
 import com.eskiiimo.api.projects.list.ProjectListService;
+import com.eskiiimo.api.user.recruit.RecruitController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,8 +40,10 @@ public class ProfileController {
         ProfileResource profileResource = new ProfileResource(profileDto,user_id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication!=null) {
-           if(user_id.equals(authentication.getName()))
-                profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
+           if(user_id.equals(authentication.getName())){
+               profileResource.add(linkTo(ProfileController.class).slash(user_id).withRel("updateProfile"));
+               profileResource.add(linkTo(RecruitController.class,user_id).withRel("recruits"));
+           }
         }
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileGet").withRel("profile"));
         return ResponseEntity.ok(profileResource);
