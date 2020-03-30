@@ -57,6 +57,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 linkWithRel("self").description("self 링크"),
                                 linkWithRel("profileImage").description("프로필 이미지"),
                                 linkWithRel("updateProfile").description("프로필 업데이트"),
+                                linkWithRel("recruits").description("나에게 온 영입제안들"),
                                 linkWithRel("profile").description("Api 명세서")
                         ),
                         pathParameters(
@@ -73,6 +74,7 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
+                                fieldWithPath("_links.recruits.href").description("나에게 온 영입제안들"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
