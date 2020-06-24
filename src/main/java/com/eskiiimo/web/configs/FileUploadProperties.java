@@ -1,4 +1,4 @@
-package com.eskiiimo.repository.files.dto;
+package com.eskiiimo.web.configs;
 
 
 import lombok.Getter;

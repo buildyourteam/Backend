@@ -4,7 +4,7 @@ package com.eskiiimo.web.files.service;
 import com.eskiiimo.repository.files.model.ProfileImage;
 import com.eskiiimo.repository.files.repository.ProfileImageRepository;
 import com.eskiiimo.repository.files.dto.FileUploadDto;
-import com.eskiiimo.repository.files.dto.FileUploadProperties;
+import com.eskiiimo.web.configs.FileUploadProperties;
 import com.eskiiimo.web.files.exception.FileDownloadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
