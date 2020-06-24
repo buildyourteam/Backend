@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.entity;
+package com.eskiiimo.repository.error.model;
 
 import lombok.Getter;
 import lombok.Setter;

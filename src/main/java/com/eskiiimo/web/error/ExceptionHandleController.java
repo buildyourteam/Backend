@@ -1,5 +1,6 @@
 package com.eskiiimo.web.error;
 
+import com.eskiiimo.repository.error.dto.ErrorResponse;
 import com.eskiiimo.web.error.exception.*;
 import com.eskiiimo.web.files.exception.FileDownloadException;
 import com.eskiiimo.web.files.exception.FileNameException;

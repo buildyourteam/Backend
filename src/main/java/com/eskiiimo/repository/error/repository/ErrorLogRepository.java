@@ -1,5 +1,6 @@
-package com.eskiiimo.web.error.entity;
+package com.eskiiimo.repository.error.repository;
 
+import com.eskiiimo.repository.error.model.ErrorLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,7 @@
-package com.eskiiimo.web.error.entity;
+package com.eskiiimo.web.error;
 
+import com.eskiiimo.repository.error.model.ErrorLog;
+import com.eskiiimo.repository.error.repository.ErrorLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

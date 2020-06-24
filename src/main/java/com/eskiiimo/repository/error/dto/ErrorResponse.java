@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error;
+package com.eskiiimo.repository.error.dto;
 
 
 import lombok.Getter;
