@@ -1,6 +1,6 @@
 package com.eskiiimo.web.common;
 
-import com.eskiiimo.web.index.IndexController;
+import com.eskiiimo.web.index.controller.IndexController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.validation.Errors;

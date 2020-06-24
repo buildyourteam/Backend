@@ -1,7 +1,7 @@
 package com.eskiiimo.web;
 
 
-import com.eskiiimo.web.files.FileUploadProperties;
+import com.eskiiimo.repository.files.dto.FileUploadProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

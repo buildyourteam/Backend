@@ -3,7 +3,7 @@ package com.eskiiimo.web.projects.controller;
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
 import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.web.common.ErrorResource;
-import com.eskiiimo.web.index.DocsController;
+import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.validator.ProjectValidator;

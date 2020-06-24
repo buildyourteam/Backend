@@ -6,7 +6,7 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.util.ContextUtil;
 import com.eskiiimo.web.error.config.LogConfig;
 import com.eskiiimo.repository.error.model.ErrorLog;
-import com.eskiiimo.web.error.ErrorLogService;
+import com.eskiiimo.web.error.service.ErrorLogService;
 import com.eskiiimo.web.error.util.JsonUtils;
 import com.eskiiimo.web.error.util.MDCUtil;
 import net.gpedro.integrations.slack.SlackApi;

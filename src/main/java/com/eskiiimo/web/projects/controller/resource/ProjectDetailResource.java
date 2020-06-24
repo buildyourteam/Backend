@@ -1,7 +1,7 @@
 package com.eskiiimo.web.projects.controller.resource;
 
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
-import com.eskiiimo.web.projects.controller.ProjectImageController;
+import com.eskiiimo.web.files.controller.ProjectImageController;
 import com.eskiiimo.web.projects.controller.ProjectDetailController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

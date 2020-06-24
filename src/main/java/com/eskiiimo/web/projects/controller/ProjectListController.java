@@ -1,6 +1,6 @@
 package com.eskiiimo.web.projects.controller;
 
-import com.eskiiimo.web.index.DocsController;
+import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.controller.resource.ProjectListResource;

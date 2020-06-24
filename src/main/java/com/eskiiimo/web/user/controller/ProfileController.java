@@ -1,6 +1,6 @@
 package com.eskiiimo.web.user.controller;
 
-import com.eskiiimo.web.index.DocsController;
+import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.controller.resource.ProjectListResource;
 import com.eskiiimo.web.projects.service.ProjectListService;

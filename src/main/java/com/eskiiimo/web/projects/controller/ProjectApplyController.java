@@ -2,7 +2,7 @@ package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.ProjectApplicantDto;
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
-import com.eskiiimo.web.index.DocsController;
+import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.web.projects.controller.resource.ProjectApplicantResource;
 import com.eskiiimo.web.projects.controller.resource.ProjectApplicantsResource;
 import com.eskiiimo.web.projects.controller.resource.ProjectApplyResource;

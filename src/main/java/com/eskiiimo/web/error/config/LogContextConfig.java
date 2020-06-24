@@ -2,7 +2,7 @@ package com.eskiiimo.web.error.config;
 
 import ch.qos.logback.classic.LoggerContext;
 import com.eskiiimo.web.error.appender.CustomLogbackAppender;
-import com.eskiiimo.web.error.ErrorLogService;
+import com.eskiiimo.web.error.service.ErrorLogService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

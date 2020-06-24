@@ -1,7 +1,7 @@
 package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.RecruitDto;
-import com.eskiiimo.web.index.DocsController;
+import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.web.projects.controller.resource.RecruitListResource;
 import com.eskiiimo.web.projects.controller.resource.RecruitResource;
 import com.eskiiimo.web.projects.service.RecruitService;

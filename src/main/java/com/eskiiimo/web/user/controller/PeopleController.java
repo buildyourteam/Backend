@@ -1,7 +1,7 @@
 package com.eskiiimo.web.user.controller;
 
 import com.eskiiimo.repository.user.model.People;
-import com.eskiiimo.web.index.DocsController;
+import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.user.controller.resource.PeopleResource;
 import com.eskiiimo.web.user.service.PeopleService;
