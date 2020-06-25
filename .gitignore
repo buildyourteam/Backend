@@ -1,4 +1,5 @@
 files/profileimg/
 files/projectimg/
-ProjectRecruitController.java
 .idea
+.gradle/
+build/
