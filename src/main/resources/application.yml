@@ -36,8 +36,8 @@ jwt:
 log:
   slack:
     enabled: true
-    webHookUrl: https://hooks.slack.com/services/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
-    channel: backend_logback
+    webHookUrl: https://hooks.slack.com/services/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
+    channel: error-report-bot
   database:
     enabled: true
   level: ERROR
