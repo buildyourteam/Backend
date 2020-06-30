@@ -28,3 +28,20 @@ jobs:
       run : dos2unix ./gradlew 
     - name: Build with Gradle
       run: ./gradlew build
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: custom
+        fields: workflow,job,commit,repo,ref,author,took,message
+        custom_payload: |
+          {
+            attachments: [{
+              color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+              text: `${process.env.AS_AUTHOR}의 커밋이(${process.env.AS_COMMIT}) ${process.env.AS_TOOK} 만에 ${{ job.status }}\n
+              커밋 메시지  :  ${process.env.AS_MESSAGE}\n
+              자세히 보기  :  ${process.env.AS_WORKFLOW}`,
+            }]
+          }
+      env:
+        GITHUB_TOKEN: 7f40bdc72f4caec05b6a4d429f2c9ba756592a98
+        SLACK_WEBHOOK_URL:  https://hooks.slack.com/services/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  # required
+      if: always()
