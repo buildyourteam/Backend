@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
+@Table(name = "T_PEOPLE")
 public class People {
     private String userId;
     private String userName;

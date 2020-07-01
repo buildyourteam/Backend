@@ -21,6 +21,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(of="projectId")
 @Entity
+@Table(name = "T_PROJECT")
 public class Project{
 
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)

@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(of="recruitId")
 @Entity
+@Table(name = "T_RECRUIT")
 public class Recruit {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

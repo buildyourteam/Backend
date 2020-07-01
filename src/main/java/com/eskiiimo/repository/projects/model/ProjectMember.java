@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(of="projectMemberId")
 @Entity
-
+@Table(name = "T_PROJECT_MEMBER")
 public class ProjectMember {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

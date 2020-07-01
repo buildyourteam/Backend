@@ -8,10 +8,12 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of="projectid")
 @Entity
+@Table(name = "T_PROJECT_IMAGE")
 public class ProjectImage {
 
     @Id
