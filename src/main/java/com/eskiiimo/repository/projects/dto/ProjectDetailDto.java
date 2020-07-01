@@ -1,12 +1,12 @@
 package com.eskiiimo.repository.projects.dto;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
+import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.web.projects.controller.resource.ProjectMemberResource;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.web.projects.enumtype.Status;
+import com.eskiiimo.web.projects.enumtype.State;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,8 +22,8 @@ public class ProjectDetailDto {
     private String projectName;
     private String teamName;
     private LocalDateTime endDate;
-    private String description;
-    private Status status;
+    private String introduction;
+    private State state;
     private long dday;
     private ProjectField projectField;
     private Boolean applyCanFile;
@@ -34,12 +34,12 @@ public class ProjectDetailDto {
 
 
     @Builder
-    public ProjectDetailDto(String projectName, String teamName, LocalDateTime endDate, String description, Status status, ProjectMemberSet currentMember, ProjectMemberSet needMember, List<ProjectMember> memberList, long dday, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
+    public ProjectDetailDto(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectMemberSet currentMember, ProjectMemberSet needMember, List<ProjectMember> memberList, long dday, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;
-        this.description = description;
-        this.status = status;
+        this.introduction = introduction;
+        this.state = state;
         this.currentMember = currentMember;
         this.needMember = needMember;
         this.dday=dday;
@@ -72,11 +72,11 @@ public class ProjectDetailDto {
                 project.setProjectName(this.projectName);
                 project.setTeamName(this.teamName);
                 project.setEndDate(this.endDate);
-                project.setDescription(this.description);
-                if(this.status==null)
-                    project.setStatus(Status.RECRUTING);
+                project.setIntroduction(this.introduction);
+                if(this.state==null)
+                    project.setState(State.RECRUTING);
                 else
-                    project.setStatus(this.status);
+                    project.setState(this.state);
                 project.setDday(ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate));
                 project.setProjectField(this.projectField);
                 project.setApplyCanFile(this.applyCanFile);

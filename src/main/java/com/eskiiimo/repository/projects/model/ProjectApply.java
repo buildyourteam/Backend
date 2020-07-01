@@ -1,7 +1,7 @@
 package com.eskiiimo.repository.projects.model;
 
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.ProjectApplyStatus;
+import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import com.eskiiimo.repository.user.model.User;
 import lombok.*;
 
@@ -16,13 +16,14 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(of="applyId")
 @Entity
+@Table(name = "T_APPLY")
 public class ProjectApply {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long applyId;
     @Enumerated(EnumType.STRING)
-    private ProjectApplyStatus status;
-    private String selfDescription;
+    private ProjectApplyState state;
+    private String introduction;
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
 

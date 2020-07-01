@@ -10,7 +10,7 @@ import com.eskiiimo.web.error.exception.*;
 import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
-import com.eskiiimo.web.projects.enumtype.ProjectApplyStatus;
+import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
@@ -65,7 +65,7 @@ public class ProjectApplyService {
         ProjectApply projectApply = projectApplyRepository.findByUser_UserId(visitorId)
                 .orElseThrow(()->new ApplyNotFoundException("지원정보가 존재하지 않습니다."));
         project.getApplies().remove(projectApply);
-        projectApply.setSelfDescription(apply.getSelfDescription());
+        projectApply.setIntroduction(apply.getIntroduction());
         projectApply.setRole(apply.getRole());
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         for(String answer : apply.getAnswers())
@@ -86,7 +86,7 @@ public class ProjectApplyService {
 
             for(ProjectApply projectApply : project.getApplies()){
                 ProjectApplicantDto projectApplicantDto =ProjectApplicantDto.builder()
-                        .status(projectApply.getStatus())
+                        .state(projectApply.getState())
                         .userId(projectApply.getUser().getUserId())
                         .userName(projectApply.getUser().getUserName())
                         .role(projectApply.getRole())
@@ -104,15 +104,15 @@ public class ProjectApplyService {
         if(this.isLeader(project,visitorId)) {
             for(ProjectApply projectApply : project.getApplies()){
                 if(projectApply.getUser().getUserId().equals(userId)){
-                    if(projectApply.getStatus()== ProjectApplyStatus.UNREAD)
-                        projectApply.setStatus(ProjectApplyStatus.READ);
+                    if(projectApply.getState()== ProjectApplyState.UNREAD)
+                        projectApply.setState(ProjectApplyState.READ);
                     projectApplyRepository.save(projectApply);
                     ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
                             .userName(projectApply.getUser().getUsername())
                             .questions(project.getQuestions())
                             .answers(projectApply.getAnswers())
-                            .selfDescription(projectApply.getSelfDescription())
-                            .status(projectApply.getStatus())
+                            .introduction(projectApply.getIntroduction())
+                            .state(projectApply.getState())
                             .role(projectApply.getRole())
                             .build();
                     this.projectRepository.save(project);
@@ -132,7 +132,7 @@ public class ProjectApplyService {
                 if(projectApply.getUser().getUserId().equals(userId)){
                     project.getApplies().remove(projectApply);
                     memberRole= projectApply.getRole();
-                    projectApply.setStatus(ProjectApplyStatus.ACCEPT);
+                    projectApply.setState(ProjectApplyState.ACCEPT);
                     project.getApplies().add(projectApply);
                     this.projectApplyRepository.save(projectApply);
                     break;
@@ -169,7 +169,7 @@ public class ProjectApplyService {
         if(isLeader(project,visitorId)) {
             for (ProjectApply projectApply : project.getApplies()) {
                 if (projectApply.getUser().getUserId().equals(userId)) {
-                    projectApply.setStatus(ProjectApplyStatus.REJECT);
+                    projectApply.setState(ProjectApplyState.REJECT);
                     this.projectApplyRepository.save(projectApply);
                     this.projectRepository.save(project);
                     return Boolean.TRUE;

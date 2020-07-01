@@ -8,7 +8,7 @@ import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.RecruitStatus;
+import com.eskiiimo.web.projects.enumtype.RecruitState;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,8 +59,8 @@ public class RecruitService {
     public RecruitDto getRecruit(String userId, Long projectId, String visitorId) {
         UserAndProjectNotFoundCheck(userId, projectId, visitorId);
         Recruit recruit = this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId).orElseThrow(()->new RecruitNotFoundException("해당 영입제안이 없습니다."));
-        if(recruit.getStatus().equals(RecruitStatus.UNREAD)){
-            recruit.setStatus(RecruitStatus.READ);
+        if(recruit.getState().equals(RecruitState.UNREAD)){
+            recruit.setState(RecruitState.READ);
             this.recruitRepository.save(recruit);
         }
         return this.modelMapper.map(recruit, RecruitDto.class);
@@ -70,8 +70,8 @@ public class RecruitService {
     public void acceptRecruit(String userId, Long projectId,String visitorId) {
         UserAndProjectNotFoundCheck(userId, projectId, visitorId);
         Recruit recruit = this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId).orElseThrow(()->new RecruitNotFoundException("해당 영입제안이 없습니다."));
-        if(!recruit.getStatus().equals(RecruitStatus.ACCEPT)){
-            recruit.setStatus(RecruitStatus.ACCEPT);
+        if(!recruit.getState().equals(RecruitState.ACCEPT)){
+            recruit.setState(RecruitState.ACCEPT);
             this.recruitRepository.save(recruit);
         }
     }
@@ -80,7 +80,7 @@ public class RecruitService {
     public void rejectRecruit(String userId, Long projectId, String visitorId) {
         UserAndProjectNotFoundCheck(userId, projectId, visitorId);
         Recruit recruit = this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId).orElseThrow(()->new RecruitNotFoundException("해당 영입제안이 없습니다."));
-        recruit.setStatus(RecruitStatus.REJECT);
+        recruit.setState(RecruitState.REJECT);
         this.recruitRepository.save(recruit);
     }
 

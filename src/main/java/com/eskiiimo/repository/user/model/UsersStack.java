@@ -14,6 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @EqualsAndHashCode(of="stackId")
 @Entity
+@Table(name = "T_USERS_STACK")
 public class UsersStack {
 
     @Id

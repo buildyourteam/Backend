@@ -4,7 +4,7 @@ import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
-import com.eskiiimo.web.projects.enumtype.ProjectApplyStatus;
+import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import com.eskiiimo.repository.user.model.User;
 import lombok.*;
 
@@ -17,16 +17,16 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectApplyDto {
     private String userName;
-    private ProjectApplyStatus status;
+    private ProjectApplyState state;
     private List<String> questions;
     private List<String> answers;
-    private String selfDescription;
+    private String introduction;
     private ProjectRole role;
 
     @Builder
-    public ProjectApplyDto(String userName, ProjectApplyStatus status, List<ProjectApplyQuestion> questions, List<ProjectApplyAnswer> answers, String selfDescription, ProjectRole role){
+    public ProjectApplyDto(String userName, ProjectApplyState state, List<ProjectApplyQuestion> questions, List<ProjectApplyAnswer> answers, String introduction, ProjectRole role){
         this.userName = userName;
-        this.status = status;
+        this.state = state;
         if(questions!=null) {
         List<String> questionList = new ArrayList<>();
         for(ProjectApplyQuestion question : questions)
@@ -37,7 +37,7 @@ public class ProjectApplyDto {
             for (ProjectApplyAnswer answer : answers)
                 answerList.add(answer.getAnswer());
             this.answers = answerList;
-        this.selfDescription = selfDescription;
+        this.introduction = introduction;
         this.role = role;
     }
     public ProjectApply toEntity(User user){
@@ -46,8 +46,8 @@ public class ProjectApplyDto {
             answers.add(ProjectApplyAnswer.builder().answer(answer).build());
         ProjectApply projectApply = ProjectApply.builder()
                 .answers(answers)
-                .selfDescription(this.selfDescription)
-                .status(ProjectApplyStatus.UNREAD)
+                .introduction(this.introduction)
+                .state(ProjectApplyState.UNREAD)
                 .user(user)
                 .role(role)
                 .build();

@@ -24,25 +24,25 @@ public class PeopleService {
     UserRepository userRepository;
 
     @Transactional
-    public Page<People> getPeople(Long level, ProjectRole role, String area, Pageable pageable){
+    public Page<People> getPeople(Long grade, ProjectRole role, String area, Pageable pageable){
         Page<User> page = userRepository.findAll(pageable);
         Page<People> dtopage;
 
-        if(level != null){
+        if(grade != null){
             if(role!=null){
                 if(area!=null){//세개 다
-                    page = userRepository.findAllByAreaAndRoleAndLevel(area, role, level, pageable);
+                    page = userRepository.findAllByAreaAndRoleAndGrade(area, role, grade, pageable);
                 }
-                else{//level,role
-                    page = userRepository.findAllByRoleAndLevel(role, level, pageable);
+                else{//grade,role
+                    page = userRepository.findAllByRoleAndGrade(role, grade, pageable);
                 }
             }
             else{
-                if(area!=null){//level, area
-                    page= userRepository.findAllByLevelAndArea(level,area,pageable);
+                if(area!=null){//grade, area
+                    page= userRepository.findAllByGradeAndArea(grade,area,pageable);
                 }
-                else {//level
-                    page = userRepository.findAllByLevel(level, pageable);
+                else {//grade
+                    page = userRepository.findAllByGrade(grade, pageable);
                 }
             }
         }
@@ -81,7 +81,7 @@ public class PeopleService {
                 .userName(profile.getUserName())
                 .stacks(stackList)
                 .area(profile.getArea())
-                .level(profile.getLevel())
+                .grade(profile.getGrade())
                 .build();
         return dto;
     }
