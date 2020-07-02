@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.exception;
+package com.eskiiimo.web.user.exception;
 
 public class ProjectMemberNotFoundException extends RuntimeException {
     public ProjectMemberNotFoundException(String message) {
