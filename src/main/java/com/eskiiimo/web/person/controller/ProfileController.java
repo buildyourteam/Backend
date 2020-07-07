@@ -1,13 +1,13 @@
-package com.eskiiimo.web.user.controller;
+package com.eskiiimo.web.person.controller;
 
 import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.controller.resource.ProjectListResource;
 import com.eskiiimo.web.projects.service.ProjectListService;
 import com.eskiiimo.web.projects.controller.RecruitController;
-import com.eskiiimo.repository.user.dto.ProfileDto;
-import com.eskiiimo.web.user.controller.resource.ProfileResource;
-import com.eskiiimo.web.user.service.ProfileService;
+import com.eskiiimo.repository.person.dto.ProfileDto;
+import com.eskiiimo.web.person.controller.resource.ProfileResource;
+import com.eskiiimo.web.person.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

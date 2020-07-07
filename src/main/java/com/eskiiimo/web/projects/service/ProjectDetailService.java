@@ -3,14 +3,14 @@ package com.eskiiimo.web.projects.service;
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
 import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
+import com.eskiiimo.repository.projects.model.ProjectPerson;
+import com.eskiiimo.repository.projects.repository.ProjectPersonRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.web.error.exception.ProjectNotFoundException;
 import com.eskiiimo.web.error.exception.UserNotFoundException;
 import com.eskiiimo.web.error.exception.YouAreNotReaderException;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import com.eskiiimo.repository.projects.model.Recruit;
 import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
@@ -27,9 +27,9 @@ import java.util.List;
 public class ProjectDetailService {
 
     private final ProjectRepository projectRepository;
-    private final ProjectMemberRepository projectMemberRepository;
+    private final ProjectPersonRepository projectPersonRepository;
     private final ProjectApplyService projectApplyService;
-    private final UserRepository userRepository;
+    private final PersonRepository personRepository;
     private final RecruitRepository recruitRepository;
     private final ModelMapper modelMapper;
 
@@ -49,8 +49,8 @@ public class ProjectDetailService {
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(!this.isLeader(project,userId))
             throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
-            for(ProjectMember projectMember : project.getProjectMembers()){
-                this.projectMemberRepository.delete(projectMember);
+            for(ProjectPerson projectPerson : project.getProjectPersons()){
+                this.projectPersonRepository.delete(projectPerson);
             }
             this.projectRepository.deleteByProjectId(id);
             return Boolean.TRUE;
@@ -81,7 +81,7 @@ public class ProjectDetailService {
     public List<RecruitDto> getRecruits(String visitorId, Long project_id) {
         Project project = this.projectRepository.findById(project_id)
                 .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        this.userRepository.findByUserId(visitorId)
+        this.personRepository.findByPersonId(visitorId)
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
 
         if (!visitorId.equals(project.getLeaderId())){
@@ -101,14 +101,14 @@ public class ProjectDetailService {
                 .projectName(project.getProjectName())
                 .teamName(project.getTeamName())
                 .endDate(project.getEndDate())
-                .description(project.getDescription())
-                .status(project.getStatus())
-                .needMember(project.getNeedMember())
-                .memberList(project.getProjectMembers())
+                .projectDescription(project.getProjectDescription())
+                .recruitStatus(project.getRecruitStatus())
+                .needPerson(project.getNeedPerson())
+                .personList(project.getProjectPersons())
                 .questions(project.getQuestions())
                 .applyCanFile(project.getApplyCanFile())
-                .currentMember(project.getCurrentMember())
-                .dday(project.getDday())
+                .currentPerson(project.getCurrentPerson())
+                .dDay(project.getDday())
                 .projectField(project.getProjectField())
                 .build();
 
@@ -116,9 +116,9 @@ public class ProjectDetailService {
 
     }
     public Boolean isLeader(Project project,String visitorId){
-        for(ProjectMember projectMember : project.getProjectMembers()){
-            if(projectMember.getRole().equals(ProjectRole.LEADER)){
-                if(projectMember.getUser().getUserId().equals(visitorId)) {
+        for(ProjectPerson projectPerson : project.getProjectPersons()){
+            if(projectPerson.getProjectRole().equals(ProjectRole.LEADER)){
+                if(projectPerson.getPerson().getPersonId().equals(visitorId)) {
                     return Boolean.TRUE;
                 }
             }

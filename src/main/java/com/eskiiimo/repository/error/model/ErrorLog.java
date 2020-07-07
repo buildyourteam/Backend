@@ -13,19 +13,19 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "ERROR_LOGS")
+@Table(name = "ERROR_LOG")
 public class ErrorLog {
 
     @Id
     @Column(name = "ID", precision = 20)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long error_id;
 
     @Column(name = "PHASE", length = 10)
-    private String phase;
+    private String error_phase;
 
     @Column(name = "SYSTEM", length = 50)
-    private String system;
+    private String error_system;
 
     @Column(name = "LOGGER_NAME", length = 300)
     private String loggerName;
@@ -37,7 +37,7 @@ public class ErrorLog {
     private String hostName;
 
     @Column(name = "PATH", length = 2048)
-    private String path;
+    private String error_path;
 
     @Column(name = "BODY",columnDefinition = "TEXT")
     private String body;
@@ -61,7 +61,7 @@ public class ErrorLog {
     private String parameterMap;
 
     @Column(name = "USER_INFO", columnDefinition = "TEXT")
-    private String userInfo;
+    private String personInfo;
 
     @Column(name = "AGENT_DETAIL", columnDefinition = "TEXT")
     private String agentDetail;
@@ -73,13 +73,13 @@ public class ErrorLog {
 
         ErrorLog errorLog = (ErrorLog) o;
 
-        if (id != null ? !id.equals(errorLog.id) : errorLog.id != null) return false;
-        if (phase != null ? !phase.equals(errorLog.phase) : errorLog.phase != null) return false;
-        if (system != null ? !system.equals(errorLog.system) : errorLog.system != null) return false;
+        if (error_id != null ? !error_id.equals(errorLog.error_id) : errorLog.error_id != null) return false;
+        if (error_phase != null ? !error_phase.equals(errorLog.error_phase) : errorLog.error_phase != null) return false;
+        if (error_system != null ? !error_system.equals(errorLog.error_system) : errorLog.error_system != null) return false;
         if (loggerName != null ? !loggerName.equals(errorLog.loggerName) : errorLog.loggerName != null) return false;
         if (serverName != null ? !serverName.equals(errorLog.serverName) : errorLog.serverName != null) return false;
         if (hostName != null ? !hostName.equals(errorLog.hostName) : errorLog.hostName != null) return false;
-        if (path != null ? !path.equals(errorLog.path) : errorLog.path != null) return false;
+        if (error_path != null ? !error_path.equals(errorLog.error_path) : errorLog.error_path != null) return false;
         if(body != null ? !body.equals(errorLog.body) : errorLog.body != null) return false;
         if (message != null ? !message.equals(errorLog.message) : errorLog.message != null) return false;
         if (trace != null ? !trace.equals(errorLog.trace) : errorLog.trace != null) return false;
@@ -89,20 +89,20 @@ public class ErrorLog {
         if (headerMap != null ? !headerMap.equals(errorLog.headerMap) : errorLog.headerMap != null) return false;
         if (parameterMap != null ? !parameterMap.equals(errorLog.parameterMap) : errorLog.parameterMap != null)
             return false;
-        if (userInfo != null ? !userInfo.equals(errorLog.userInfo) : errorLog.userInfo != null) return false;
+        if (personInfo != null ? !personInfo.equals(errorLog.personInfo) : errorLog.personInfo != null) return false;
         return !(agentDetail != null ? !agentDetail.equals(errorLog.agentDetail) : errorLog.agentDetail != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (phase != null ? phase.hashCode() : 0);
-        result = 31 * result + (system != null ? system.hashCode() : 0);
+        int result = error_id != null ? error_id.hashCode() : 0;
+        result = 31 * result + (error_phase != null ? error_phase.hashCode() : 0);
+        result = 31 * result + (error_system != null ? error_system.hashCode() : 0);
         result = 31 * result + (loggerName != null ? loggerName.hashCode() : 0);
         result = 31 * result + (serverName != null ? serverName.hashCode() : 0);
         result = 31 * result + (hostName != null ? hostName.hashCode() : 0);
-        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (error_path != null ? error_path.hashCode() : 0);
         result = 31 * result + (body != null ? body.hashCode() : 0);
         result = 31 * result + (message != null ? message.hashCode() : 0);
         result = 31 * result + (trace != null ? trace.hashCode() : 0);
@@ -110,7 +110,7 @@ public class ErrorLog {
         result = 31 * result + (alertYn != null ? alertYn.hashCode() : 0);
         result = 31 * result + (headerMap != null ? headerMap.hashCode() : 0);
         result = 31 * result + (parameterMap != null ? parameterMap.hashCode() : 0);
-        result = 31 * result + (userInfo != null ? userInfo.hashCode() : 0);
+        result = 31 * result + (personInfo != null ? personInfo.hashCode() : 0);
         result = 31 * result + (agentDetail != null ? agentDetail.hashCode() : 0);
         return result;
     }
@@ -118,13 +118,13 @@ public class ErrorLog {
     @Override
     public String toString() {
         return "ErrorLog{" +
-                "id=" + id +
-                ", phase='" + phase + '\'' +
-                ", system='" + system + '\'' +
+                "error_id=" + error_id +
+                ", error_phase='" + error_phase + '\'' +
+                ", error_system='" + error_system + '\'' +
                 ", loggerName='" + loggerName + '\'' +
                 ", serverName='" + serverName + '\'' +
                 ", hostName='" + hostName + '\'' +
-                ", path='" + path + '\'' +
+                ", error_path='" + error_path + '\'' +
                 ", body='" + body + '\'' +
                 ", message='" + message + '\'' +
                 ", trace='" + trace + '\'' +
@@ -132,7 +132,7 @@ public class ErrorLog {
                 ", alertYn='" + alertYn + '\'' +
                 ", headerMap='" + headerMap + '\'' +
                 ", parameterMap='" + parameterMap + '\'' +
-                ", userInfo='" + userInfo + '\'' +
+                ", personInfo='" + personInfo + '\'' +
                 ", agentDetail='" + agentDetail + '\'' +
                 '}';
     }

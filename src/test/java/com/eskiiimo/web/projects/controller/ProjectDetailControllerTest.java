@@ -3,14 +3,14 @@ package com.eskiiimo.web.projects.controller;
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
 import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
+import com.eskiiimo.repository.projects.model.ProjectPerson;
+import com.eskiiimo.repository.projects.repository.ProjectPersonRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.web.projects.enumtype.*;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.model.Person;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import com.eskiiimo.repository.projects.dto.RecruitDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,10 +49,10 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     ProjectRepository projectRepository;
 
     @Autowired
-    ProjectMemberRepository projectMemberRepository;
+    ProjectPersonRepository projectPersonRepository;
 
     @Autowired
-    UserRepository userRepository;
+    PersonRepository personRepository;
 
     @Test
     @DisplayName("프로젝트 상세 페이지 확인하기")
@@ -85,23 +85,23 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("projectName").description("프로젝트 이름"),
                                 fieldWithPath("teamName").description("팀명"),
                                 fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("projectDescription").description("프로젝트에 대한 설명"),
+                                fieldWithPath("recruitStatus").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("dday").description("마감일까지 남은 일"),
-                                fieldWithPath("currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("currentMember.designer").description("현재 디자이너 수r"),
-                                fieldWithPath("currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("currentMember.etc").description("현재 기타 인원수"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
-                                fieldWithPath("memberList[].userName").description("프로젝트 팀원의 이름"),
-                                fieldWithPath("memberList[].role").description("프로젝트 팀원의 역할"),
-                                fieldWithPath("memberList[].stack").description("프로젝트 팀원의 기술스택"),
-                                fieldWithPath("memberList[].level").description("프로젝트 팀원의 레벨"),
-                                fieldWithPath("memberList[]._links.self.href").description("프로젝트 팀원의 프로필"),
+                                fieldWithPath("currentPerson.developer").description("현재 개발자 수"),
+                                fieldWithPath("currentPerson.designer").description("현재 디자이너 수r"),
+                                fieldWithPath("currentPerson.planner").description("현재 기획자 수"),
+                                fieldWithPath("currentPerson.etc").description("현재 기타 인원수"),
+                                fieldWithPath("needPerson.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needPerson.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needPerson.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needPerson.etc").description("그 외 필요한 인원수"),
+                                fieldWithPath("personList[].personName").description("프로젝트 팀원의 이름"),
+                                fieldWithPath("personList[].projectRole").description("프로젝트 팀원의 역할"),
+                                fieldWithPath("personList[].stack").description("프로젝트 팀원의 기술스택"),
+                                fieldWithPath("personList[].personLevel").description("프로젝트 팀원의 레벨"),
+                                fieldWithPath("personList[]._links.self.href").description("프로젝트 팀원의 프로필"),
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("_links.self.href").description("Self 링크"),
@@ -126,41 +126,41 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         this.joinProjectLeader(project_id,"tester");
 
 
-        User user01 = User.builder()
-                .userName("유저01")
-                .userId("user01")
+        Person user01 = Person.builder()
+                .personName("유저01")
+                .personId("user01")
                 .password("testpassword")
                 .build();
-        this.userRepository.save(user01);
-        User user02 = User.builder()
-                .userName("유저02")
-                .userId("user02")
+        this.personRepository.save(user01);
+        Person user02 = Person.builder()
+                .personName("유저02")
+                .personId("user02")
                 .password("testpassword2")
                 .build();
-        this.userRepository.save(user02);
+        this.personRepository.save(user02);
 
         RecruitDto recruitDto1 = RecruitDto.builder()
 //                .project(project)
                 .projectId(project_id)
-                .userName("user01")
+                .personName("user01")
                 .selfDescription("프로젝트 영입하고 싶습니다.")
-                .role(ProjectRole.DEVELOPER)
+                .projectRole(ProjectRole.DEVELOPER)
                 .build();
         RecruitDto recruitDto2 = RecruitDto.builder()
 //                .project(project)
                 .projectId(project_id)
-                .userName("user02")
+                .personName("user02")
                 .selfDescription("프로젝트 영입하고 싶습니다.")
-                .role(ProjectRole.DEVELOPER)
+                .projectRole(ProjectRole.DEVELOPER)
                 .build();
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","user01", project_id)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{personId}/recruit/{projectId}","user01", project_id)
                 .content(objectMapper.writeValueAsString(recruitDto1))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","user02", project_id)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{personId}/recruit/{projectId}","user02", project_id)
                 .content(objectMapper.writeValueAsString(recruitDto2))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
@@ -175,10 +175,10 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("_embedded.recruitDtoList[].userName").description("유저이름"),
+                                fieldWithPath("_embedded.recruitDtoList[].personName").description("유저이름"),
                                 fieldWithPath("_embedded.recruitDtoList[].selfDescription").description("자기소개"),
-                                fieldWithPath("_embedded.recruitDtoList[].role").description("지원할 역할"),
-                                fieldWithPath("_embedded.recruitDtoList[].status").description("상태"),
+                                fieldWithPath("_embedded.recruitDtoList[].projectRole").description("지원할 역할"),
+                                fieldWithPath("_embedded.recruitDtoList[].suggestStatus").description("상태"),
                                 fieldWithPath("_embedded.recruitDtoList[].projectId").description("영입 제안 프로젝트 Id"),
                                 fieldWithPath("_embedded.recruitDtoList[].projectName").description("영입 제안 프로젝트 이름"),
                                 fieldWithPath("_embedded.recruitDtoList[]._links.self.href").description("self 링크"),
@@ -208,8 +208,8 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .projectName("project1")
                 .teamName("Team1")
                 .endDate(LocalDateTime.of(2022,05,20,11,11))
-                .description("Hi this is project1.")
-                .needMember(new ProjectMemberSet(3,4,4,5))
+                .projectDescription("Hi this is project1.")
+                .needPerson(new ProjectPersonSet(3,4,4,5))
                 .projectField(ProjectField.WEB)
                 .applyCanFile(Boolean.TRUE)
                 .questions(questions)
@@ -235,18 +235,18 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("projectName").description("프로젝트 이름"),
                                 fieldWithPath("teamName").description("팀명"),
                                 fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("status").description("프로젝트 상태(모집중)"),
+                                fieldWithPath("projectDescription").description("프로젝트에 대한 설명"),
+                                fieldWithPath("recruitStatus").description("프로젝트 상태(모집중)"),
                                 fieldWithPath("dday").description("마감일까지 남은 일"),
-                                fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
+                                fieldWithPath("personList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember").description("팀원 현황"),
+                                fieldWithPath("currentPerson").description("팀원 현황"),
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
+                                fieldWithPath("needPerson.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needPerson.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needPerson.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needPerson.etc").description("그 외 필요한 인원수")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
@@ -271,8 +271,8 @@ class ProjectDetailControllerTest extends BaseControllerTest {
 //                .teamName("Team1")
                 .endDate(LocalDateTime.of(2022,05,20,11,11))
 //                .description("Hi this is project1.")
-                .needMember(new ProjectMemberSet(3,4,4,5))
-                .currentMember(new ProjectMemberSet(0,4,4,5))
+                .needPerson(new ProjectPersonSet(3,4,4,5))
+                .currentPerson(new ProjectPersonSet(0,4,4,5))
                 .projectField(ProjectField.WEB)
                 .applyCanFile(Boolean.TRUE)
                 .questions(questions)
@@ -301,9 +301,9 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .projectName(project1.getProjectName())
                 .teamName(project1.getTeamName())
                 .endDate(project1.getEndDate())
-                .description(project1.getDescription())
-                .status(project1.getStatus())
-                .needMember(project1.getNeedMember())
+                .projectDescription(project1.getProjectDescription())
+                .recruitStatus(project1.getRecruitStatus())
+                .needPerson(project1.getNeedPerson())
                 .questions(project1.getQuestions())
                 .applyCanFile(project1.getApplyCanFile())
                 .projectField(project1.getProjectField())
@@ -333,16 +333,16 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("projectName").description("프로젝트 이름"),
                                 fieldWithPath("teamName").description("팀명"),
                                 fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
-                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("projectDescription").description("프로젝트에 대한 설명"),
+                                fieldWithPath("recruitStatus").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
+                                fieldWithPath("needPerson.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needPerson.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needPerson.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needPerson.etc").description("그 외 필요한 인원수"),
+                                fieldWithPath("needPerson.etc").description("그 외 필요한 인원수")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
@@ -351,26 +351,26 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("projectName").description("프로젝트 이름"),
                                 fieldWithPath("teamName").description("팀명"),
                                 fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("projectDescription").description("프로젝트에 대한 설명"),
                                 fieldWithPath("dday").description("마감일까지 남은 일"),
-                                fieldWithPath("status").description("프로젝트 상태(모집중, 진행중, 마감)"),
-                                fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
+                                fieldWithPath("recruitStatus").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("personList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
-                                fieldWithPath("currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("currentMember.designer").description("현재 디자이너 수"),
-                                fieldWithPath("currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("currentMember.etc").description("현재 기타 수"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수"),
-                                fieldWithPath("memberList[].userName").description("프로젝트 팀원의 이름"),
-                                fieldWithPath("memberList[].role").description("프로젝트 팀원의 역할"),
-                                fieldWithPath("memberList[].stack").description("프로젝트 팀원의 기술스택"),
-                                fieldWithPath("memberList[].level").description("프로젝트 팀원의 레벨"),
-                                fieldWithPath("memberList[]._links.self.href").description("프로젝트 팀원의 프로필"),
+                                fieldWithPath("currentPerson.designer").description("현재 디자이너 수"),
+                                fieldWithPath("currentPerson.developer").description("현재 개발자 수"),
+                                fieldWithPath("currentPerson.planner").description("현재 기획자 수"),
+                                fieldWithPath("currentPerson.etc").description("현재 기타 수"),
+                                fieldWithPath("needPerson.developer").description("필요한 개발자 수"),
+                                fieldWithPath("needPerson.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("needPerson.planner").description("필요한 기획자 수"),
+                                fieldWithPath("needPerson.etc").description("그 외 필요한 인원수"),
+                                fieldWithPath("personList[].personName").description("프로젝트 팀원의 이름"),
+                                fieldWithPath("personList[].projectRole").description("프로젝트 팀원의 역할"),
+                                fieldWithPath("personList[].stack").description("프로젝트 팀원의 기술스택"),
+                                fieldWithPath("personList[].personLevel").description("프로젝트 팀원의 레벨"),
+                                fieldWithPath("personList[]._links.self.href").description("프로젝트 팀원의 프로필"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
@@ -408,8 +408,8 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     }
 
     private Project generateOneProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectPersonSet need_yes = new ProjectPersonSet(1,4,6,8);
+        ProjectPersonSet currentMember = new ProjectPersonSet(2,1,1,2);
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
         questions.add(ProjectApplyQuestion.builder().question("question1").build());
         questions.add(ProjectApplyQuestion.builder().question("question2").build());
@@ -417,10 +417,10 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .status(Status.RECRUTING)
+                .projectDescription("need yes 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_yes)
+                .recruitStatus(RecruitStatus.RECRUTING)
                 .projectField(ProjectField.APP)
                 .questions(questions)
                 .dday(ChronoUnit.DAYS.between(LocalDateTime.now(), LocalDateTime.of(2020,04,30,23,59)))
@@ -434,22 +434,22 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     private void joinProjectMember(Long index,int memberno){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        User user = generateUser(memberno);
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.DEVELOPER)
+        Person user = generateUser(memberno);
+        ProjectPerson projectPerson = ProjectPerson.builder()
+                .projectRole(ProjectRole.DEVELOPER)
                 .stack(TechnicalStack.SPRINGBOOT)
                 .project(project)
                 .selfDescription("개발자 입니다.")
-                .user(user)
+                .person(user)
                 .build();
-        project.getProjectMembers().add(projectMember);
-        this.projectMemberRepository.save(projectMember);
+        project.getProjectPersons().add(projectPerson);
+        this.projectPersonRepository.save(projectPerson);
         this.projectRepository.save(project);
     }
 
     private Project generateProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectPersonSet need_yes = new ProjectPersonSet(1,4,6,8);
+        ProjectPersonSet currentMember = new ProjectPersonSet(2,1,1,2);
 //        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
 //        questions.add(ProjectApplyQuestion.builder().question("1번 질문").build());
 //        questions.add(ProjectApplyQuestion.builder().question("2번 질문").build());
@@ -458,11 +458,11 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
+                .projectDescription("need yes 입니다.")
+                .currentPerson(currentMember)
 //                .leaderId("tester")
-                .needMember(need_yes)
-                .status(Status.RECRUTING)
+                .needPerson(need_yes)
+                .recruitStatus(RecruitStatus.RECRUTING)
                 .projectField(ProjectField.APP)
 //                .questions(questions)
                 .build();
@@ -474,35 +474,35 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     private void joinProjectLeader(Long index,String memberId){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        User user = generateUser(memberId);
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.LEADER)
+        Person user = generateUser(memberId);
+        ProjectPerson projectPerson = ProjectPerson.builder()
+                .projectRole(ProjectRole.LEADER)
                 .stack(TechnicalStack.SPRINGBOOT)
                 .project(project)
-                .user(user)
+                .person(user)
                 .build();
-        project.getProjectMembers().add(projectMember);
+        project.getProjectPersons().add(projectPerson);
         project.setLeaderId(memberId);
-        this.projectMemberRepository.save(projectMember);
+        this.projectPersonRepository.save(projectPerson);
         this.projectRepository.save(project);
     }
 
-    private User generateUser(int index){
-        User user = User.builder()
-                .userName("테스터"+index)
-                .userId("tester"+index)
+    private Person generateUser(int index){
+        Person user = Person.builder()
+                .personName("테스터"+index)
+                .personId("tester"+index)
                 .password("testpassword")
                 .build();
-       return this.userRepository.save(user);
+       return this.personRepository.save(user);
     }
-    private User generateUser(String tester){
-        User user = User.builder()
-                .userName("테스터")
-                .userId(tester)
-                .userEmail("UserEmail")
-                .password("pasword")
+    private Person generateUser(String tester){
+        Person user = Person.builder()
+                .personName("테스터")
+                .personId(tester)
+                .personEmail("UserEmail")
+                .password("password")
                 .build();
-        return this.userRepository.save(user);
+        return this.personRepository.save(user);
     }
 
 }

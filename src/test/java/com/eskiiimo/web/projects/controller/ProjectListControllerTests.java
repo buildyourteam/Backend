@@ -1,12 +1,12 @@
 package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
+import com.eskiiimo.repository.projects.repository.ProjectPersonRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
-import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.web.projects.enumtype.ProjectPersonSet;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +37,10 @@ class ProjectListControllerTests extends BaseControllerTest {
     ProjectRepository projectRepository;
 
     @Autowired
-    ProjectMemberRepository projectMemberRepository;
+    ProjectPersonRepository projectPersonRepository;
 
     @Autowired
-    UserRepository userRepository;
+    PersonRepository personRepository;
 
 
     @Test
@@ -115,19 +115,19 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].projectDescription").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].recruitStatus").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
-                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
@@ -232,19 +232,19 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].projectDescription").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].recruitStatus").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
-                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.developer").description("현재 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.designer").description("현재 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.planner").description("현재 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].currentPerson.etc").description("현재 기타 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.developer").description("필요한 개발자 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.designer").description("필요한 디자이너 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.planner").description("필요한 기획자 수"),
+                                fieldWithPath("_embedded.projectList[].needPerson.etc").description("그 외 필요한 인원 수"),
                                 fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
                                 fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
@@ -265,17 +265,17 @@ class ProjectListControllerTests extends BaseControllerTest {
 
     private void generateEvent(int index) {
 
-        ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectPersonSet need_zero = new ProjectPersonSet(0,2,3,4);
+        ProjectPersonSet need_yes = new ProjectPersonSet(1,4,6,8);
+        ProjectPersonSet currentMember = new ProjectPersonSet(2,1,1,2);
 
         Project project = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
+                .projectDescription("need yes 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_yes)
                 .projectField(ProjectField.APP)
                 .build();
 
@@ -283,9 +283,9 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need zero 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_zero)
+                .projectDescription("need zero 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_zero)
                 .projectField(ProjectField.WEB)
                 .build();
 
@@ -293,9 +293,9 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
+                .projectDescription("need yes 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_yes)
                 .projectField(ProjectField.WEB)
                 .build();
 
@@ -306,35 +306,35 @@ class ProjectListControllerTests extends BaseControllerTest {
     }
     private void generateProjectDeadline(int index) {
 
-        ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectPersonSet need_zero = new ProjectPersonSet(0,2,3,4);
+        ProjectPersonSet need_yes = new ProjectPersonSet(1,4,6,8);
+        ProjectPersonSet currentMember = new ProjectPersonSet(2,1,1,2);
 
         Project project = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,2,28,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
+                .projectDescription("need yes 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_yes)
                 .build();
 
         Project project1 = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,2,14,23,59))
-                .description("need zero 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_zero)
+                .projectDescription("need zero 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_zero)
                 .build();
 
         Project project2 = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,03,30,23,59))
-                .description("need zero 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_zero)
+                .projectDescription("need zero 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_zero)
                 .build();
 
         this.projectRepository.save(project);

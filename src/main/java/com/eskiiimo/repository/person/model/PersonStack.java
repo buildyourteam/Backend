@@ -1,4 +1,4 @@
-package com.eskiiimo.repository.user.model;
+package com.eskiiimo.repository.person.model;
 
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @EqualsAndHashCode(of="stackId")
 @Entity
-public class UsersStack {
+@Table(name = "T_PERSON_STACK")
+public class PersonStack {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class UsersStack {
     @Enumerated(EnumType.STRING)
     TechnicalStack stack;
 
-    public UsersStack(TechnicalStack stack){
+    public PersonStack(TechnicalStack stack){
         this.stack =stack;
     }
 }

@@ -41,7 +41,7 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
     @Override
     protected void append(ILoggingEvent loggingEvent) {
-        if (loggingEvent.getLevel().isGreaterOrEqual(logConfig.getLevel())) {
+        if (loggingEvent.getLevel().isGreaterOrEqual(logConfig.getErrorLevel())) {
             ErrorLog errorLog = getErrorLog(loggingEvent);
 
             if (logConfig.getDatabase().isEnabled()) {
@@ -70,7 +70,7 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
         SlackField path = new SlackField();
         path.setTitle("요청 URL");
-        path.setValue(errorLog.getPath());
+        path.setValue(errorLog.getError_path());
         path.setShorten(true);
         fields.add(path);
 
@@ -88,13 +88,13 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
         SlackField profile = new SlackField();
         profile.setTitle("프로파일");
-        profile.setValue(errorLog.getPhase());
+        profile.setValue(errorLog.getError_phase());
         profile.setShorten(true);
         fields.add(profile);
 
         SlackField system = new SlackField();
         system.setTitle("시스템명");
-        system.setValue(errorLog.getSystem());
+        system.setValue(errorLog.getError_system());
         system.setShorten(true);
         fields.add(system);
 
@@ -112,7 +112,7 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
         SlackField userInformation = new SlackField();
         userInformation.setTitle("사용자 정보");
-        userInformation.setValue(JsonUtils.toPrettyJson(errorLog.getUserInfo()));
+        userInformation.setValue(JsonUtils.toPrettyJson(errorLog.getPersonInfo()));
         userInformation.setShorten(false);
         fields.add(userInformation);
 
@@ -137,7 +137,7 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
         String title = errorLog.getMessage();
 
         if (logConfig.getDatabase().isEnabled()) {
-            title = "Error TRACE  / [" + errorLog.getId() + "] ";
+            title = "Error TRACE  / [" + errorLog.getError_id() + "] ";
         }
 
         SlackAttachment slackAttachment = new SlackAttachment();
@@ -163,19 +163,19 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
     }
 
     public ErrorLog getErrorLog(ILoggingEvent loggingEvent) {
-        if (loggingEvent.getLevel().isGreaterOrEqual(logConfig.getLevel())) {
+        if (loggingEvent.getLevel().isGreaterOrEqual(logConfig.getErrorLevel())) {
             ErrorLog errorLog = new ErrorLog();
-            errorLog.setPhase("eskiiimo");
-            errorLog.setSystem("Ubuntu 18.04");
+            errorLog.setError_phase("eskiiimo");
+            errorLog.setError_system("Ubuntu 18.04");
             errorLog.setLoggerName(loggingEvent.getLoggerName());
             errorLog.setServerName("api.eskiiimo.com");
             errorLog.setHostName(getHostName());
-            errorLog.setPath(MDCUtil.get(MDCUtil.REQUEST_URI_MDC));
+            errorLog.setError_path(MDCUtil.get(MDCUtil.REQUEST_URI_MDC));
             errorLog.setMessage(loggingEvent.getFormattedMessage());
             errorLog.setHeaderMap(MDCUtil.get(MDCUtil.HEADER_MAP_MDC));
             errorLog.setParameterMap(MDCUtil.get(MDCUtil.PARAMETER_MAP_MDC));
             errorLog.setBody(MDCUtil.get(MDCUtil.BODY_MDC));
-            errorLog.setUserInfo(MDCUtil.get(MDCUtil.USER_INFO_MDC));
+            errorLog.setPersonInfo(MDCUtil.get(MDCUtil.USER_INFO_MDC));
             errorLog.setAgentDetail(MDCUtil.get(MDCUtil.AGENT_DETAIL_MDC));
 
             if (loggingEvent.getThrowableProxy() != null) {

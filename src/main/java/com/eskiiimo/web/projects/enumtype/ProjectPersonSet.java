@@ -13,7 +13,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectMemberSet{
+public class ProjectPersonSet {
     @Column(name = "currentDeveloper")
     private int developer;
     @Column(name = "currentDesigner")

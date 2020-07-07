@@ -3,10 +3,10 @@ package com.eskiiimo.web.projects.controller;
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.repository.projects.model.*;
 import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
+import com.eskiiimo.repository.projects.repository.ProjectPersonRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.model.Person;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.*;
 import org.junit.jupiter.api.DisplayName;
@@ -40,11 +40,11 @@ class ProjectApplyControllerTest extends BaseControllerTest {
     @Autowired
     ProjectRepository projectRepository;
     @Autowired
-    UserRepository userRepository;
+    PersonRepository personRepository;
     @Autowired
     ProjectApplyRepository projectApplyRepository;
     @Autowired
-    ProjectMemberRepository projectMemberRepository;
+    ProjectPersonRepository projectPersonRepository;
 
     @Test
     @Transactional
@@ -58,7 +58,7 @@ class ProjectApplyControllerTest extends BaseControllerTest {
         answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
         answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
         ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                .role(ProjectRole.DEVELOPER)
+                .projectRole(ProjectRole.DEVELOPER)
                 .selfDescription("안녕하세요? 저는 그냥 개발자입니다.")
                 .answers(answers)
                 .build();
@@ -74,19 +74,19 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("userName").description("유저이름(NULL)"),
-                                fieldWithPath("status").description("상태(NULL)"),
+                                fieldWithPath("personName").description("유저이름(NULL)"),
+                                fieldWithPath("projectApplyStatus").description("상태(NULL)"),
                                 fieldWithPath("questions").description("지원서 질문(NULL)"),
                                 fieldWithPath("answers").description("지원서 응답"),
-                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("projectRole").description("지원할 역할"),
                                 fieldWithPath("selfDescription").description("자기소개")
                         )
                         ))
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"tester"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("userName").value("tester"))
-                .andExpect(jsonPath("role").value("DEVELOPER"))
+                .andExpect(jsonPath("personName").value("테스터"))
+                .andExpect(jsonPath("projectRole").value("DEVELOPER"))
                 .andExpect(jsonPath("selfDescription").value("안녕하세요? 저는 그냥 개발자입니다."))
                 .andExpect(jsonPath("answers[0]").value("1번 응답"))
                 .andExpect(jsonPath("answers[1]").value("2번 응답"))
@@ -102,13 +102,13 @@ class ProjectApplyControllerTest extends BaseControllerTest {
     void updateApply() throws Exception {
         Project project = this.generateProject(1);
         this.joinProjectLeader(project.getProjectId(),"tester");
-        this.generateApply(project.getProjectId(), this.userRepository.findByUserId("tester").get());
+        this.generateApply(project.getProjectId(), this.personRepository.findByPersonId("tester").get());
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         answers.add(ProjectApplyAnswer.builder().answer("1번 응답").build());
         answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
         answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
         ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                .role(ProjectRole.DESIGNER)
+                .projectRole(ProjectRole.DESIGNER)
                 .selfDescription("안녕하세요? 저는 그냥 개발자가 아니라 디자이너입니다.")
                 .answers(answers)
                 .build();
@@ -124,11 +124,11 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("status").description("상태(NULL)"),
+                                fieldWithPath("personName").description("유저이름"),
+                                fieldWithPath("projectApplyStatus").description("상태(NULL)"),
                                 fieldWithPath("questions").description("지원서 질문"),
                                 fieldWithPath("answers").description("지원서 응답"),
-                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("projectRole").description("지원할 역할"),
                                 fieldWithPath("selfDescription").description("자기소개")
                         )
                 ))
@@ -158,10 +158,10 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("_embedded.projectApplicantDtoList[].userId").description("유저Id"),
-                                fieldWithPath("_embedded.projectApplicantDtoList[].userName").description("유저이름"),
-                                fieldWithPath("_embedded.projectApplicantDtoList[]status").description("상태"),
-                                fieldWithPath("_embedded.projectApplicantDtoList[]role").description("지원할 역할"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[].personId").description("유저Id"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[].personName").description("유저이름"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[].projectApplyStatus").description("상태"),
+                                fieldWithPath("_embedded.projectApplicantDtoList[].projectRole").description("지원할 역할"),
                                 fieldWithPath("_embedded.projectApplicantDtoList[]._links.self.href").description("해당 지원자의 지원서 링크"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
@@ -218,12 +218,12 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                                 parameterWithName("userId").description("지원자 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("status").description("상태"),
+                                fieldWithPath("personName").description("유저이름"),
+                                fieldWithPath("projectApplyStatus").description("상태"),
                                 fieldWithPath("questions").description("질문"),
                                 fieldWithPath("answers").description("응답"),
                                 fieldWithPath("selfDescription").description("자기소개"),
-                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("projectRole").description("지원할 역할"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.acceptApply.href").description("지원서 승인하기"),
                                 fieldWithPath("_links.rejectApply.href").description("지원서 거절하기"),
@@ -260,12 +260,12 @@ class ProjectApplyControllerTest extends BaseControllerTest {
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value("ACCEPT"))
+                .andExpect(jsonPath("projectApplyStatus").value("ACCEPT"))
         ;
         this.mockMvc.perform(get("/projects/{projectId}", project.getProjectId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("memberList[1].userName").value("테스터"))
-                .andExpect(jsonPath("memberList[1].role").value("DEVELOPER"))
+                .andExpect(jsonPath("personList[1].personName").value("테스터"))
+                .andExpect(jsonPath("personList[1].projectRole").value("DEVELOPER"))
         ;
     }
 
@@ -288,13 +288,13 @@ class ProjectApplyControllerTest extends BaseControllerTest {
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value("REJECT"))
+                .andExpect(jsonPath("projectApplyStatus").value("REJECT"))
         ;
     }
 
     private Project generateProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectPersonSet need_yes = new ProjectPersonSet(1,4,6,8);
+        ProjectPersonSet currentMember = new ProjectPersonSet(2,1,1,2);
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
         questions.add(ProjectApplyQuestion.builder().question("1번 질문").build());
         questions.add(ProjectApplyQuestion.builder().question("2번 질문").build());
@@ -303,10 +303,10 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .status(Status.RECRUTING)
+                .projectDescription("need yes 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_yes)
+                .recruitStatus(RecruitStatus.RECRUTING)
                 .projectField(ProjectField.APP)
                 .questions(questions)
                 .build();
@@ -315,31 +315,31 @@ class ProjectApplyControllerTest extends BaseControllerTest {
 
     }
 
-    private User generateUser(String tester){
-        User user = User.builder()
-                .userName("테스터")
-                .userId(tester)
-                .userEmail("UserEmail")
-                .password("pasword")
+    private Person generateUser(String tester){
+        Person user = Person.builder()
+                .personName("테스터")
+                .personId(tester)
+                .personEmail("UserEmail")
+                .password("password")
                 .build();
-        return this.userRepository.save(user);
+        return this.personRepository.save(user);
     }
     private void joinProjectLeader(Long index,String member){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        User user = generateUser(member);
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.LEADER)
+        Person user = generateUser(member);
+        ProjectPerson projectPerson = ProjectPerson.builder()
+                .projectRole(ProjectRole.LEADER)
                 .stack(TechnicalStack.SPRINGBOOT)
                 .project(project)
-                .user(user)
+                .person(user)
                 .build();
-        project.getProjectMembers().add(projectMember);
-        this.projectMemberRepository.save(projectMember);
+        project.getProjectPersons().add(projectPerson);
+        this.projectPersonRepository.save(projectPerson);
         this.projectRepository.save(project);
     }
 
-    private ProjectApply generateApply(Long projectId,User user){
+    private ProjectApply generateApply(Long projectId, Person user){
         Optional<Project> optionalProject= this.projectRepository.findById(projectId);
         Project project = optionalProject.get();
         List<ProjectApply> applies  = project.getApplies();
@@ -348,7 +348,7 @@ class ProjectApplyControllerTest extends BaseControllerTest {
         answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
         answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
         ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                .role(ProjectRole.DEVELOPER)
+                .projectRole(ProjectRole.DEVELOPER)
                 .selfDescription("안녕하세요? 저는 그냥 개발자입니다.")
                 .answers(answers)
                 .build();

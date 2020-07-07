@@ -3,8 +3,8 @@ package com.eskiiimo.repository.projects.dto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.Recruit;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.web.projects.enumtype.RecruitStatus;
+import com.eskiiimo.repository.person.model.Person;
+import com.eskiiimo.web.projects.enumtype.SuggestStatus;
 import lombok.*;
 
 @Getter
@@ -14,20 +14,20 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecruitDto {
-    private String userName;
+    private String personName;
     private String selfDescription;
-    private ProjectRole role;
-    private RecruitStatus status;
+    private ProjectRole projectRole;
+    private SuggestStatus suggestStatus;
     private Long projectId;
     private String projectName;
 
-    public Recruit toEntity(User user, Project project) {
+    public Recruit toEntity(Person person, Project project) {
         Recruit recruit = Recruit.builder()
-                .role(role)
+                .projectRole(projectRole)
                 .selfDescription(selfDescription)
-                .user(user)
+                .person(person)
                 .project(project)
-                .status(RecruitStatus.UNREAD)
+                .suggestStatus(SuggestStatus.UNREAD)
                 .projectId(project.getProjectId())
                 .projectName(project.getProjectName())
                 .build();

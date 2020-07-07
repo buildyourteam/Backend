@@ -8,8 +8,8 @@ import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 public class RecruitResource extends EntityModel<RecruitDto> {
-    public RecruitResource(RecruitDto recruits, String userId, Link... links){
+    public RecruitResource(RecruitDto recruits, String personId, Link... links){
         super(recruits, links);
-        add(linkTo(RecruitController.class, userId).slash(recruits.getProjectId()).withSelfRel());
+        add(linkTo(RecruitController.class, personId).slash(recruits.getProjectId()).withSelfRel());
     }
 }

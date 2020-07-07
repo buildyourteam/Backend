@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface RecruitRepository extends JpaRepository<Recruit, Long> {
-    List<Recruit> findAllByUser_UserId(String userId);
-    Optional<Recruit> findProjectRecruitByUser_UserIdAndProject_ProjectId(String userId, long projectId);
+    List<Recruit> findAllByPerson_PersonId(String personId);
+    Optional<Recruit> findProjectRecruitByPerson_PersonIdAndProject_ProjectId(String personId, long projectId);
     List<Recruit> findAllByProject_ProjectId(Long projectId);
 }

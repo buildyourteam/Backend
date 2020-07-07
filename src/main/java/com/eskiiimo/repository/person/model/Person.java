@@ -1,9 +1,9 @@
-package com.eskiiimo.repository.user.model;
+package com.eskiiimo.repository.person.model;
 
+import com.eskiiimo.repository.person.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import com.eskiiimo.web.user.enumtype.UserStatus;
-import com.eskiiimo.repository.user.dto.ProfileDto;
+import com.eskiiimo.web.person.enumtype.PersonStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,47 +27,59 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-public class User implements UserDetails {
+@Table(name = "T_PERSON")
+public class Person implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long accountId;
+
     @Column(nullable = false, unique = true, length = 30)
-    private String userId;
+    private String personId;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false, length = 100)
     @NotBlank
     private String password;
+
     @Size(min = 0, max = 20)
     @NotNull
-    private String userName;
-    private String userEmail;
+    private String personName;
+
+    private String personEmail;
+
     private String area;
-    private Long level;
+
+    private Long personLevel;
+
     @Enumerated(EnumType.STRING)
-    private ProjectRole role;
+    private ProjectRole projectRole;
+
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
-    @Builder.Default
+    private PersonStatus personStatus;
+
     @OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL,orphanRemoval=true)
     @JoinColumn(name ="account_id")
-    private List<UsersStack> stacks = new ArrayList<UsersStack>();
+    @Builder.Default
+    private List<PersonStack> stacks = new ArrayList<>();
+
     private String contact;
+
     @Size(min = 0, max = 10000)
-    private String description;
+    private String personDescription;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
-    private List<String> roles = new ArrayList<>();
+    private List<String> personRoles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return this.personRoles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public String getUsername() {
-        return this.userId;
+        return this.personId;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -94,24 +106,24 @@ public class User implements UserDetails {
         return true;
     }
 
-    public String getUserName(){
-        return this.userName;
+    public String getPersonName(){
+        return this.personName;
     }
 
     public ProfileDto toProfileDto(){
         List<TechnicalStack> stackList = new ArrayList<TechnicalStack>();
-        for(UsersStack stack : this.stacks){
+        for(PersonStack stack : this.stacks){
             TechnicalStack technicalStack = stack.getStack();
             stackList.add(technicalStack);
         }
         ProfileDto profileDto = ProfileDto.builder()
-                .userName(this.getUserName())
-                .role(this.role)
+                .personName(this.getPersonName())
+                .projectRole(this.projectRole)
                 .stacks(stackList)
                 .area(this.area)
                 .contact(this.contact)
-                .level(this.level)
-                .description(this.description)
+                .personLevel(this.personLevel)
+                .personDescription(this.personDescription)
                 .build();
         return profileDto;
     }

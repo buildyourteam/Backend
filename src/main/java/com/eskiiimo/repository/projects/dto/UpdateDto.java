@@ -1,10 +1,10 @@
 package com.eskiiimo.repository.projects.dto;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.web.projects.enumtype.ProjectField;
-import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.web.projects.enumtype.Status;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
+import com.eskiiimo.web.projects.enumtype.ProjectField;
+import com.eskiiimo.web.projects.enumtype.ProjectPersonSet;
+import com.eskiiimo.web.projects.enumtype.RecruitStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,23 +19,23 @@ public class UpdateDto {
     private String projectName;
     private String teamName;
     private LocalDateTime endDate;
-    private String description;
-    private Status status;
+    private String projectDescription;
+    private RecruitStatus recruitStatus;
     private ProjectField projectField;
     private Boolean applyCanFile;
     private List<String> questions = new ArrayList<String>();
-    private ProjectMemberSet needMember= new ProjectMemberSet();
+    private ProjectPersonSet needPerson= new ProjectPersonSet();
 
 
 
     @Builder
-    public UpdateDto(String projectName, String teamName, LocalDateTime endDate, String description, Status status, ProjectMemberSet needMember, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
+    public UpdateDto(String projectName, String teamName, LocalDateTime endDate, String projectDescription, RecruitStatus recruitStatus, ProjectPersonSet needPerson, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;
-        this.description = description;
-        this.status = status;
-        this.needMember = needMember;
+        this.projectDescription = projectDescription;
+        this.recruitStatus = recruitStatus;
+        this.needPerson = needPerson;
         this.projectField=projectField;
         this.applyCanFile = applyCanFile;
         for(ProjectApplyQuestion question : questions)
@@ -49,12 +49,12 @@ public class UpdateDto {
                 project.setProjectName(this.projectName);
                 project.setTeamName(this.teamName);
                 project.setEndDate(this.endDate);
-                project.setDescription(this.description);
-                project.setStatus(this.status);
+                project.setProjectDescription(this.projectDescription);
+                project.setRecruitStatus(this.recruitStatus);
                 project.setProjectField(this.projectField);
                 project.setApplyCanFile(this.applyCanFile);
                 project.setQuestions(questions);
-                project.setNeedMember(this.needMember);
+                project.setNeedPerson(this.needPerson);
 
         return project;
     }

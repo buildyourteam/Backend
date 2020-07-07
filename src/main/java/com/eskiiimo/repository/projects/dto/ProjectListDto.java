@@ -2,7 +2,7 @@ package com.eskiiimo.repository.projects.dto;
 
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
-import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
+import com.eskiiimo.web.projects.enumtype.ProjectPersonSet;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,12 +24,12 @@ public class ProjectListDto {
     @NotNull
     private LocalDateTime endDate;
     @NotEmpty
-    private String description;
+    private String projectDescription;
     @NotNull
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
     @Embedded
-    private ProjectMemberSet currentMember;
+    private ProjectPersonSet currentPerson;
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="developer", column = @Column(name="needDeveloper")),
@@ -37,16 +37,16 @@ public class ProjectListDto {
             @AttributeOverride(name="planner", column = @Column(name="needPlanner")),
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
-    private ProjectMemberSet needMember;
+    private ProjectPersonSet needPerson;
 
     public Project toEntity(ProjectListDto projectListDto) {
         return Project.builder()
                 .projectName(projectListDto.projectName)
                 .teamName(projectListDto.teamName)
                 .endDate(projectListDto.endDate)
-                .description(projectListDto.description)
-                .currentMember(projectListDto.currentMember)
-                .needMember(projectListDto.needMember)
+                .projectDescription(projectListDto.projectDescription)
+                .currentPerson(projectListDto.currentPerson)
+                .needPerson(projectListDto.needPerson)
                 .build();
     }
 }

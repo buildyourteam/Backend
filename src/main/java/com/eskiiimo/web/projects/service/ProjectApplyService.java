@@ -3,8 +3,8 @@ package com.eskiiimo.web.projects.service;
 import com.eskiiimo.repository.projects.dto.ProjectApplicantDto;
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
+import com.eskiiimo.repository.projects.model.ProjectPerson;
+import com.eskiiimo.repository.projects.repository.ProjectPersonRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.web.error.exception.*;
 import com.eskiiimo.repository.projects.model.ProjectApply;
@@ -12,8 +12,8 @@ import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectApplyStatus;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.model.Person;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,33 +26,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectApplyService {
 
-    private final UserRepository userRepository;
-    private final ProjectMemberRepository projectMemberRepository;
+    private final PersonRepository personRepository;
+    private final ProjectPersonRepository projectPersonRepository;
     private final ProjectRepository projectRepository;
     private final ProjectApplyRepository projectApplyRepository;
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public void addLeader(Project project, String userId){
-        User user =  userRepository.findByUserId(userId)
+    public void addLeader(Project project, String personId){
+        Person person =  personRepository.findByPersonId(personId)
                 .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.LEADER)
-                .user(user)
+        ProjectPerson projectPerson = ProjectPerson.builder()
+                .projectRole(ProjectRole.LEADER)
+                .person(person)
                 .project(project)
                 .hide(Boolean.FALSE)
                 .build();
-        project.getProjectMembers().add(projectMember);
-        this.projectMemberRepository.save(projectMember);
+        project.getProjectPersons().add(projectPerson);
+        this.projectPersonRepository.save(projectPerson);
         this.projectRepository.save(project);
     }
     @Transactional
     public boolean applyProject(Long projectId, ProjectApplyDto apply, String visitorId){
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        User user =  userRepository.findByUserId(visitorId)
+        Person person =  personRepository.findByPersonId(visitorId)
                 .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        ProjectApply projectApplyEntity = apply.toEntity(user);
+        ProjectApply projectApplyEntity = apply.toEntity(person);
         project.getApplies().add(projectApplyEntity);
         this.projectApplyRepository.save(projectApplyEntity);
         this.projectRepository.save(project);
@@ -62,11 +62,11 @@ public class ProjectApplyService {
     public boolean updateApply(Long projectId, ProjectApplyDto apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        ProjectApply projectApply = projectApplyRepository.findByUser_UserId(visitorId)
+        ProjectApply projectApply = projectApplyRepository.findByPerson_PersonId(visitorId)
                 .orElseThrow(()->new ApplyNotFoundException("지원정보가 존재하지 않습니다."));
         project.getApplies().remove(projectApply);
         projectApply.setSelfDescription(apply.getSelfDescription());
-        projectApply.setRole(apply.getRole());
+        projectApply.setProjectRole(apply.getProjectRole());
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         for(String answer : apply.getAnswers())
             answers.add(ProjectApplyAnswer.builder().answer(answer).build());
@@ -86,10 +86,10 @@ public class ProjectApplyService {
 
             for(ProjectApply projectApply : project.getApplies()){
                 ProjectApplicantDto projectApplicantDto =ProjectApplicantDto.builder()
-                        .status(projectApply.getStatus())
-                        .userId(projectApply.getUser().getUserId())
-                        .userName(projectApply.getUser().getUserName())
-                        .role(projectApply.getRole())
+                        .projectApplyStatus(projectApply.getProjectApplyStatus())
+                        .personId(projectApply.getPerson().getPersonId())
+                        .personName(projectApply.getPerson().getPersonName())
+                        .projectRole(projectApply.getProjectRole())
                         .build();
                 applicants.add(projectApplicantDto);
             }
@@ -98,22 +98,22 @@ public class ProjectApplyService {
         return applicants;
     }
     @Transactional
-    public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
+    public ProjectApplyDto getApply(Long projectId, String personId, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(this.isLeader(project,visitorId)) {
             for(ProjectApply projectApply : project.getApplies()){
-                if(projectApply.getUser().getUserId().equals(userId)){
-                    if(projectApply.getStatus()== ProjectApplyStatus.UNREAD)
-                        projectApply.setStatus(ProjectApplyStatus.READ);
+                if(projectApply.getPerson().getPersonId().equals(personId)){
+                    if(projectApply.getProjectApplyStatus()== ProjectApplyStatus.UNREAD)
+                        projectApply.setProjectApplyStatus(ProjectApplyStatus.READ);
                     projectApplyRepository.save(projectApply);
                     ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                            .userName(projectApply.getUser().getUsername())
+                            .personName(projectApply.getPerson().getPersonName())
                             .questions(project.getQuestions())
                             .answers(projectApply.getAnswers())
                             .selfDescription(projectApply.getSelfDescription())
-                            .status(projectApply.getStatus())
-                            .role(projectApply.getRole())
+                            .projectApplyStatus(projectApply.getProjectApplyStatus())
+                            .projectRole(projectApply.getProjectRole())
                             .build();
                     this.projectRepository.save(project);
                     return projectApplyDto;
@@ -123,39 +123,39 @@ public class ProjectApplyService {
         return null;
     }
     @Transactional
-    public Boolean acceptApply(Long projectId, String userId, String visitorId){
+    public Boolean acceptApply(Long projectId, String personId, String visitorId){
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(isLeader(project,visitorId)){
-            ProjectRole memberRole=null;
+            ProjectRole personRole=null;
             for(ProjectApply projectApply : project.getApplies()){
-                if(projectApply.getUser().getUserId().equals(userId)){
+                if(projectApply.getPerson().getPersonId().equals(personId)){
                     project.getApplies().remove(projectApply);
-                    memberRole= projectApply.getRole();
-                    projectApply.setStatus(ProjectApplyStatus.ACCEPT);
+                    personRole= projectApply.getProjectRole();
+                    projectApply.setProjectApplyStatus(ProjectApplyStatus.ACCEPT);
                     project.getApplies().add(projectApply);
                     this.projectApplyRepository.save(projectApply);
                     break;
                 }
             }
-            User user =  userRepository.findByUserId(userId)
+            Person person =  personRepository.findByPersonId(personId)
                     .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
-            ProjectMember projectMember = ProjectMember.builder()
-                    .role(memberRole)
-                    .user(user)
+            ProjectPerson projectPerson = ProjectPerson.builder()
+                    .projectRole(personRole)
+                    .person(person)
                     .project(project)
                     .hide(Boolean.FALSE)
                     .build();
-            project.getProjectMembers().add(projectMember);
-            if(projectMember.getRole()==ProjectRole.DEVELOPER)
-                project.getCurrentMember().setDeveloper(project.getCurrentMember().getDeveloper()+1);
-            else if(projectMember.getRole()==ProjectRole.DESIGNER)
-                project.getCurrentMember().setDesigner(project.getCurrentMember().getDesigner()+1);
-            else if(projectMember.getRole()==ProjectRole.PLANNER)
-                project.getCurrentMember().setPlanner(project.getCurrentMember().getPlanner()+1);
-            else if(projectMember.getRole()==ProjectRole.ETC)
-                project.getCurrentMember().setEtc(project.getCurrentMember().getEtc()+1);
-            this.projectMemberRepository.save(projectMember);
+            project.getProjectPersons().add(projectPerson);
+            if(projectPerson.getProjectRole()==ProjectRole.DEVELOPER)
+                project.getCurrentPerson().setDeveloper(project.getCurrentPerson().getDeveloper()+1);
+            else if(projectPerson.getProjectRole()==ProjectRole.DESIGNER)
+                project.getCurrentPerson().setDesigner(project.getCurrentPerson().getDesigner()+1);
+            else if(projectPerson.getProjectRole()==ProjectRole.PLANNER)
+                project.getCurrentPerson().setPlanner(project.getCurrentPerson().getPlanner()+1);
+            else if(projectPerson.getProjectRole()==ProjectRole.ETC)
+                project.getCurrentPerson().setEtc(project.getCurrentPerson().getEtc()+1);
+            this.projectPersonRepository.save(projectPerson);
             this.projectRepository.save(project);
             return Boolean.TRUE;
         }
@@ -163,13 +163,13 @@ public class ProjectApplyService {
             return Boolean.FALSE;
     }
     @Transactional
-    public Boolean rejectApply(Long projectId, String userId, String visitorId) {
+    public Boolean rejectApply(Long projectId, String personId, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if(isLeader(project,visitorId)) {
             for (ProjectApply projectApply : project.getApplies()) {
-                if (projectApply.getUser().getUserId().equals(userId)) {
-                    projectApply.setStatus(ProjectApplyStatus.REJECT);
+                if (projectApply.getPerson().getPersonId().equals(personId)) {
+                    projectApply.setProjectApplyStatus(ProjectApplyStatus.REJECT);
                     this.projectApplyRepository.save(projectApply);
                     this.projectRepository.save(project);
                     return Boolean.TRUE;
@@ -179,9 +179,9 @@ public class ProjectApplyService {
         return Boolean.FALSE;
     }
     public Boolean isLeader(Project project,String visitorId){
-        for(ProjectMember projectMember : project.getProjectMembers()){
-            if(projectMember.getRole().equals(ProjectRole.LEADER)){
-                if(projectMember.getUser().getUserId().equals(visitorId)) {
+        for(ProjectPerson projectPerson : project.getProjectPersons()){
+            if(projectPerson.getProjectRole().equals(ProjectRole.LEADER)){
+                if(projectPerson.getPerson().getPersonId().equals(visitorId)) {
                     return Boolean.TRUE;
                 }
             }

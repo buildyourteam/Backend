@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 public class ErrorResponse {
 
     private LocalDateTime timestamp;
-    private int status;
-    private String error;
-    private String message;
+    private int httpStatusValue;
+    private String httpStatus;
+    private String errorMessage;
 
     public ErrorResponse(HttpStatus Httpstatus, Exception e){
         this.timestamp = LocalDateTime.now();
-        this.status  = Httpstatus.value();
-        this.error = Httpstatus.toString();
-        this.message = e.getMessage();
+        this.httpStatusValue = Httpstatus.value();
+        this.httpStatus = Httpstatus.toString();
+        this.errorMessage = e.getMessage();
     }
 
 

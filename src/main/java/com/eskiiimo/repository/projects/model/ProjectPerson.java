@@ -2,7 +2,7 @@ package com.eskiiimo.repository.projects.model;
 
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import com.eskiiimo.repository.user.model.User;
+import com.eskiiimo.repository.person.model.Person;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,17 +12,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="projectMemberId")
+@EqualsAndHashCode(of="projectPersonId")
 @Entity
-
-public class ProjectMember {
+@Table(name = "T_PROJECT_PERSON")
+public class ProjectPerson {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private  Long projectMemberId;
+    private Long projectPersonId;
+
     @Enumerated(EnumType.STRING)
-    private ProjectRole role;
+    private ProjectRole projectRole;
+
     @Enumerated(EnumType.STRING)
     private TechnicalStack stack;
+
     @Lob
     private String selfDescription;
 
@@ -30,7 +33,7 @@ public class ProjectMember {
 
     @ManyToOne
     @JoinColumn(name="accountId")
-    private User user;
+    private Person person;
 
     @ManyToOne
     @JoinColumn(name = "projectId")
@@ -39,7 +42,7 @@ public class ProjectMember {
 
     public void setProject(Project project){
         this.project = project;
-        if(!project.getProjectMembers().contains(this))
-            this.project.addMember(this);
+        if(!project.getProjectPersons().contains(this))
+            this.project.addPerson(this);
     }
 }

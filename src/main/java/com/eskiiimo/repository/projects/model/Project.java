@@ -1,8 +1,8 @@
 package com.eskiiimo.repository.projects.model;
 
 import com.eskiiimo.web.projects.enumtype.ProjectField;
-import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.web.projects.enumtype.Status;
+import com.eskiiimo.web.projects.enumtype.ProjectPersonSet;
+import com.eskiiimo.web.projects.enumtype.RecruitStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -21,30 +21,40 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(of="projectId")
 @Entity
+@Table(name = "T_PROJECT")
 public class Project{
 
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long projectId;
+
     @NotNull
     @Size(min = 0, max = 150)
     private String projectName;
+
     @NotNull
     @Size(min = 0, max = 20)
     private String teamName;
+
     @NotNull
     private LocalDateTime endDate;
+
     @Size(min = 0, max = 10000)
     @NotBlank
-    private String description;
+    private String projectDescription;
+
     private long dday;
-    @Builder.Default
+
     @Enumerated(EnumType.STRING)
-    private Status status = Status.RECRUTING;
+    @Builder.Default
+    private RecruitStatus recruitStatus = RecruitStatus.RECRUTING;
+
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
+
     @Embedded
     @NotNull
-    private ProjectMemberSet currentMember;
+    private ProjectPersonSet currentPerson;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="developer", column = @Column(name="needDeveloper")),
@@ -53,33 +63,33 @@ public class Project{
             @AttributeOverride(name="etc", column = @Column(name="needEtc"))
     })
     @NotNull
-    private ProjectMemberSet needMember;
+    private ProjectPersonSet needPerson;
 
     private String leaderId;
 
     @JsonIgnore
     private Boolean applyCanFile;
 
-    @Builder.Default
     @OneToMany(cascade = {CascadeType.ALL})
     @JsonIgnore
     @JoinColumn(name = "projectId")
-    private List<ProjectApply> applies = new ArrayList<ProjectApply>();
-
     @Builder.Default
+    private List<ProjectApply> applies = new ArrayList<>();
+
     @OneToMany(cascade = {CascadeType.ALL})
     @JsonIgnore
     @JoinColumn(name = "projectId")
-    private List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-
     @Builder.Default
+    private List<ProjectApplyQuestion> questions = new ArrayList<>();
+
     @OneToMany(mappedBy = "project")
     @JsonIgnore
-    private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
+    @Builder.Default
+    private List<ProjectPerson> projectPersons = new ArrayList<>();
 
-    public void addMember(ProjectMember member){
-        this.projectMembers.add(member);
-        if(member.getProject() != this)
-            member.setProject(this);
+    public void addPerson(ProjectPerson person){
+        this.projectPersons.add(person);
+        if(person.getProject() != this)
+            person.setProject(this);
     }
 }

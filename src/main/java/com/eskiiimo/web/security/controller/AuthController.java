@@ -5,8 +5,8 @@ import com.eskiiimo.web.security.service.AuthService;
 import com.eskiiimo.web.security.provider.JwtTokenProvider;
 import com.eskiiimo.repository.security.dto.SignInDto;
 import com.eskiiimo.repository.security.dto.SignUpDto;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.model.Person;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import com.eskiiimo.web.security.exception.CSigninFailedException;
 import com.eskiiimo.web.security.exception.CUserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +24,15 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/auth")
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final PersonRepository personRepository;
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping(value = "/signin")
     public ResponseEntity signin(@RequestBody SignInDto signInDto) {
-        User user = authService.signin(signInDto);
+        Person person = authService.signin(signInDto);
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-        header.add("authtoken", jwtTokenProvider.createToken(user.getUsername(), user.getRoles()));
+        header.add("authtoken", jwtTokenProvider.createToken(person.getUsername(), person.getPersonRoles()));
 
         return new ResponseEntity(header, HttpStatus.OK);
     }
@@ -56,7 +56,7 @@ public class AuthController {
     }
     @ExceptionHandler(CUserNotFoundException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected ResponseEntity userNotFound(HttpServletRequest request, CUserNotFoundException e) {
+    protected ResponseEntity personNotFound(HttpServletRequest request, CUserNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 회원입니다.");
     }
 

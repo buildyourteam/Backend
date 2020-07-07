@@ -9,7 +9,7 @@ import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.validator.ProjectValidator;
 import com.eskiiimo.web.projects.controller.resource.ProjectDetailResource;
 import com.eskiiimo.web.projects.service.ProjectDetailService;
-import com.eskiiimo.web.projects.controller.resource.ProjectMemberResource;
+import com.eskiiimo.web.projects.controller.resource.ProjectPersonResource;
 import com.eskiiimo.web.projects.controller.resource.RecruitsResource;
 import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.web.projects.controller.resource.RecruitResource;
@@ -141,8 +141,8 @@ public class ProjectDetailController {
 
     }
     public boolean isMyProject(ProjectDetailDto projectDetailDto, String userId){
-        for(ProjectMemberResource projectMember :projectDetailDto.getMemberList()){
-            if(projectMember.getContent().getRole().equals(ProjectRole.LEADER)){
+        for(ProjectPersonResource projectMember :projectDetailDto.getPersonList()){
+            if(projectMember.getContent().getProjectRole().equals(ProjectRole.LEADER)){
                 System.out.println(projectMember.getLinks().getLink("self").get().toString());
                 if(projectMember.getLinks().getLink("self").get().toString().equals("</profile/"+userId+">;rel=\"self\"")) {
                     return Boolean.TRUE;

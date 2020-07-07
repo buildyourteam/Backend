@@ -29,33 +29,33 @@ public class ProjectListService {
             if (occupation.equals("developer")) {
 
                 if (field != null) {
-                    page = this.projectRepository.findAllByNeedMemberDeveloperGreaterThanAndProjectField(0, field, pageable);
+                    page = this.projectRepository.findAllByNeedPersonDeveloperGreaterThanAndProjectField(0, field, pageable);
                 } else {
-                    page = this.projectRepository.findAllByNeedMemberDeveloperGreaterThan(0, pageable);
+                    page = this.projectRepository.findAllByNeedPersonDeveloperGreaterThan(0, pageable);
                 }
 
             } else if (occupation.equals("designer")) {
 
                 if (field != null) {
-                    page = this.projectRepository.findAllByNeedMemberDesignerGreaterThanAndProjectField(0, field, pageable);
+                    page = this.projectRepository.findAllByNeedPersonDesignerGreaterThanAndProjectField(0, field, pageable);
                 } else {
-                    page = this.projectRepository.findAllByNeedMemberDesignerGreaterThan(0, pageable);
+                    page = this.projectRepository.findAllByNeedPersonDesignerGreaterThan(0, pageable);
                 }
 
             } else if (occupation.equals("planner")) {
 
                 if (field != null) {
-                    page = this.projectRepository.findAllByNeedMemberPlannerGreaterThanAndProjectField(0, field, pageable);
+                    page = this.projectRepository.findAllByNeedPersonPlannerGreaterThanAndProjectField(0, field, pageable);
                 } else {
-                    page = this.projectRepository.findAllByNeedMemberPlannerGreaterThan(0, pageable);
+                    page = this.projectRepository.findAllByNeedPersonPlannerGreaterThan(0, pageable);
                 }
 
             } else if (occupation.equals("etc")) {
 
                 if (field != null) {
-                    page = this.projectRepository.findAllByNeedMemberEtcGreaterThanAndProjectField(0, field, pageable);
+                    page = this.projectRepository.findAllByNeedPersonEtcGreaterThanAndProjectField(0, field, pageable);
                 } else {
-                    page = this.projectRepository.findAllByNeedMemberEtcGreaterThan(0, pageable);
+                    page = this.projectRepository.findAllByNeedPersonEtcGreaterThan(0, pageable);
                 }
 
             }
@@ -66,7 +66,7 @@ public class ProjectListService {
         return page;
     }
 
-    public Page<Project> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
+    public Page<Project> findAllByDDayLessThanOrderByDDayAsc(Pageable pageable) {
         Page<Project> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
         return page;
     }

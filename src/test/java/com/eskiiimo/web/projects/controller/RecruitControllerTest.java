@@ -2,15 +2,15 @@ package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
+import com.eskiiimo.repository.projects.model.ProjectPerson;
 import com.eskiiimo.repository.projects.model.Recruit;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
+import com.eskiiimo.repository.projects.repository.ProjectPersonRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.*;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.model.Person;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("프로젝트 영입하기")
 class RecruitControllerTest extends BaseControllerTest {
     @Autowired
-    UserRepository profileRepository;
+    PersonRepository profileRepository;
 
     @Autowired
-    UserRepository userRepository;
+    PersonRepository personRepository;
 
     @Autowired
     ProjectRepository projectRepository;
@@ -51,7 +51,7 @@ class RecruitControllerTest extends BaseControllerTest {
 
 
     @Autowired
-    ProjectMemberRepository projectMemberRepository;
+    ProjectPersonRepository projectPersonRepository;
 
     @Autowired
     RecruitRepository recruitRepository;
@@ -66,9 +66,9 @@ class RecruitControllerTest extends BaseControllerTest {
         RecruitDto recruitDto = RecruitDto.builder()
 //                .project(project)
                 .projectId(project.getProjectId())
-                .userName("tester")
+                .personName("tester")
                 .selfDescription("프로젝트 영입하고 싶습니다.")
-                .role(ProjectRole.DEVELOPER)
+                .projectRole(ProjectRole.DEVELOPER)
                 .build();
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","tester", project.getProjectId())
                 .content(objectMapper.writeValueAsString(recruitDto))
@@ -82,11 +82,11 @@ class RecruitControllerTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("status").description("상태"),
+                                fieldWithPath("personName").description("유저이름"),
+                                fieldWithPath("suggestStatus").description("상태"),
                                 fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
                                 fieldWithPath("projectName").description("영입 제안 프로젝트 이름"),
-                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("projectRole").description("지원할 역할"),
                                 fieldWithPath("selfDescription").description("자기소개")
                         )
                 ));
@@ -99,7 +99,7 @@ class RecruitControllerTest extends BaseControllerTest {
     void getRecruitList() throws Exception{
         Project project = this.generateProject(1);
         Project project1 = this.generateProject(2);
-        User user = this.joinProjectLeader(project.getProjectId(), "tester");
+        Person user = this.joinProjectLeader(project.getProjectId(), "tester");
 
         this.generateRecruit(user, project);
         this.generateRecruit(user, project1);
@@ -112,10 +112,10 @@ class RecruitControllerTest extends BaseControllerTest {
                                 parameterWithName("userId").description("유저 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("_embedded.recruitDtoList[].userName").description("유저이름"),
+                                fieldWithPath("_embedded.recruitDtoList[].personName").description("유저이름"),
                                 fieldWithPath("_embedded.recruitDtoList[].selfDescription").description("자기소개"),
-                                fieldWithPath("_embedded.recruitDtoList[].role").description("지원할 역할"),
-                                fieldWithPath("_embedded.recruitDtoList[].status").description("상태"),
+                                fieldWithPath("_embedded.recruitDtoList[].projectRole").description("지원할 역할"),
+                                fieldWithPath("_embedded.recruitDtoList[].suggestStatus").description("상태"),
                                 fieldWithPath("_embedded.recruitDtoList[].projectId").description("영입 제안 프로젝트 Id"),
                                 fieldWithPath("_embedded.recruitDtoList[].projectName").description("영입 제안 프로젝트 이름"),
                                 fieldWithPath("_embedded.recruitDtoList[]._links.self.href").description("self 링크"),
@@ -138,14 +138,14 @@ class RecruitControllerTest extends BaseControllerTest {
     void getRecruitProject() throws Exception{
         Project project = this.generateProject(1);
         Project project1 = this.generateProject(2);
-        User user = this.joinProjectLeader(project.getProjectId(), "tester");
+        Person user = this.joinProjectLeader(project.getProjectId(), "tester");
 
         this.generateRecruit(user, project);
         this.generateRecruit(user, project1);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value("READ"))
+                .andExpect(jsonPath("suggestStatus").value("READ"))
                 .andDo(print())
                 .andDo(document("getRecruit",
                         pathParameters(
@@ -153,11 +153,11 @@ class RecruitControllerTest extends BaseControllerTest {
                                 parameterWithName("userId").description("지원자 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("status").description("상태"),
+                                fieldWithPath("personName").description("유저이름"),
+                                fieldWithPath("suggestStatus").description("상태"),
                                 fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
                                 fieldWithPath("projectName").description("영입 제안 프로젝트 이름"),
-                                fieldWithPath("role").description("지원할 역할"),
+                                fieldWithPath("projectRole").description("지원할 역할"),
                                 fieldWithPath("selfDescription").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.acceptRecruit.href").description("영입 승인하기"),
@@ -183,7 +183,7 @@ class RecruitControllerTest extends BaseControllerTest {
     void acceptRecruitProject() throws Exception{
         Project project = this.generateProject(1);
         Project project1 = this.generateProject(2);
-        User user = this.joinProjectLeader(project.getProjectId(), "tester");
+        Person user = this.joinProjectLeader(project.getProjectId(), "tester");
 
         this.generateRecruit(user, project);
         this.generateRecruit(user, project1);
@@ -200,7 +200,7 @@ class RecruitControllerTest extends BaseControllerTest {
 
         this.mockMvc.perform(get("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value("ACCEPT"))
+                .andExpect(jsonPath("suggestStatus").value("ACCEPT"))
         ;
     }
 
@@ -211,7 +211,7 @@ class RecruitControllerTest extends BaseControllerTest {
     void rejectRecruitProject() throws Exception{
         Project project = this.generateProject(1);
         Project project1 = this.generateProject(2);
-        User user = this.joinProjectLeader(project.getProjectId(), "tester");
+        Person user = this.joinProjectLeader(project.getProjectId(), "tester");
 
         this.generateRecruit(user, project);
         this.generateRecruit(user, project1);
@@ -229,20 +229,20 @@ class RecruitControllerTest extends BaseControllerTest {
 
         this.mockMvc.perform(get("/profile/{userId}/recruit/{projectId}", "tester", project.getProjectId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value("REJECT"));
+                .andExpect(jsonPath("suggestStatus").value("REJECT"));
     }
 
     private Project generateProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectPersonSet need_yes = new ProjectPersonSet(1,4,6,8);
+        ProjectPersonSet currentMember = new ProjectPersonSet(2,1,1,2);
         Project project = Project.builder()
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .status(Status.RECRUTING)
+                .projectDescription("need yes 입니다.")
+                .currentPerson(currentMember)
+                .needPerson(need_yes)
+                .recruitStatus(RecruitStatus.RECRUTING)
                 .projectField(ProjectField.APP)
 //                .leaderId()
 //                .questions(questions)
@@ -251,38 +251,38 @@ class RecruitControllerTest extends BaseControllerTest {
         return project;
 
     }
-    private User generateUser(String tester){
-        User user = User.builder()
-                .userName("테스터")
-                .userId(tester)
-                .userEmail("UserEmail")
-                .password("pasword")
+    private Person generateUser(String tester){
+        Person user = Person.builder()
+                .personName("테스터")
+                .personId(tester)
+                .personEmail("UserEmail")
+                .password("password")
                 .build();
-        return this.userRepository.save(user);
+        return this.personRepository.save(user);
     }
-    private User joinProjectLeader(Long index,String member){
+    private Person joinProjectLeader(Long index, String member){
         Optional<Project> optionalProject = this.projectRepository.findById(index);
         Project project = optionalProject.get();
-        User user = generateUser(member);
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.LEADER)
+        Person user = generateUser(member);
+        ProjectPerson projectPerson = ProjectPerson.builder()
+                .projectRole(ProjectRole.LEADER)
                 .stack(TechnicalStack.SPRINGBOOT)
                 .project(project)
-                .user(user)
+                .person(user)
                 .build();
-        project.getProjectMembers().add(projectMember);
+        project.getProjectPersons().add(projectPerson);
         project.setLeaderId(member);
-        this.projectMemberRepository.save(projectMember);
+        this.projectPersonRepository.save(projectPerson);
         this.projectRepository.save(project);
         return user;
     }
-    private void generateRecruit(User user01, Project project01) {
+    private void generateRecruit(Person user01, Project project01) {
         RecruitDto recruitDto = RecruitDto.builder()
 //                .project(project01)
                 .projectId(project01.getProjectId())
-                .userName("tester")
+                .personName("tester")
                 .selfDescription("프로젝트 영입하고 싶습니다.")
-                .role(ProjectRole.DEVELOPER)
+                .projectRole(ProjectRole.DEVELOPER)
                 .build();
         Recruit recruit = recruitDto.toEntity(user01, project01);
         this.recruitRepository.save(recruit);

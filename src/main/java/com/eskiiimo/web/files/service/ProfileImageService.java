@@ -43,11 +43,11 @@ public class ProfileImageService {
 
 
 
-    public FileUploadDto storeProfileImage(String user_id, MultipartFile file){
-        String fileName = fileService.storeFile(file,this.profileImageLocation,user_id);
+    public FileUploadDto storeProfileImage(String person_id, MultipartFile file){
+        String fileName = fileService.storeFile(file,this.profileImageLocation,person_id);
 
-        ProfileImage profileImage = this.profileImageRepository.findByUserId(user_id).orElse(new ProfileImage());
-                profileImage.setUserId(user_id);
+        ProfileImage profileImage = this.profileImageRepository.findByPersonId(person_id).orElse(new ProfileImage());
+                profileImage.setPersonId(person_id);
                 profileImage.setFilePath(this.profileImageLocation.resolve(fileName).toString());
         profileImageRepository.save(profileImage);
         FileUploadDto fileUploadDto= FileUploadDto.builder()
@@ -61,8 +61,8 @@ public class ProfileImageService {
     }
 
 
-    public Resource getProfileImage(String userId){
-        ProfileImage profileImage = this.profileImageRepository.findByUserId(userId)
+    public Resource getProfileImage(String personId){
+        ProfileImage profileImage = this.profileImageRepository.findByPersonId(personId)
                 .orElseThrow(()-> new FileDownloadException("프로필 이미지가 존재하지 않습니다."));
         Path filePath = Paths.get(profileImage.getFilePath());
         return fileService.loadFileAsResource(filePath);

@@ -3,8 +3,8 @@ package com.eskiiimo.web.security.controller;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.repository.security.dto.SignInDto;
 import com.eskiiimo.repository.security.dto.SignUpDto;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.model.Person;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("인증")
 class AuthControllerTest extends BaseControllerTest {
     @Autowired
-    UserRepository userRepository;
+    PersonRepository personRepository;
 
     @Test
     @DisplayName("로그인")
@@ -98,13 +98,13 @@ class AuthControllerTest extends BaseControllerTest {
     @DisplayName("아이디 중복체크_중복일때")
     @WithMockUser(username = "tester")
     void icCheckNo() throws Exception {
-        User user = User.builder()
-                .userName("테스터")
-                .userId("tester")
-                .userEmail("UserEmail")
-                .password("pasword")
+        Person user = Person.builder()
+                .personName("테스터")
+                .personId("tester")
+                .personEmail("UserEmail")
+                .password("password")
                 .build();
-        this.userRepository.save(user);
+        this.personRepository.save(user);
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","tester"))
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
@@ -116,13 +116,13 @@ class AuthControllerTest extends BaseControllerTest {
     @DisplayName("아이디 중복체크_사용가능")
     @WithMockUser(username = "tester")
     void icCheckOk() throws Exception {
-        User user = User.builder()
-                .userName("테스터")
-                .userId("tester")
-                .userEmail("UserEmail")
-                .password("pasword")
+        Person user = Person.builder()
+                .personName("테스터")
+                .personId("tester")
+                .personEmail("UserEmail")
+                .password("password")
                 .build();
-        this.userRepository.save(user);
+        this.personRepository.save(user);
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","test"))
                 .andExpect(status().isOk())
                 .andDo(print())

@@ -5,7 +5,7 @@ import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.web.projects.enumtype.ProjectApplyStatus;
-import com.eskiiimo.repository.user.model.User;
+import com.eskiiimo.repository.person.model.Person;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -16,17 +16,17 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class ProjectApplyDto {
-    private String userName;
-    private ProjectApplyStatus status;
+    private String personName;
+    private ProjectApplyStatus projectApplyStatus;
     private List<String> questions;
     private List<String> answers;
     private String selfDescription;
-    private ProjectRole role;
+    private ProjectRole projectRole;
 
     @Builder
-    public ProjectApplyDto(String userName, ProjectApplyStatus status, List<ProjectApplyQuestion> questions, List<ProjectApplyAnswer> answers, String selfDescription, ProjectRole role){
-        this.userName = userName;
-        this.status = status;
+    public ProjectApplyDto(String personName, ProjectApplyStatus projectApplyStatus, List<ProjectApplyQuestion> questions, List<ProjectApplyAnswer> answers, String selfDescription, ProjectRole projectRole){
+        this.personName = personName;
+        this.projectApplyStatus = projectApplyStatus;
         if(questions!=null) {
         List<String> questionList = new ArrayList<>();
         for(ProjectApplyQuestion question : questions)
@@ -38,18 +38,18 @@ public class ProjectApplyDto {
                 answerList.add(answer.getAnswer());
             this.answers = answerList;
         this.selfDescription = selfDescription;
-        this.role = role;
+        this.projectRole = projectRole;
     }
-    public ProjectApply toEntity(User user){
+    public ProjectApply toEntity(Person person){
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         for(String answer : this.answers)
             answers.add(ProjectApplyAnswer.builder().answer(answer).build());
         ProjectApply projectApply = ProjectApply.builder()
                 .answers(answers)
                 .selfDescription(this.selfDescription)
-                .status(ProjectApplyStatus.UNREAD)
-                .user(user)
-                .role(role)
+                .projectApplyStatus(ProjectApplyStatus.UNREAD)
+                .person(person)
+                .projectRole(projectRole)
                 .build();
         return projectApply;
     }

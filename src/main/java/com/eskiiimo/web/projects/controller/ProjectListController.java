@@ -57,7 +57,7 @@ public class ProjectListController {
     @GetMapping("/deadline")
     public ResponseEntity getProjectsDeadline(Pageable pageable, PagedResourcesAssembler<Project> assembler) {
 
-        Page<Project> page = projectListService.findAllByDdayLessThanOrderByDdayAsc(pageable);
+        Page<Project> page = projectListService.findAllByDDayLessThanOrderByDDayAsc(pageable);
         if (page == null) {
             return ResponseEntity.notFound().build();
         }

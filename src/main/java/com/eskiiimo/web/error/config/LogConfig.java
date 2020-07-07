@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "log")
 public class LogConfig {
 
-    private Level level;
+    private Level errorLevel;
 
     private Slack slack;
 
     private Database database;
+
     @Getter
     @Setter
     public static class Slack {
@@ -24,6 +25,7 @@ public class LogConfig {
         private String webHookUrl;
         private String channel;
     }
+
     @Getter
     @Setter
     public static class Database {

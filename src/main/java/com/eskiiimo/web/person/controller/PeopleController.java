@@ -1,10 +1,10 @@
-package com.eskiiimo.web.user.controller;
+package com.eskiiimo.web.person.controller;
 
-import com.eskiiimo.repository.user.model.People;
+import com.eskiiimo.repository.person.model.People;
 import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.user.controller.resource.PeopleResource;
-import com.eskiiimo.web.user.service.PeopleService;
+import com.eskiiimo.web.person.controller.resource.PeopleResource;
+import com.eskiiimo.web.person.service.PeopleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

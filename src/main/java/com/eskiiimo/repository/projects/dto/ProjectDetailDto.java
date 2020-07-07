@@ -1,12 +1,12 @@
 package com.eskiiimo.repository.projects.dto;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
+import com.eskiiimo.repository.projects.model.ProjectPerson;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
-import com.eskiiimo.web.projects.controller.resource.ProjectMemberResource;
+import com.eskiiimo.web.projects.controller.resource.ProjectPersonResource;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
-import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.web.projects.enumtype.Status;
+import com.eskiiimo.web.projects.enumtype.ProjectPersonSet;
+import com.eskiiimo.web.projects.enumtype.RecruitStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,46 +22,46 @@ public class ProjectDetailDto {
     private String projectName;
     private String teamName;
     private LocalDateTime endDate;
-    private String description;
-    private Status status;
+    private String projectDescription;
+    private RecruitStatus recruitStatus;
     private long dday;
     private ProjectField projectField;
     private Boolean applyCanFile;
     private List<String> questions = new ArrayList<String>();
-    private ProjectMemberSet currentMember = new ProjectMemberSet();
-    private ProjectMemberSet needMember= new ProjectMemberSet();
-    private List<ProjectMemberResource> memberList = new ArrayList<ProjectMemberResource>();
+    private ProjectPersonSet currentPerson = new ProjectPersonSet();
+    private ProjectPersonSet needPerson= new ProjectPersonSet();
+    private List<ProjectPersonResource> personList = new ArrayList<ProjectPersonResource>();
 
 
     @Builder
-    public ProjectDetailDto(String projectName, String teamName, LocalDateTime endDate, String description, Status status, ProjectMemberSet currentMember, ProjectMemberSet needMember, List<ProjectMember> memberList, long dday, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
+    public ProjectDetailDto(String projectName, String teamName, LocalDateTime endDate, String projectDescription, RecruitStatus recruitStatus, ProjectPersonSet currentPerson, ProjectPersonSet needPerson, List<ProjectPerson> personList, long dDay, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;
-        this.description = description;
-        this.status = status;
-        this.currentMember = currentMember;
-        this.needMember = needMember;
+        this.projectDescription = projectDescription;
+        this.recruitStatus = recruitStatus;
+        this.currentPerson = currentPerson;
+        this.needPerson = needPerson;
         this.dday=dday;
         this.projectField=projectField;
         this.applyCanFile = applyCanFile;
         for(ProjectApplyQuestion question : questions)
             this.questions.add(question.getQuestion());
-        if(memberList ==null)
-            this.memberList = null;
+        if(personList ==null)
+            this.personList = null;
         else {
-            List<ProjectMemberResource> projectMemberListResource = new ArrayList<ProjectMemberResource>();
-            if(!memberList.isEmpty())
-                for (ProjectMember projectMember : memberList) {
-                    ProjectMemberDto projectMemberDto = ProjectMemberDto.builder()
-                            .userName(projectMember.getUser().getUserName())
-                            .role(projectMember.getRole())
-                            .stack(projectMember.getStack())
+            List<ProjectPersonResource> projectPersonListResource = new ArrayList<ProjectPersonResource>();
+            if(!personList.isEmpty())
+                for (ProjectPerson projectPerson : personList) {
+                    ProjectPersonDto projectPersonDto = ProjectPersonDto.builder()
+                            .personName(projectPerson.getPerson().getPersonName())
+                            .projectRole(projectPerson.getProjectRole())
+                            .stack(projectPerson.getStack())
                             .build();
-                    ProjectMemberResource projectMemberResource = new ProjectMemberResource(projectMemberDto, projectMember.getUser().getUserId());
-                    projectMemberListResource.add(projectMemberResource);
+                    ProjectPersonResource projectPersonResource = new ProjectPersonResource(projectPersonDto, projectPerson.getPerson().getPersonId());
+                    projectPersonListResource.add(projectPersonResource);
                 }
-            this.memberList = projectMemberListResource;
+            this.personList = projectPersonListResource;
         }
     }
 
@@ -72,18 +72,18 @@ public class ProjectDetailDto {
                 project.setProjectName(this.projectName);
                 project.setTeamName(this.teamName);
                 project.setEndDate(this.endDate);
-                project.setDescription(this.description);
-                if(this.status==null)
-                    project.setStatus(Status.RECRUTING);
+                project.setProjectDescription(this.projectDescription);
+                if(this.recruitStatus ==null)
+                    project.setRecruitStatus(RecruitStatus.RECRUTING);
                 else
-                    project.setStatus(this.status);
+                    project.setRecruitStatus(this.recruitStatus);
                 project.setDday(ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate));
                 project.setProjectField(this.projectField);
                 project.setApplyCanFile(this.applyCanFile);
                 project.setQuestions(questions);
-                if(this.currentMember==null)
-                    project.setCurrentMember(new ProjectMemberSet(0,0,0,0));
-                project.setNeedMember(this.needMember);
+                if(this.currentPerson==null)
+                    project.setCurrentPerson(new ProjectPersonSet(0,0,0,0));
+                project.setNeedPerson(this.needPerson);
 
         return project;
     }

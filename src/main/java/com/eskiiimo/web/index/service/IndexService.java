@@ -1,9 +1,10 @@
 package com.eskiiimo.web.index.service;
 
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
-import com.eskiiimo.web.projects.enumtype.Status;
-import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.web.user.enumtype.UserStatus;
+import com.eskiiimo.web.person.enumtype.PersonStatus;
+import com.eskiiimo.web.projects.enumtype.ProjectApplyStatus;
+import com.eskiiimo.web.projects.enumtype.RecruitStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +12,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class IndexService {
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final PersonRepository personRepository;
 
 
     public long getRandomProjectPage(long pageSize) {
-        long pages = projectRepository.countAllByStatus(Status.RECRUTING)/pageSize+1;
+        long pages = projectRepository.countAllByRecruitStatus(RecruitStatus.RECRUTING)/pageSize+1;
         long random= (long)Math.random()%pages;
         return random;
     }
 
     public long getRandomPeoplePage(long peopleSize) {
-        long pages = userRepository.countAllByStatus(UserStatus.FREE)/peopleSize+1;
+        long pages = personRepository.countAllByPersonStatus(PersonStatus.FREE)/peopleSize+1;
         long random= (long)Math.random()%pages;
         return random;
     }

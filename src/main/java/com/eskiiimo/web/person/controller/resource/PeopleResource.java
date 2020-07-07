@@ -1,6 +1,6 @@
-package com.eskiiimo.web.user.controller.resource;
+package com.eskiiimo.web.person.controller.resource;
 
-import com.eskiiimo.repository.user.model.People;
+import com.eskiiimo.repository.person.model.People;
 import com.eskiiimo.web.files.controller.ProfileImageController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

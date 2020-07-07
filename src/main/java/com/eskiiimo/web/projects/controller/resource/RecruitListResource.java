@@ -11,8 +11,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 
 public class RecruitListResource extends CollectionModel<List<RecruitResource>> {
-    public RecruitListResource(List<RecruitResource> recruits, String userId, Link... links){
+    public RecruitListResource(List<RecruitResource> recruits, String personId, Link... links){
         super(Collections.singleton(recruits), links);
-        add(linkTo(RecruitController.class, userId).withSelfRel());
+        add(linkTo(RecruitController.class, personId).withSelfRel());
     }
 }

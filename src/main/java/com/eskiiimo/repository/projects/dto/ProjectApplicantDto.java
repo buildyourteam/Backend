@@ -9,15 +9,15 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 public class ProjectApplicantDto {
-    private String userId;
-    private String userName;
-    private ProjectApplyStatus status;
-    private ProjectRole role;
+    private String personId;
+    private String personName;
+    private ProjectApplyStatus projectApplyStatus;
+    private ProjectRole projectRole;
     @Builder
-    public ProjectApplicantDto(String userId,String userName,ProjectApplyStatus status,ProjectRole role){
-        this.userId = userId;
-        this.userName = userName;
-        this.status = status;
-        this.role = role;
+    public ProjectApplicantDto(String personId,String personName,ProjectApplyStatus projectApplyStatus,ProjectRole projectRole){
+        this.personId = personId;
+        this.personName = personName;
+        this.projectApplyStatus = projectApplyStatus;
+        this.projectRole = projectRole;
     }
 }

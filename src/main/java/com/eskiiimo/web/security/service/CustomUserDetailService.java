@@ -1,6 +1,6 @@
 package com.eskiiimo.web.security.service;
 
-import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.repository.person.repository.PersonRepository;
 import com.eskiiimo.web.security.exception.CUserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final PersonRepository personRepository;
 
-    public UserDetails loadUserByUsername(String userPk) {
-        return userRepository.findByUserId(userPk).orElseThrow(CUserNotFoundException::new);
+    public UserDetails loadUserByUsername(String personPk) {
+        return personRepository.findByPersonId(personPk).orElseThrow(CUserNotFoundException::new);
     }
 }

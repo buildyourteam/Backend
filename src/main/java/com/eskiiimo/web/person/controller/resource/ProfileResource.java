@@ -1,8 +1,8 @@
-package com.eskiiimo.web.user.controller.resource;
+package com.eskiiimo.web.person.controller.resource;
 
-import com.eskiiimo.repository.user.dto.ProfileDto;
+import com.eskiiimo.repository.person.dto.ProfileDto;
 import com.eskiiimo.web.files.controller.ProfileImageController;
-import com.eskiiimo.web.user.controller.ProfileController;
+import com.eskiiimo.web.person.controller.ProfileController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 

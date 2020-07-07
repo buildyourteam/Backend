@@ -80,7 +80,7 @@ class ProfileImageControllerTest extends BaseControllerTest {
         File targetFile = new File("./src/test/java/com/eskiiimo/web/files/testfiles/testimg.jpg");
 
         ProfileImage profileImage = ProfileImage.builder()
-                .userId("testuser")
+                .personId("testuser")
                 .filePath(targetFile.getPath())
                 .build();
         profileImageRepository.save(profileImage);
