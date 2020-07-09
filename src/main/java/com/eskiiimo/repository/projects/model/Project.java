@@ -2,7 +2,7 @@ package com.eskiiimo.repository.projects.model;
 
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.web.projects.enumtype.Status;
+import com.eskiiimo.web.projects.enumtype.State;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -21,6 +21,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(of="projectId")
 @Entity
+@Table(name = "T_PROJECT")
 public class Project{
 
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -35,11 +36,11 @@ public class Project{
     private LocalDateTime endDate;
     @Size(min = 0, max = 10000)
     @NotBlank
-    private String description;
+    private String introduction;
     private long dday;
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Status status = Status.RECRUTING;
+    private State state = State.RECRUTING;
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
     @Embedded

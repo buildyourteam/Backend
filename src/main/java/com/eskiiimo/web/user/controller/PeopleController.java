@@ -33,11 +33,11 @@ public class PeopleController {
 
     @GetMapping
     public ResponseEntity getJobSeekers(Pageable pageable, PagedResourcesAssembler<People> assembler,
-                                        @RequestParam(value = "level", required = false)Long level,
+                                        @RequestParam(value = "grade", required = false)Long grade,
                                         @RequestParam(value = "role",required =  false) ProjectRole role,
                                         @RequestParam(value = "area",required = false)String area
     ) {
-        Page<People> page = peopleService.getPeople(level,role,area,pageable);
+        Page<People> page = peopleService.getPeople(grade,role,area,pageable);
         PagedModel<PeopleResource> pagedResources = assembler.toModel(page, e -> new PeopleResource(e));
         pagedResources.add(linkTo(DocsController.class).slash("resourcesPeople").withRel("profile"));
 

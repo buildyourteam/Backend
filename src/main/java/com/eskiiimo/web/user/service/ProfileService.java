@@ -8,7 +8,7 @@ import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.error.exception.ProjectMemberNotFoundException;
 import com.eskiiimo.web.error.exception.ProjectNotFoundException;
 import com.eskiiimo.web.error.exception.UserNotFoundException;
-import com.eskiiimo.web.projects.enumtype.Status;
+import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,12 +51,12 @@ public class ProfileService {
     }
 
     public Page<Project> getRunning(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id,Boolean.FALSE, Status.RUNNING, pageable);
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id,Boolean.FALSE, State.RUNNING, pageable);
         return page;
     }
 
     public Page<Project> getEnded(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id, Boolean.FALSE,Status.ENDED, pageable);
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id, Boolean.FALSE, State.ENDED, pageable);
         return page;
     }
 
@@ -65,12 +65,12 @@ public class ProfileService {
         return page;
     }
     public Page<Project> getHiddenRunning(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id,Boolean.TRUE, Status.RUNNING, pageable);
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id,Boolean.TRUE, State.RUNNING, pageable);
         return page;
     }
 
     public Page<Project> getHiddenEnded(String user_id, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(user_id, Boolean.TRUE,Status.ENDED, pageable);
+        Page<Project> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id, Boolean.TRUE, State.ENDED, pageable);
         return page;
     }
 

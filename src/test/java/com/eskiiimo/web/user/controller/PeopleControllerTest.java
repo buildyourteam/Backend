@@ -52,7 +52,7 @@ class PeopleControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("팀을 구하는 사람들_레벨")
     @Transactional
-    void getJobSeekers_level() throws Exception {
+    void getJobSeekers_grade() throws Exception {
         IntStream.range(5,9).forEach(i -> {
             this.generatePeople(i);
         });
@@ -61,9 +61,9 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("level","1")
+                .param("grade","1")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].level").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andDo(print())
 ;
     }
@@ -103,7 +103,7 @@ class PeopleControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_역할")
     @Transactional
-    void getJobSeekers_levelAndRole() throws Exception {
+    void getJobSeekers_gradeAndRole() throws Exception {
         IntStream.range(20,24).forEach(i -> {
             this.generatePeople(i);
         });
@@ -112,16 +112,16 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("level","2")
+                .param("grade","2")
                 .param("role","DEVELOPER")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].level").value(2))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(2))
                 .andDo(print());
     }
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_지역")
     @Transactional
-    void getJobSeekers_levelAndArea() throws Exception {
+    void getJobSeekers_gradeAndArea() throws Exception {
         IntStream.range(25,29).forEach(i -> {
             this.generatePeople(i);
         });
@@ -130,10 +130,10 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("level","2")
+                .param("grade","2")
                 .param("area","Busan")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].level").value(2))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(2))
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Busan"))
                 .andDo(print());
     }
@@ -167,11 +167,11 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "3")
-                .param("level","1")
+                .param("grade","1")
                 .param("role","LEADER")
                 .param("area","Seoul")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].level").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print())
                 .andDo(document("get-people",
@@ -185,7 +185,7 @@ class PeopleControllerTest extends BaseControllerTest {
                         requestParameters(
                                 parameterWithName("page").description("페이지 번호"),
                                 parameterWithName("size").description("페이지당 데이터 수"),
-                                parameterWithName("level").description("유저 레벨 필터"),
+                                parameterWithName("grade").description("유저 레벨 필터"),
                                 parameterWithName("role").description("유저 역할 필터"),
                                 parameterWithName("area").description("유저 활동지역 필터")
                         ),
@@ -195,7 +195,7 @@ class PeopleControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.peopleList[].userName").description("유저의 이름"),
                                 fieldWithPath("_embedded.peopleList[].stacks").description("유저의 기술 스택"),
                                 fieldWithPath("_embedded.peopleList[].area").description("유저의 활동지역"),
-                                fieldWithPath("_embedded.peopleList[].level").description("유저의 레벨"),
+                                fieldWithPath("_embedded.peopleList[].grade").description("유저의 레벨"),
                                 fieldWithPath("_embedded.peopleList[]._links.self.href").description("유저의 프로필 링크"),
                                 fieldWithPath("_embedded.peopleList[]._links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.self.href").description("Self 링크"),
@@ -223,7 +223,7 @@ class PeopleControllerTest extends BaseControllerTest {
         User user1 =  User.builder()
                 .userId("testUser"+(3*index+1))
                 .password("testpassword")
-                .level((long)1)
+                .grade((long)1)
                 .stacks(stacks1)
                 .area("Seoul")
                 .userName("User"+(3*index+1))
@@ -232,7 +232,7 @@ class PeopleControllerTest extends BaseControllerTest {
         User user2 = User.builder()
                 .userId("testUser"+(3*index+2))
                 .password("testpassword")
-                .level((long)2)
+                .grade((long)2)
                 .stacks(stacks2)
                 .area("Busan")
                 .userName("User"+(3*index+2))
@@ -242,7 +242,7 @@ class PeopleControllerTest extends BaseControllerTest {
         User user3 =  User.builder()
                 .userId("testUser"+(3*index+3))
                 .password("testpassword")
-                .level((long)3)
+                .grade((long)3)
                 .stacks(stacks3)
                 .area("Daegu")
                 .userName("User"+(3*index+3))
