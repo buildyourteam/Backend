@@ -12,11 +12,11 @@ public class ProjectMemberDto {
     private String userName;
     private ProjectRole role;
     private TechnicalStack stack;
-    private int grade;
+    private Long grade;
 
 
     @Builder
-    public ProjectMemberDto(String userName, ProjectRole role, TechnicalStack stack, int grade){
+    public ProjectMemberDto(String userName, ProjectRole role, TechnicalStack stack, Long grade){
         this.userName = userName;
         this.role = role;
         this.stack = stack;
