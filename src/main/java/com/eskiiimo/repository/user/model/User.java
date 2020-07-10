@@ -47,7 +47,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
     @Enumerated(EnumType.STRING)
-    private UserState userState;
+    private UserState state;
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL,orphanRemoval=true)
     @JoinColumn(name ="account_id")

@@ -21,7 +21,7 @@ public class IndexService {
     }
 
     public long getRandomPeoplePage(long peopleSize) {
-        long pages = userRepository.countAllByUserState(UserState.FREE)/peopleSize+1;
+        long pages = userRepository.countAllByState(UserState.FREE)/peopleSize+1;
         long random= (long)Math.random()%pages;
         return random;
     }

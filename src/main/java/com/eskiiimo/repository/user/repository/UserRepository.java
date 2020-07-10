@@ -21,6 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByAreaAndRole(String area, ProjectRole role,Pageable pageable);
     Page<User> findAllByRoleAndGrade(ProjectRole role, Long grade, Pageable pageable);
     Page<User> findAllByAreaAndRoleAndGrade(String area, ProjectRole role, Long grade, Pageable pageable);
-    long countAllByUserState(UserState userState);
+    long countAllByState(UserState state);
 }
 
