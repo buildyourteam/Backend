@@ -2,7 +2,7 @@ package com.eskiiimo.repository.projects.repository;
 
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
-import com.eskiiimo.web.projects.enumtype.Status;
+import com.eskiiimo.web.projects.enumtype.State;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,10 +20,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByNeedMemberEtcGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByProjectField(ProjectField field, Pageable pageable);
     Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
-    Page<Project> findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStatus(String userId, Boolean hide, Status status, Pageable pageable);
+    Page<Project> findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(String userId, Boolean hide, State state, Pageable pageable);
     Page<Project> findAllByLeaderIdAndProjectMembers_Hide(String leaderId, Boolean hide,Pageable pageable);
     Page<Project> findAllByProjectMembers_User_UserId(String user_id, Pageable pageable);
-    long countAllByStatus(Status status);
+    long countAllByState(State state);
     void deleteByProjectId(Long id);
 
     }

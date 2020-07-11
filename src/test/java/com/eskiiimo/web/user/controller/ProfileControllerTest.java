@@ -74,8 +74,8 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("level").description("레벨"),
-                                fieldWithPath("description").description("자기소개"),
+                                fieldWithPath("grade").description("레벨"),
+                                fieldWithPath("introduction").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
@@ -86,6 +86,7 @@ class ProfileControllerTest extends BaseControllerTest {
         ;
 
     }
+
 
     @Test
     @Transactional
@@ -111,8 +112,8 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("level").description("레벨"),
-                                fieldWithPath("description").description("자기소개"),
+                                fieldWithPath("grade").description("레벨"),
+                                fieldWithPath("introduction").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
@@ -133,11 +134,11 @@ class ProfileControllerTest extends BaseControllerTest {
         ProfileDto profileDto = ProfileDto.builder()
                 .area("서울시 구로구")
                 .contact("010-9876-5432")
-                .description("프로필 업데이트 하기")
+                .introduction("프로필 업데이트 하기")
                 .role(ProjectRole.LEADER)
                 .stacks(stacks)
                 .userName("회원 01")
-                .level((long)100)
+                .grade((long)100)
                 .build();
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
@@ -160,8 +161,8 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("level").description("레벨"),
-                                fieldWithPath("description").description("자기소개")
+                                fieldWithPath("grade").description("레벨"),
+                                fieldWithPath("introduction").description("자기소개")
                         ),
                         responseFields(
                                 fieldWithPath("userName").description("사용자 이름"),
@@ -169,8 +170,8 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("level").description("레벨"),
-                                fieldWithPath("description").description("자기소개"),
+                                fieldWithPath("grade").description("레벨"),
+                                fieldWithPath("introduction").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
                                 fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
@@ -187,13 +188,13 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        Project project1 =  this.generateProject(1, user1, Status.RUNNING);
-        Project project2 =  this.generateProject(2, user1, Status.RECRUTING);
-        Project project3 =  this.generateProject(3, user1, Status.RUNNING);
+        Project project1 =  this.generateProject(1, user1, State.RUNNING);
+        Project project2 =  this.generateProject(2, user1, State.RECRUTING);
+        Project project3 =  this.generateProject(3, user1, State.RUNNING);
 
-        Project project4 =  this.generateProject(4, user2, Status.RUNNING);
-        Project project5 =  this.generateProject(5, user2, Status.RECRUTING);
-        Project project6 =  this.generateProject(6, user2, Status.RUNNING);
+        Project project4 =  this.generateProject(4, user2, State.RUNNING);
+        Project project5 =  this.generateProject(5, user2, State.RECRUTING);
+        Project project6 =  this.generateProject(6, user2, State.RUNNING);
 
         this.joinProject(project4,user1,Boolean.FALSE);
         this.joinProject(project6,user1,Boolean.TRUE);
@@ -225,9 +226,9 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -261,13 +262,13 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        Project project1 = this.generateProject(1, user1, Status.ENDED);
-        Project project2 = this.generateProject(2, user1, Status.ENDED);
-        Project project3 = this.generateProject(3, user1, Status.RUNNING);
+        Project project1 = this.generateProject(1, user1, State.ENDED);
+        Project project2 = this.generateProject(2, user1, State.ENDED);
+        Project project3 = this.generateProject(3, user1, State.RUNNING);
 
-        Project project4 = this.generateProject(4, user2, Status.ENDED);
-        Project project5 = this.generateProject(5, user2, Status.RECRUTING);
-        Project project6 = this.generateProject(6, user2, Status.RUNNING);
+        Project project4 = this.generateProject(4, user2, State.ENDED);
+        Project project5 = this.generateProject(5, user2, State.RECRUTING);
+        Project project6 = this.generateProject(6, user2, State.RUNNING);
 
         this.joinProject(project4,user1,Boolean.TRUE);
         this.joinProject(project5,user1,Boolean.FALSE);
@@ -299,9 +300,9 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -336,13 +337,13 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        this.generateProject(1, user1, Status.RUNNING);
-        this.generateProject(2, user1, Status.RECRUTING);
-        this.generateProject(3, user1, Status.RUNNING);
+        this.generateProject(1, user1, State.RUNNING);
+        this.generateProject(2, user1, State.RECRUTING);
+        this.generateProject(3, user1, State.RUNNING);
 
-        this.generateProject(4, user2, Status.RUNNING);
-        this.generateProject(5, user2, Status.RECRUTING);
-        this.generateProject(6, user2, Status.RUNNING);
+        this.generateProject(4, user2, State.RUNNING);
+        this.generateProject(5, user2, State.RECRUTING);
+        this.generateProject(6, user2, State.RUNNING);
 
 
 
@@ -373,9 +374,9 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -410,13 +411,13 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        Project project1 =  this.generateProject(1, user1, Status.RUNNING);
-        Project project2 =  this.generateProject(2, user1, Status.RECRUTING);
-        Project project3 =  this.generateProject(3, user1, Status.RUNNING);
+        Project project1 =  this.generateProject(1, user1, State.RUNNING);
+        Project project2 =  this.generateProject(2, user1, State.RECRUTING);
+        Project project3 =  this.generateProject(3, user1, State.RUNNING);
 
-        Project project4 =  this.generateProject(4, user2, Status.RUNNING);
-        Project project5 =  this.generateProject(5, user2, Status.RECRUTING);
-        Project project6 =  this.generateProject(6, user2, Status.RUNNING);
+        Project project4 =  this.generateProject(4, user2, State.RUNNING);
+        Project project5 =  this.generateProject(5, user2, State.RECRUTING);
+        Project project6 =  this.generateProject(6, user2, State.RUNNING);
 
         this.joinProject(project4,user1,Boolean.FALSE);
         this.joinProject(project6,user1,Boolean.TRUE);
@@ -448,9 +449,9 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -484,13 +485,13 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        Project project1 = this.generateProject(1, user1, Status.ENDED);
-        Project project2 = this.generateProject(2, user1, Status.ENDED);
-        Project project3 = this.generateProject(3, user1, Status.RUNNING);
+        Project project1 = this.generateProject(1, user1, State.ENDED);
+        Project project2 = this.generateProject(2, user1, State.ENDED);
+        Project project3 = this.generateProject(3, user1, State.RUNNING);
 
-        Project project4 = this.generateProject(4, user2, Status.ENDED);
-        Project project5 = this.generateProject(5, user2, Status.RECRUTING);
-        Project project6 = this.generateProject(6, user2, Status.RUNNING);
+        Project project4 = this.generateProject(4, user2, State.ENDED);
+        Project project5 = this.generateProject(5, user2, State.RECRUTING);
+        Project project6 = this.generateProject(6, user2, State.RUNNING);
 
         this.joinProject(project4,user1,Boolean.TRUE);
         this.joinProject(project5,user1,Boolean.FALSE);
@@ -522,9 +523,9 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -560,13 +561,13 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        Project project1 = this.generateProject(1, user1, Status.RUNNING);
-        Project project2 = this.generateProject(2, user1, Status.RECRUTING);
-        Project project3 = this.generateProject(3, user1, Status.RUNNING);
+        Project project1 = this.generateProject(1, user1, State.RUNNING);
+        Project project2 = this.generateProject(2, user1, State.RECRUTING);
+        Project project3 = this.generateProject(3, user1, State.RUNNING);
 
-        this.generateProject(4, user2, Status.RUNNING);
-        this.generateProject(5, user2, Status.RECRUTING);
-        this.generateProject(6, user2, Status.RUNNING);
+        this.generateProject(4, user2, State.RUNNING);
+        this.generateProject(5, user2, State.RECRUTING);
+        this.generateProject(6, user2, State.RUNNING);
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/projects/{projectId}",user1.getUserId(),project2.getProjectId()))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -598,9 +599,9 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -636,8 +637,8 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        Project project4 = this.generateProject(4, user2, Status.RUNNING);
-        Project project5 = this.generateProject(5, user2, Status.RUNNING);
+        Project project4 = this.generateProject(4, user2, State.RUNNING);
+        Project project5 = this.generateProject(5, user2, State.RUNNING);
 
         this.joinProject(project4,user1,Boolean.FALSE);
         this.joinProject(project5,user1,Boolean.FALSE);
@@ -664,8 +665,8 @@ class ProfileControllerTest extends BaseControllerTest {
         User user1=this.generateProfile(1);
         User user2 = this.generateProfile(2);
 
-        Project project4 = this.generateProject(4, user2, Status.RUNNING);
-        Project project5 = this.generateProject(5, user2, Status.RUNNING);
+        Project project4 = this.generateProject(4, user2, State.RUNNING);
+        Project project5 = this.generateProject(5, user2, State.RUNNING);
 
         this.joinProject(project4,user1,Boolean.FALSE);
         this.joinProject(project5,user1,Boolean.FALSE);
@@ -683,7 +684,7 @@ class ProfileControllerTest extends BaseControllerTest {
         ;
 
     }
-    private Project generateProject(int index, User user, Status status) {
+    private Project generateProject(int index, User user, State status) {
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
         ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
 
@@ -691,10 +692,10 @@ class ProfileControllerTest extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
+                .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-                .status(status)
+                .state(status)
                 .projectField(ProjectField.APP)
                 .leaderId(user.getUserId())
                 .build();
@@ -702,7 +703,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .project(project)
                 .user(user)
                 .role(ProjectRole.DEVELOPER)
-                .selfDescription("프로젝트 팀장입니다.")
+                .introduction("프로젝트 팀장입니다.")
                 .hide(Boolean.FALSE)
                 .build();
         project.getProjectMembers().add(projectMember);
@@ -715,7 +716,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .project(project)
                 .user(user)
                 .role(ProjectRole.DEVELOPER)
-                .selfDescription("프로젝트 팀장입니다.")
+                .introduction("프로젝트 팀장입니다.")
                 .hide(hide)
                 .build();
         project.getProjectMembers().add(projectMember);
@@ -734,8 +735,8 @@ class ProfileControllerTest extends BaseControllerTest {
                 .userName("회원"+index)
                 .area("seoul")
                 .contact("010-1234-5678")
-                .description("테스트용 가계정"+index)
-                .level((long) (index*100))
+                .introduction("테스트용 가계정"+index)
+                .grade((long) (index*100))
                 .role(ProjectRole.DEVELOPER)
                 .stacks(stacks)
                 .build();

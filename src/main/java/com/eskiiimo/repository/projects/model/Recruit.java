@@ -2,7 +2,7 @@ package com.eskiiimo.repository.projects.model;
 
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.web.projects.enumtype.RecruitStatus;
+import com.eskiiimo.web.projects.enumtype.RecruitState;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,13 +14,14 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(of="recruitId")
 @Entity
+@Table(name = "T_RECRUIT")
 public class Recruit {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long recruitId;
     @Enumerated(EnumType.STRING)
-    private RecruitStatus status;
-    private String selfDescription;
+    private RecruitState state;
+    private String introduction;
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
     @Column(insertable = false, updatable = false)

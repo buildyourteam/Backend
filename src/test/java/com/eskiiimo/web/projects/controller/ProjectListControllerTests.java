@@ -115,9 +115,9 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -232,9 +232,9 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
                                 fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
                                 fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].description").description("프로젝트에 대한 설명"),
+                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("_embedded.projectList[].dday").description("마감일까지 남은 일"),
-                                fieldWithPath("_embedded.projectList[].status").description("프로젝트 상태(모집중, 진행중, 마감)"),
+                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
                                 fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
@@ -273,7 +273,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
+                .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
                 .projectField(ProjectField.APP)
@@ -283,7 +283,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need zero 입니다.")
+                .introduction("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .projectField(ProjectField.WEB)
@@ -293,7 +293,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .description("need yes 입니다.")
+                .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
                 .projectField(ProjectField.WEB)
@@ -314,7 +314,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,2,28,23,59))
-                .description("need yes 입니다.")
+                .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
                 .build();
@@ -323,7 +323,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,2,14,23,59))
-                .description("need zero 입니다.")
+                .introduction("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .build();
@@ -332,7 +332,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .projectName("project"+index)
                 .teamName("project team"+index*2)
                 .endDate(LocalDateTime.of(2020,03,30,23,59))
-                .description("need zero 입니다.")
+                .introduction("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .build();

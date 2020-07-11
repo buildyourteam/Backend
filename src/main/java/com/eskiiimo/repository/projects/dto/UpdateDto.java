@@ -3,7 +3,7 @@ package com.eskiiimo.repository.projects.dto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.web.projects.enumtype.Status;
+import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import lombok.*;
 
@@ -19,8 +19,8 @@ public class UpdateDto {
     private String projectName;
     private String teamName;
     private LocalDateTime endDate;
-    private String description;
-    private Status status;
+    private String introduction;
+    private State state;
     private ProjectField projectField;
     private Boolean applyCanFile;
     private List<String> questions = new ArrayList<String>();
@@ -29,12 +29,12 @@ public class UpdateDto {
 
 
     @Builder
-    public UpdateDto(String projectName, String teamName, LocalDateTime endDate, String description, Status status, ProjectMemberSet needMember, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
+    public UpdateDto(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectMemberSet needMember, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;
-        this.description = description;
-        this.status = status;
+        this.introduction = introduction;
+        this.state = state;
         this.needMember = needMember;
         this.projectField=projectField;
         this.applyCanFile = applyCanFile;
@@ -49,8 +49,8 @@ public class UpdateDto {
                 project.setProjectName(this.projectName);
                 project.setTeamName(this.teamName);
                 project.setEndDate(this.endDate);
-                project.setDescription(this.description);
-                project.setStatus(this.status);
+                project.setIntroduction(this.introduction);
+                project.setState(this.state);
                 project.setProjectField(this.projectField);
                 project.setApplyCanFile(this.applyCanFile);
                 project.setQuestions(questions);

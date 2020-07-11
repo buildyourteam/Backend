@@ -1,5 +1,5 @@
 package com.eskiiimo.web.user.enumtype;
 
-public enum UserStatus {
+public enum UserState {
     FREE, STOP
 }
