@@ -1,9 +1,10 @@
 package com.eskiiimo.web.error.controller;
 
 import com.eskiiimo.repository.error.dto.ErrorResponse;
-import com.eskiiimo.web.error.exception.*;
+import com.eskiiimo.web.common.exception.*;
 import com.eskiiimo.web.files.exception.FileDownloadException;
 import com.eskiiimo.web.files.exception.FileNameException;
+import com.eskiiimo.web.projects.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

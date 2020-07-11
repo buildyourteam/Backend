@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.exception;
+package com.eskiiimo.web.projects.exception;
 
 public class YouAreNotReaderException extends RuntimeException {
     public YouAreNotReaderException(String message) {

@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.exception;
+package com.eskiiimo.web.projects.exception;
 
 public class ApplyNotFoundException extends RuntimeException {
     public ApplyNotFoundException(String message) {
