@@ -1,7 +1,7 @@
 package com.eskiiimo.repository.projects.dto;
 
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.ProjectApplyStatus;
+import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import lombok.*;
 
 @Getter
@@ -11,13 +11,13 @@ import lombok.*;
 public class ProjectApplicantDto {
     private String userId;
     private String userName;
-    private ProjectApplyStatus status;
+    private ProjectApplyState state;
     private ProjectRole role;
     @Builder
-    public ProjectApplicantDto(String userId,String userName,ProjectApplyStatus status,ProjectRole role){
+    public ProjectApplicantDto(String userId, String userName, ProjectApplyState state, ProjectRole role){
         this.userId = userId;
         this.userName = userName;
-        this.status = status;
+        this.state = state;
         this.role = role;
     }
 }

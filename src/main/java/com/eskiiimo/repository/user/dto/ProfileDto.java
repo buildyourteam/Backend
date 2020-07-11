@@ -23,8 +23,8 @@ public class ProfileDto {
     private List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
     private String contact;
     private String area;
-    private Long level;
-    private String description;
+    private Long grade;
+    private String introduction;
 
     public void updateProfile(User User) {
         List<UsersStack> removeList = new ArrayList<UsersStack>();
@@ -55,7 +55,7 @@ public class ProfileDto {
             User.setRole(this.role);
             User.setContact(this.contact);
             User.setArea(this.area);
-            User.setDescription(this.description);
+            User.setIntroduction(this.introduction);
     }
 
 }

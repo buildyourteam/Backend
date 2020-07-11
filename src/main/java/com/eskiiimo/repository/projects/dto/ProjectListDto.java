@@ -24,7 +24,7 @@ public class ProjectListDto {
     @NotNull
     private LocalDateTime endDate;
     @NotEmpty
-    private String description;
+    private String introduction;
     @NotNull
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
@@ -44,7 +44,7 @@ public class ProjectListDto {
                 .projectName(projectListDto.projectName)
                 .teamName(projectListDto.teamName)
                 .endDate(projectListDto.endDate)
-                .description(projectListDto.description)
+                .introduction(projectListDto.introduction)
                 .currentMember(projectListDto.currentMember)
                 .needMember(projectListDto.needMember)
                 .build();

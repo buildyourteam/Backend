@@ -1,9 +1,9 @@
 package com.eskiiimo.repository.user.model;
 
+import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import com.eskiiimo.web.user.enumtype.UserStatus;
-import com.eskiiimo.repository.user.dto.ProfileDto;
+import com.eskiiimo.web.user.enumtype.UserState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
+@Table(name = "T_USER")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -42,18 +43,18 @@ public class User implements UserDetails {
     private String userName;
     private String userEmail;
     private String area;
-    private Long level;
+    private Long grade;
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private UserState state;
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL,orphanRemoval=true)
     @JoinColumn(name ="account_id")
     private List<UsersStack> stacks = new ArrayList<UsersStack>();
     private String contact;
     @Size(min = 0, max = 10000)
-    private String description;
+    private String introduction;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -110,8 +111,8 @@ public class User implements UserDetails {
                 .stacks(stackList)
                 .area(this.area)
                 .contact(this.contact)
-                .level(this.level)
-                .description(this.description)
+                .grade(this.grade)
+                .introduction(this.introduction)
                 .build();
         return profileDto;
     }

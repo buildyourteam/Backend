@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(of="projectMemberId")
 @Entity
-
+@Table(name = "T_MEMBER")
 public class ProjectMember {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class ProjectMember {
     @Enumerated(EnumType.STRING)
     private TechnicalStack stack;
     @Lob
-    private String selfDescription;
+    private String introduction;
 
     Boolean hide;
 
