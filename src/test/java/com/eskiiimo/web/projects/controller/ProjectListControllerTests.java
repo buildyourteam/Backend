@@ -3,10 +3,10 @@ package com.eskiiimo.web.projects.controller;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
+import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.repository.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ class ProjectListControllerTests extends BaseControllerTest {
     @DisplayName("검색기능사용 없이 전체리스트 조회")
     void queryProjectsTotal() throws Exception {
         // Given
-        IntStream.range(0,30).forEach(i -> {
+        IntStream.range(0, 30).forEach(i -> {
             this.generateEvent(i);
         });
 
@@ -61,10 +61,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
-                .andExpect(jsonPath("_embedded.projectList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.profile").exists())
-                .andExpect(jsonPath("_links.project-list").exists())
         ;
 
     }
@@ -83,21 +80,16 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
-                .param("occupation","developer")
+                .param("occupation", "developer")
                 .param("field", ProjectField.WEB.toString())
         )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
-                .andExpect(jsonPath("_embedded.projectList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.profile").exists())
-                .andExpect(jsonPath("_links.project-list").exists())
                 .andDo(document("get-projects",
                         links(
-                                linkWithRel("self").description("link to self"),
-                                linkWithRel("project-list").description("link to project list"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("self").description("link to self")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("찾은 페이지"),
@@ -128,11 +120,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
-                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
-                                fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.project-list.href").description("프로젝트 리스트로 가는 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
                                 fieldWithPath("page.totalPages").description("총 페이지 수"),
@@ -157,15 +145,12 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "projectName,DESC")
-                .param("occupation","developer")
+                .param("occupation", "developer")
         )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
-                .andExpect(jsonPath("_embedded.projectList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.profile").exists())
-                .andExpect(jsonPath("_links.project-list").exists())
         ;
 
     }
@@ -188,10 +173,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
-                .andExpect(jsonPath("_embedded.projectList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.profile").exists())
-                .andExpect(jsonPath("_links.project-list").exists())
         ;
 
     }
@@ -214,9 +196,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .andExpect(jsonPath("page").exists())
                 .andDo(document("get-deadline-project",
                         links(
-                                linkWithRel("self").description("link to self"),
-                                linkWithRel("deadline-project-list").description("link to deadline project list"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("self").description("link to self")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("page"),
@@ -245,11 +225,7 @@ class ProjectListControllerTests extends BaseControllerTest {
                                 fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
                                 fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
-                                fieldWithPath("_embedded.projectList[]._links.self.href").description("프로젝트 상세페이지로 가는 링크"),
-                                fieldWithPath("_embedded.projectList[]._links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.deadline-project-list.href").description("마감 임박한 프로젝트 리스트로 가는 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서"),
                                 fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
                                 fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
                                 fieldWithPath("page.totalPages").description("총 페이지 수"),
@@ -262,17 +238,16 @@ class ProjectListControllerTests extends BaseControllerTest {
     }
 
 
-
     private void generateEvent(int index) {
 
-        ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectMemberSet need_zero = new ProjectMemberSet(0, 2, 3, 4);
+        ProjectMemberSet need_yes = new ProjectMemberSet(1, 4, 6, 8);
+        ProjectMemberSet currentMember = new ProjectMemberSet(2, 1, 1, 2);
 
         Project project = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
+                .projectName("project" + index)
+                .teamName("project team" + index * 2)
+                .endDate(LocalDateTime.of(2020, 04, 30, 23, 59))
                 .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
@@ -280,9 +255,9 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .build();
 
         Project project1 = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
+                .projectName("project" + index)
+                .teamName("project team" + index * 2)
+                .endDate(LocalDateTime.of(2020, 04, 30, 23, 59))
                 .introduction("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
@@ -290,9 +265,9 @@ class ProjectListControllerTests extends BaseControllerTest {
                 .build();
 
         Project project2 = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
+                .projectName("project" + index)
+                .teamName("project team" + index * 2)
+                .endDate(LocalDateTime.of(2020, 04, 30, 23, 59))
                 .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
@@ -304,34 +279,35 @@ class ProjectListControllerTests extends BaseControllerTest {
         this.projectRepository.save(project2);
 
     }
+
     private void generateProjectDeadline(int index) {
 
-        ProjectMemberSet need_zero = new ProjectMemberSet(0,2,3,4);
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
+        ProjectMemberSet need_zero = new ProjectMemberSet(0, 2, 3, 4);
+        ProjectMemberSet need_yes = new ProjectMemberSet(1, 4, 6, 8);
+        ProjectMemberSet currentMember = new ProjectMemberSet(2, 1, 1, 2);
 
         Project project = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,2,28,23,59))
+                .projectName("project" + index)
+                .teamName("project team" + index * 2)
+                .endDate(LocalDateTime.of(2020, 2, 28, 23, 59))
                 .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
                 .build();
 
         Project project1 = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,2,14,23,59))
+                .projectName("project" + index)
+                .teamName("project team" + index * 2)
+                .endDate(LocalDateTime.of(2020, 2, 14, 23, 59))
                 .introduction("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
                 .build();
 
         Project project2 = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,03,30,23,59))
+                .projectName("project" + index)
+                .teamName("project team" + index * 2)
+                .endDate(LocalDateTime.of(2020, 03, 30, 23, 59))
                 .introduction("need zero 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_zero)
