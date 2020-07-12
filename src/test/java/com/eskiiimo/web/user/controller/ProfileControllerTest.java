@@ -60,7 +60,6 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("query-my-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
-                                linkWithRel("profileImage").description("프로필 이미지"),
                                 linkWithRel("updateProfile").description("프로필 업데이트"),
                                 linkWithRel("recruits").description("나에게 온 영입제안들"),
                                 linkWithRel("profile").description("Api 명세서")
@@ -77,7 +76,6 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("grade").description("레벨"),
                                 fieldWithPath("introduction").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.updateProfile.href").description("프로필 업데이트"),
                                 fieldWithPath("_links.recruits.href").description("나에게 온 영입제안들"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
@@ -100,7 +98,6 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("query-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
-                                linkWithRel("profileImage").description("프로필 이미지"),
                                 linkWithRel("profile").description("Api 명세서")
                         ),
                         pathParameters(
@@ -115,7 +112,6 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("grade").description("레벨"),
                                 fieldWithPath("introduction").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
@@ -149,7 +145,6 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("update-profile",
                         links(
                                 linkWithRel("self").description("self 링크"),
-                                linkWithRel("profileImage").description("프로필 이미지"),
                                 linkWithRel("profile").description("Api 명세서")
                         ),
                         pathParameters(
@@ -173,7 +168,6 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("grade").description("레벨"),
                                 fieldWithPath("introduction").description("자기소개"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
