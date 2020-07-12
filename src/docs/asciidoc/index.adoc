@@ -78,36 +78,15 @@ include::{snippets}/errors/http-response.adoc[]
 응답은 http://stateless.co/hal_specification.html[Hypertext Application from resource to resource. Language (HAL)] 형식을 따른다.
 링크는 `_links`라는 키로 제공한다. 본 API의 사용자(클라이언트)는 URI를 직접 생성하지 않아야 하며, 리소스에서 제공하는 링크를 사용해야 한다.
 
-[[indexMain]]
-=== 메인페이지 인덱스
-
-`Get` 요청을 사용해서 메인 페이지 인덱스를 조회 할 수 있다.
-
-operation::index-main[snippets='curl-request,links']
-
-[[indexProjects]]
-=== /projects 인덱스
-
-`Get` 요청을 사용해서 /projects 페이지 인덱스를 조회 할 수 있다.
-
-operation::index-projects[snippets='curl-request,links']
-
 [[indexProjectsDetail]]
-=== /projects/{projectId} 인덱스
+=== 프로젝트 상세 페이지 인덱스
 
 `Get` 요청을 사용해서 /projects/{projectId} 페이지 인덱스를 조회 할 수 있다.
 
 operation::index-projects-detail[snippets='curl-request,links']
 
-[[indexPeople]]
-=== /people 인덱스
-
-`Get` 요청을 사용해서 /people 페이지 인덱스를 조회 할 수 있다.
-
-operation::index-people[snippets='curl-request,links']
-
 [[indexProfile]]
-=== /profile 인덱스
+=== 프로필 페이지 인덱스
 
 `Get` 요청을 사용해서 /profile 페이지 인덱스를 조회 할 수 있다.
 
@@ -209,7 +188,7 @@ operation::getApply[snippets='path-parameters,curl-request,http-response,respons
 
 operation::acceptApply[snippets='path-parameters,curl-request,http-response']
 
-[[acceptApply]]
+[[rejectApply]]
 === 프로젝트 지원자 거절하기
 
 `Delete` 요청을 사용해서 프로젝트 지원자를 거절 할 수 있다.
