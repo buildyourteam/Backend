@@ -71,7 +71,6 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .andDo(document("query-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("projectImage").description("link to projectImage"),
                                 linkWithRel("apply").description("apply to project"),
                                 linkWithRel("profile").description("link to profile")
                             ),
@@ -105,7 +104,6 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("_links.self.href").description("Self 링크"),
-                                fieldWithPath("_links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.apply.href").description("프로젝트 지원 링크"),
                                 fieldWithPath("_links.profile.href").description("API 명세서")
 
@@ -320,7 +318,6 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .andDo(document("update-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("projectImage").description("link to projectImage"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         pathParameters(
@@ -372,7 +369,6 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("memberList[].grade").description("프로젝트 팀원의 레벨"),
                                 fieldWithPath("memberList[]._links.self.href").description("프로젝트 팀원의 프로필"),
                                 fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.projectImage.href").description("프로젝트 이미지"),
                                 fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))

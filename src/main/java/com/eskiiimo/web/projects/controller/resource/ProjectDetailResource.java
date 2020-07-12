@@ -13,6 +13,5 @@ public class ProjectDetailResource extends EntityModel<ProjectDetailDto> {
     public ProjectDetailResource(ProjectDetailDto project, Long project_id,Link... links) {
         super(project, links);
         add(linkTo(ProjectDetailController.class).slash(project_id).withSelfRel());
-        add(linkTo(ProjectImageController.class,project_id).withRel("projectImage"));
     }
 }
