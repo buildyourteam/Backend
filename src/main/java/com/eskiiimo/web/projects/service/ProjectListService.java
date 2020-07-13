@@ -66,10 +66,10 @@ public class ProjectListService {
         return page;
     }
 
-    public Page<Project> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
-        return page;
-    }
+//    public Page<Project> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
+//        Page<Project> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
+//        return page;
+//    }
 
 
     public Project findById(Long project_id) {

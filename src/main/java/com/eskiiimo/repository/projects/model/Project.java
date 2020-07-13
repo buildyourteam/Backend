@@ -37,7 +37,6 @@ public class Project{
     @Size(min = 0, max = 10000)
     @NotBlank
     private String introduction;
-    private long dday;
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private State state = State.RECRUTING;

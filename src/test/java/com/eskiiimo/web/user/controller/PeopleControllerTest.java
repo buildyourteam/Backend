@@ -196,6 +196,7 @@ class PeopleControllerTest extends BaseControllerTest {
                                 fieldWithPath("_embedded.peopleList[].stacks").description("유저의 기술 스택"),
                                 fieldWithPath("_embedded.peopleList[].area").description("유저의 활동지역"),
                                 fieldWithPath("_embedded.peopleList[].grade").description("유저의 레벨"),
+                                fieldWithPath("_embedded.peopleList[].roles").description("유저의 역할들"),
                                 fieldWithPath("_embedded.peopleList[]._links.self.href").description("유저의 프로필 링크"),
                                 fieldWithPath("_embedded.peopleList[]._links.profileImage.href").description("프로필 이미지"),
                                 fieldWithPath("_links.self.href").description("Self 링크"),
@@ -228,6 +229,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .area("Seoul")
                 .userName("User"+(3*index+1))
                 .role(ProjectRole.LEADER)
+                .roles(null)
                 .build();
         User user2 = User.builder()
                 .userId("testUser"+(3*index+2))
@@ -237,7 +239,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .area("Busan")
                 .userName("User"+(3*index+2))
                 .role(ProjectRole.DEVELOPER)
-
+                .roles(null)
                 .build();
         User user3 =  User.builder()
                 .userId("testUser"+(3*index+3))
@@ -247,6 +249,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .area("Daegu")
                 .userName("User"+(3*index+3))
                 .role(ProjectRole.DEVELOPER)
+                .roles(null)
                 .build();
         this.userRepository.save(user1);
         this.userRepository.save(user2);

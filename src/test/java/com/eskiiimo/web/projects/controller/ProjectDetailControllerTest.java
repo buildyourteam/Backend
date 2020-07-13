@@ -88,7 +88,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("dday").description("마감일까지 남은 일"),
+//                                fieldWithPath("dday").description("마감일까지 남은 일"),
                                 fieldWithPath("currentMember.developer").description("현재 개발자 수"),
                                 fieldWithPath("currentMember.designer").description("현재 디자이너 수r"),
                                 fieldWithPath("currentMember.planner").description("현재 기획자 수"),
@@ -237,7 +237,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("endDate").description("마감일"),
                                 fieldWithPath("introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("state").description("프로젝트 상태(모집중)"),
-                                fieldWithPath("dday").description("마감일까지 남은 일"),
+//                                fieldWithPath("dday").description("마감일까지 남은 일"),
                                 fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
                                 fieldWithPath("currentMember").description("팀원 현황"),
@@ -352,7 +352,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("teamName").description("팀명"),
                                 fieldWithPath("endDate").description("마감일"),
                                 fieldWithPath("introduction").description("프로젝트에 대한 설명"),
-                                fieldWithPath("dday").description("마감일까지 남은 일"),
+//                                fieldWithPath("dday").description("마감일까지 남은 일"),
                                 fieldWithPath("state").description("프로젝트 상태(모집중, 진행중, 마감)"),
                                 fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
@@ -423,7 +423,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .state(State.RECRUTING)
                 .projectField(ProjectField.APP)
                 .questions(questions)
-                .dday(ChronoUnit.DAYS.between(LocalDateTime.now(), LocalDateTime.of(2020,04,30,23,59)))
+//                .dday(ChronoUnit.DAYS.between(LocalDateTime.now(), LocalDateTime.of(2020,04,30,23,59)))
                 .applyCanFile(Boolean.TRUE)
                 .build();
         this.projectRepository.save(project);

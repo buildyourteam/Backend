@@ -108,7 +108,7 @@ public class ProjectDetailService {
                 .questions(project.getQuestions())
                 .applyCanFile(project.getApplyCanFile())
                 .currentMember(project.getCurrentMember())
-                .dday(project.getDday())
+//                .dday(project.getDday())
                 .projectField(project.getProjectField())
                 .build();
 

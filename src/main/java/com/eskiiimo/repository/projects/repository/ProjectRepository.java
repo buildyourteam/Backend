@@ -19,7 +19,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByNeedMemberPlannerGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByNeedMemberEtcGreaterThan(int i,  Pageable pageable);
     Page<Project> findAllByProjectField(ProjectField field, Pageable pageable);
-    Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
+//    Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
     Page<Project> findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(String userId, Boolean hide, State state, Pageable pageable);
     Page<Project> findAllByLeaderIdAndProjectMembers_Hide(String leaderId, Boolean hide,Pageable pageable);
     Page<Project> findAllByProjectMembers_User_UserId(String user_id, Pageable pageable);

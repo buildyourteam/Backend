@@ -24,7 +24,6 @@ public class ProjectDetailDto {
     private LocalDateTime endDate;
     private String introduction;
     private State state;
-    private long dday;
     private ProjectField projectField;
     private Boolean applyCanFile;
     private List<String> questions = new ArrayList<String>();
@@ -34,7 +33,7 @@ public class ProjectDetailDto {
 
 
     @Builder
-    public ProjectDetailDto(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectMemberSet currentMember, ProjectMemberSet needMember, List<ProjectMember> memberList, long dday, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
+    public ProjectDetailDto(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectMemberSet currentMember, ProjectMemberSet needMember, List<ProjectMember> memberList, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions){
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;
@@ -42,7 +41,6 @@ public class ProjectDetailDto {
         this.state = state;
         this.currentMember = currentMember;
         this.needMember = needMember;
-        this.dday=dday;
         this.projectField=projectField;
         this.applyCanFile = applyCanFile;
         for(ProjectApplyQuestion question : questions)
@@ -77,7 +75,6 @@ public class ProjectDetailDto {
                     project.setState(State.RECRUTING);
                 else
                     project.setState(this.state);
-                project.setDday(ChronoUnit.DAYS.between(LocalDateTime.now(), this.endDate));
                 project.setProjectField(this.projectField);
                 project.setApplyCanFile(this.applyCanFile);
                 project.setQuestions(questions);

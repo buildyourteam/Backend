@@ -82,6 +82,7 @@ public class PeopleService {
                 .stacks(stackList)
                 .area(profile.getArea())
                 .grade(profile.getGrade())
+                .roles(profile.getRoles())
                 .build();
         return dto;
     }
