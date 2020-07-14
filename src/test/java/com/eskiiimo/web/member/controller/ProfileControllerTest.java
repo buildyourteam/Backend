@@ -1,15 +1,15 @@
-package com.eskiiimo.web.user.controller;
+package com.eskiiimo.web.member.controller;
 
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.user.dto.ProfileDto;
+import com.eskiiimo.repository.user.model.User;
+import com.eskiiimo.repository.user.model.UsersStack;
+import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.*;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.repository.user.model.UsersStack;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileControllerTest extends BaseControllerTest {
 
     @Autowired
-    UserRepository profileRepository;
-    @Autowired
     UserRepository userRepository;
+
 
     @Autowired
     ProjectRepository projectRepository;
@@ -87,7 +86,6 @@ class ProfileControllerTest extends BaseControllerTest {
 
     }
 
-
     @Test
     @Transactional
     @DisplayName("프로필 조회")
@@ -131,7 +129,7 @@ class ProfileControllerTest extends BaseControllerTest {
         this.generateProfile(1);
         List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
         stacks.add(TechnicalStack.DJANGO);
-        ProfileDto profileDto = ProfileDto.builder()
+        ProfileDto userDto = ProfileDto.builder()
                 .area("서울시 구로구")
                 .contact("010-9876-5432")
                 .introduction("프로필 업데이트 하기")
@@ -143,7 +141,7 @@ class ProfileControllerTest extends BaseControllerTest {
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}","user1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(profileDto)))
+                .content(this.objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("update-profile",
@@ -210,7 +208,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("get-running-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to user")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("page"),
@@ -283,7 +281,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("get-ended-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to user")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("page"),
@@ -356,7 +354,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("get-planned-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to user")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("page"),
@@ -430,7 +428,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("get-running-hidden-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to user")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("page"),
@@ -503,7 +501,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("get-ended-hidden-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to user")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("page"),
@@ -578,7 +576,7 @@ class ProfileControllerTest extends BaseControllerTest {
                 .andDo(document("get-planned-hidden-project",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to user")
                         ),
                         requestParameters(
                                 parameterWithName("page").description("page"),
@@ -678,7 +676,7 @@ class ProfileControllerTest extends BaseControllerTest {
         ;
 
     }
-    private Project generateProject(int index, User user, State status) {
+    private Project generateProject(int index, User user, State state) {
         ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
         ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
 
@@ -689,33 +687,33 @@ class ProfileControllerTest extends BaseControllerTest {
                 .introduction("need yes 입니다.")
                 .currentMember(currentMember)
                 .needMember(need_yes)
-                .state(status)
+                .state(state)
                 .projectField(ProjectField.APP)
                 .leaderId(user.getUserId())
                 .build();
-        ProjectMember projectMember = ProjectMember.builder()
+        ProjectMember projectUser = ProjectMember.builder()
                 .project(project)
                 .user(user)
                 .role(ProjectRole.DEVELOPER)
                 .introduction("프로젝트 팀장입니다.")
                 .hide(Boolean.FALSE)
                 .build();
-        project.getProjectMembers().add(projectMember);
-        this.projectMemberRepository.save(projectMember);
+        project.getProjectMembers().add(projectUser);
+        this.projectMemberRepository.save(projectUser);
         this.projectRepository.save(project);
         return project;
     }
     private void joinProject(Project project, User user, Boolean hide){
-        ProjectMember projectMember = ProjectMember.builder()
+        ProjectMember projectUser = ProjectMember.builder()
                 .project(project)
                 .user(user)
                 .role(ProjectRole.DEVELOPER)
                 .introduction("프로젝트 팀장입니다.")
                 .hide(hide)
                 .build();
-        project.getProjectMembers().add(projectMember);
+        project.getProjectMembers().add(projectUser);
 
-        this.projectMemberRepository.save(projectMember);
+        this.projectMemberRepository.save(projectUser);
         this.projectRepository.save(project);
     }
 
@@ -723,7 +721,7 @@ class ProfileControllerTest extends BaseControllerTest {
         List<UsersStack> stacks = new ArrayList<UsersStack>();
         stacks.add(new UsersStack(TechnicalStack.SPRINGBOOT));
         stacks.add(new UsersStack(TechnicalStack.DJANGO));
-        User profile = User.builder()
+        User user = User.builder()
                 .userId("user"+index)
                 .password("testpassword")
                 .userName("회원"+index)
@@ -734,8 +732,8 @@ class ProfileControllerTest extends BaseControllerTest {
                 .role(ProjectRole.DEVELOPER)
                 .stacks(stacks)
                 .build();
-        this.profileRepository.save(profile).getAccountId();
-        return profile;
+        this.userRepository.save(user).getAccountId();
+        return user;
 
     }
 }

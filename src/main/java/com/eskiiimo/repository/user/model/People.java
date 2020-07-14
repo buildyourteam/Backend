@@ -30,7 +30,7 @@ public class People {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-    public People(String userId , String userName, List<TechnicalStack> stacks, String area, Long grade, List<String> roles) {
+    public People(String userId , String userName, List<TechnicalStack> stacks, String area, Long grade, List<String> roles){
         super();
         this.userId = userId;
         this.area =area;
