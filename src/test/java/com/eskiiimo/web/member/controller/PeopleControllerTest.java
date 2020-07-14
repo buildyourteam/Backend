@@ -1,11 +1,11 @@
-package com.eskiiimo.web.user.controller;
+package com.eskiiimo.web.member.controller;
 
+import com.eskiiimo.repository.user.model.User;
+import com.eskiiimo.repository.user.model.UsersStack;
+import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.repository.user.model.UsersStack;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,6 +229,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .area("Seoul")
                 .userName("User"+(3*index+1))
                 .role(ProjectRole.LEADER)
+                .roles(null)
                 .build();
         User user2 = User.builder()
                 .userId("testUser"+(3*index+2))
@@ -238,7 +239,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .area("Busan")
                 .userName("User"+(3*index+2))
                 .role(ProjectRole.DEVELOPER)
-
+                .roles(null)
                 .build();
         User user3 =  User.builder()
                 .userId("testUser"+(3*index+3))
@@ -248,6 +249,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .area("Daegu")
                 .userName("User"+(3*index+3))
                 .role(ProjectRole.DEVELOPER)
+                .roles(null)
                 .build();
         this.userRepository.save(user1);
         this.userRepository.save(user2);
