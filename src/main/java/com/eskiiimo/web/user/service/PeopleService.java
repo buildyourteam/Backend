@@ -80,6 +80,7 @@ public class PeopleService {
                 .userId(profile.getUserId())
                 .userName(profile.getUserName())
                 .stacks(stackList)
+                .roles(profile.getRoles())
                 .area(profile.getArea())
                 .grade(profile.getGrade())
                 .build();
