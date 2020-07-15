@@ -1,6 +1,6 @@
 package com.eskiiimo.web.user.controller;
 
-import com.eskiiimo.repository.user.model.People;
+import com.eskiiimo.repository.user.dto.PeopleDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.user.service.PeopleService;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +23,9 @@ public class PeopleController {
 
 
     @GetMapping
-    public PagedModel<EntityModel<People>> getJobSeekers(
+    public PagedModel<EntityModel<PeopleDto>> getJobSeekers(
             Pageable pageable,
-            PagedResourcesAssembler<People> assembler,
+            PagedResourcesAssembler<PeopleDto> assembler,
             @RequestParam(value = "grade", required = false) Long grade,
             @RequestParam(value = "role", required = false) ProjectRole role,
             @RequestParam(value = "area", required = false) String area
