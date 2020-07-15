@@ -1,6 +1,6 @@
 package com.eskiiimo.web.user.service;
 
-import com.eskiiimo.repository.user.model.People;
+import com.eskiiimo.repository.user.dto.PeopleDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import com.eskiiimo.repository.user.model.User;
@@ -24,9 +24,9 @@ public class PeopleService {
     UserRepository userRepository;
 
     @Transactional
-    public Page<People> getPeople(Long grade, ProjectRole role, String area, Pageable pageable){
+    public Page<PeopleDto> getPeople(Long grade, ProjectRole role, String area, Pageable pageable){
         Page<User> page = userRepository.findAll(pageable);
-        Page<People> dtopage;
+        Page<PeopleDto> dtopage;
 
         if(grade != null){
             if(role!=null){
@@ -68,19 +68,19 @@ public class PeopleService {
         dtopage = page.map(this::convertToPeopleList);
         return dtopage;
     }
-    public People convertToPeopleList(User profile) {
+    public PeopleDto convertToPeopleList(User profile) {
         List<TechnicalStack> stackList = new ArrayList<TechnicalStack>();
         for(UsersStack stack : profile.getStacks()){
             TechnicalStack technicalStack = stack.getStack();
             stackList.add(technicalStack);
         }
-        People dto = new People();
+        PeopleDto dto = new PeopleDto();
         // Conversion logic
-        dto = People.builder()
+        dto = PeopleDto.builder()
                 .userId(profile.getUserId())
                 .userName(profile.getUserName())
                 .stacks(stackList)
-                .roles(profile.getRoles())
+                .role(profile.getRole())
                 .area(profile.getArea())
                 .grade(profile.getGrade())
                 .build();

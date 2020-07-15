@@ -1,6 +1,6 @@
 package com.eskiiimo.web.user.controller;
 
-import com.eskiiimo.repository.user.model.People;
+import com.eskiiimo.repository.user.dto.PeopleDto;
 import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.user.controller.resource.PeopleResource;
@@ -32,12 +32,12 @@ public class PeopleController {
 
 
     @GetMapping
-    public ResponseEntity getJobSeekers(Pageable pageable, PagedResourcesAssembler<People> assembler,
+    public ResponseEntity getJobSeekers(Pageable pageable, PagedResourcesAssembler<PeopleDto> assembler,
                                         @RequestParam(value = "grade", required = false)Long grade,
                                         @RequestParam(value = "role",required =  false) ProjectRole role,
                                         @RequestParam(value = "area",required = false)String area
     ) {
-        Page<People> page = peopleService.getPeople(grade,role,area,pageable);
+        Page<PeopleDto> page = peopleService.getPeople(grade,role,area,pageable);
         PagedModel<PeopleResource> pagedResources = assembler.toModel(page, e -> new PeopleResource(e));
         pagedResources.add(linkTo(DocsController.class).slash("resourcesPeople").withRel("profile"));
 
