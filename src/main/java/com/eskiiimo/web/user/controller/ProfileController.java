@@ -1,6 +1,6 @@
 package com.eskiiimo.web.user.controller;
 
-import com.eskiiimo.repository.projects.model.Project;
+import com.eskiiimo.repository.projects.dto.ProjectListDto;
 import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.web.projects.controller.RecruitController;
@@ -65,7 +65,7 @@ public class ProfileController {
     public ResponseEntity getRunningProjects(
             @PathVariable(value = "user_id") String user_id,
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler
+            PagedResourcesAssembler<ProjectListDto> assembler
     ) {
         return ResponseEntity.ok(assembler.toModel(this.profileService.getRunning(user_id, pageable)));
     }
@@ -75,7 +75,7 @@ public class ProfileController {
     public ResponseEntity getEndedProjects(
             @PathVariable(value = "user_id") String user_id,
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler
+            PagedResourcesAssembler<ProjectListDto> assembler
     ) {
         return ResponseEntity.ok(assembler.toModel(this.profileService.getEnded(user_id, pageable)));
     }
@@ -85,7 +85,7 @@ public class ProfileController {
     public ResponseEntity getMyPlanProjects(
             @PathVariable(value = "user_id") String user_id,
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler
+            PagedResourcesAssembler<ProjectListDto> assembler
     ) {
         return ResponseEntity.ok(assembler.toModel(this.profileService.getPlanner(user_id, pageable)));
     }
@@ -95,7 +95,7 @@ public class ProfileController {
     public ResponseEntity getRunningHiddenProjects(
             @PathVariable(value = "user_id") String user_id,
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler
+            PagedResourcesAssembler<ProjectListDto> assembler
     ) {
         return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenRunning(user_id, pageable)));
     }
@@ -105,7 +105,7 @@ public class ProfileController {
     public ResponseEntity getEndedHiddenProjects(
             @PathVariable(value = "user_id") String user_id,
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler
+            PagedResourcesAssembler<ProjectListDto> assembler
     ) {
         return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenEnded(user_id, pageable)));
     }
@@ -115,7 +115,7 @@ public class ProfileController {
     public ResponseEntity getMyPlanHiddenProjects(
             @PathVariable(value = "user_id") String user_id,
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler
+            PagedResourcesAssembler<ProjectListDto> assembler
     ) {
         return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenPlanner(user_id, pageable)));
     }
@@ -124,7 +124,7 @@ public class ProfileController {
     @PutMapping("/{user_id}/projects/{projectId}")
     public ResponseEntity reShowProject(@PathVariable(value = "user_id") String user_id,
                                         @PathVariable(value = "projectId") Long projectId,
-                                        Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+                                        Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler) {
         this.profileService.reShowProject(user_id, projectId);
         return ResponseEntity.ok().build();
     }
@@ -133,7 +133,7 @@ public class ProfileController {
     @DeleteMapping("/{user_id}/projects/{projectId}")
     public ResponseEntity hideProject(@PathVariable(value = "user_id") String user_id,
                                       @PathVariable(value = "projectId") Long projectId,
-                                      Pageable pageable, PagedResourcesAssembler<Project> assembler) {
+                                      Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler) {
         this.profileService.hideProject(user_id, projectId);
         return ResponseEntity.ok().build();
     }

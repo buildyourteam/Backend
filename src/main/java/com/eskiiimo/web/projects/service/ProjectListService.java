@@ -1,15 +1,13 @@
 package com.eskiiimo.web.projects.service;
 
-import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.web.projects.enumtype.ProjectField;
+import com.eskiiimo.repository.projects.dto.ProjectListDto;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
+import com.eskiiimo.web.projects.enumtype.ProjectField;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +21,8 @@ public class ProjectListService {
     2. 직군별, 분야별 둘 중 하나만 선택되어있을 경우
     3.       ...     둘다 선택되어있지 않을 경우
     */
-    public Page<Project> getAllByField(String occupation, ProjectField field, Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAll(pageable);
+    public Page<ProjectListDto> getAllByField(String occupation, ProjectField field, Pageable pageable) {
+        Page<ProjectListDto> page = this.projectRepository.findAllProjectedBy(pageable);
         if (occupation != null) {
             if (occupation.equals("developer")) {
 
@@ -66,23 +64,9 @@ public class ProjectListService {
         return page;
     }
 
-    public Page<Project> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
-        Page<Project> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
+    public Page<ProjectListDto> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
+        Page<ProjectListDto> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
         return page;
     }
-
-
-    public Project findById(Long project_id) {
-        Optional<Project> byId = this.projectRepository.findById(project_id);
-        Project existingProjct = byId.get();
-        return existingProjct;
-    }
-
-    public Project save(Project existingProject) {
-        Project project = this.projectRepository.save(existingProject);
-        return project;
-    }
-
-
 
 }
