@@ -1,5 +1,6 @@
 package com.eskiiimo.web.common;
 
+import com.eskiiimo.web.user.testUserFactory.TestUserFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,4 +32,7 @@ public class BaseControllerTest {
 
     @Autowired
     protected ModelMapper modelMapper;
+
+    @Autowired
+    protected TestUserFactory testUserFactory;
 }
