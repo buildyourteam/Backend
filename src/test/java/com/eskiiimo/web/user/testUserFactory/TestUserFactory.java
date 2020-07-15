@@ -22,13 +22,15 @@ public class TestUserFactory {
         List<UsersStack> stacks1 = new ArrayList<UsersStack>();
         stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
         User user =  User.builder()
-                .userId("testUser"+(3*index+1))
+                .userId("user" + index)
                 .password("testpassword")
                 .grade((long)1)
                 .stacks(stacks1)
                 .area("Seoul")
-                .userName("User"+(3*index+1))
+                .userName("UserName"+(3*index+1))
                 .role(ProjectRole.DEVELOPER)
+                .contact("010-1234-5678")
+                .introduction("테스트용 가계정" + index)
                 .build();
         return this.userRepository.save(user);
     }
