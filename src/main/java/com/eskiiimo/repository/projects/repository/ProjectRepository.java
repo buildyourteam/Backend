@@ -1,5 +1,6 @@
 package com.eskiiimo.repository.projects.repository;
 
+import com.eskiiimo.repository.projects.dto.ProjectListDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.State;
@@ -10,20 +11,19 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    Page<Project> findAllByNeedMemberDeveloperGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMemberDesignerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMemberPlannerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMemberEtcGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
-    Page<Project> findAllByNeedMemberDeveloperGreaterThan(int i,  Pageable pageable);
-    Page<Project> findAllByNeedMemberDesignerGreaterThan(int i,  Pageable pageable);
-    Page<Project> findAllByNeedMemberPlannerGreaterThan(int i,  Pageable pageable);
-    Page<Project> findAllByNeedMemberEtcGreaterThan(int i,  Pageable pageable);
-    Page<Project> findAllByProjectField(ProjectField field, Pageable pageable);
-    Page<Project> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
-    Page<Project> findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(String userId, Boolean hide, State state, Pageable pageable);
-    Page<Project> findAllByLeaderIdAndProjectMembers_Hide(String leaderId, Boolean hide,Pageable pageable);
-    Page<Project> findAllByProjectMembers_User_UserId(String user_id, Pageable pageable);
-    long countAllByState(State state);
+    Page<ProjectListDto> findAllByNeedMemberDeveloperGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<ProjectListDto> findAllByNeedMemberDesignerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<ProjectListDto> findAllByNeedMemberPlannerGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<ProjectListDto> findAllByNeedMemberEtcGreaterThanAndProjectField(int i, ProjectField field, Pageable pageable);
+    Page<ProjectListDto> findAllByNeedMemberDeveloperGreaterThan(int i,  Pageable pageable);
+    Page<ProjectListDto> findAllByNeedMemberDesignerGreaterThan(int i,  Pageable pageable);
+    Page<ProjectListDto> findAllByNeedMemberPlannerGreaterThan(int i,  Pageable pageable);
+    Page<ProjectListDto> findAllByNeedMemberEtcGreaterThan(int i,  Pageable pageable);
+    Page<ProjectListDto> findAllByProjectField(ProjectField field, Pageable pageable);
+    Page<ProjectListDto> findAllByDdayLessThanOrderByDdayAsc(long i, Pageable pageable);
+    Page<ProjectListDto> findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(String userId, Boolean hide, State state, Pageable pageable);
+    Page<ProjectListDto> findAllByLeaderIdAndProjectMembers_Hide(String leaderId, Boolean hide,Pageable pageable);
+    Page<ProjectListDto> findAllProjectedBy(Pageable pageable);
     void deleteByProjectId(Long id);
 
     }

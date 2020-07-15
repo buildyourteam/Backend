@@ -1,5 +1,6 @@
 package com.eskiiimo.web.projects.controller;
 
+import com.eskiiimo.repository.projects.dto.ProjectListDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.service.ProjectListService;
@@ -26,9 +27,9 @@ public class ProjectListController {
      */
 
     @GetMapping
-    public PagedModel<EntityModel<Project>> getProjectsList(
+    public PagedModel<EntityModel<ProjectListDto>> getProjectsList(
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler,
+            PagedResourcesAssembler<ProjectListDto> assembler,
             @RequestParam(value = "occupation", required = false) String occupation,
             @RequestParam(value = "field", required = false) ProjectField field
     ) {
@@ -36,9 +37,9 @@ public class ProjectListController {
     }
 
     @GetMapping("/deadline")
-    public PagedModel<EntityModel<Project>> getProjectsDeadline(
+    public PagedModel<EntityModel<ProjectListDto>> getProjectsDeadline(
             Pageable pageable,
-            PagedResourcesAssembler<Project> assembler
+            PagedResourcesAssembler<ProjectListDto> assembler
     ) {
         return assembler.toModel(projectListService.findAllByDdayLessThanOrderByDdayAsc(pageable));
     }

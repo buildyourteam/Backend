@@ -3,7 +3,6 @@ package com.eskiiimo.repository.projects.model;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import com.eskiiimo.web.projects.enumtype.State;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -58,24 +57,20 @@ public class Project{
 
     private String leaderId;
 
-    @JsonIgnore
     private Boolean applyCanFile;
 
     @Builder.Default
     @OneToMany(cascade = {CascadeType.ALL})
-    @JsonIgnore
     @JoinColumn(name = "projectId")
     private List<ProjectApply> applies = new ArrayList<ProjectApply>();
 
     @Builder.Default
     @OneToMany(cascade = {CascadeType.ALL})
-    @JsonIgnore
     @JoinColumn(name = "projectId")
     private List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
 
     @Builder.Default
     @OneToMany(mappedBy = "project")
-    @JsonIgnore
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
     public void addMember(ProjectMember member){
