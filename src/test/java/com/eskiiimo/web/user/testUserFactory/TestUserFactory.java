@@ -6,12 +6,13 @@ import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-@Configuration
+@Component
 public class TestUserFactory {
 
     @Autowired
