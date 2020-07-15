@@ -63,7 +63,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .param("size", "10")
                 .param("grade","1")
         )
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].grade").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andDo(print())
 ;
     }
@@ -97,7 +97,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .param("size", "10")
                 .param("area","Seoul")
         )
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].area").value("Seoul"))
+                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());
     }
     @Test
@@ -115,7 +115,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .param("grade","2")
                 .param("role","DEVELOPER")
         )
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].grade").value(2))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(2))
                 .andDo(print());
     }
     @Test
@@ -133,8 +133,8 @@ class PeopleControllerTest extends BaseControllerTest {
                 .param("grade","2")
                 .param("area","Busan")
         )
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].grade").value(2))
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].area").value("Busan"))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(2))
+                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Busan"))
                 .andDo(print());
     }
     @Test
@@ -152,7 +152,7 @@ class PeopleControllerTest extends BaseControllerTest {
                 .param("role","DEVELOPER")
                 .param("area","Daegu")
         )
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].area").value("Daegu"))
+                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Daegu"))
                 .andDo(print());
     }
     @Test
@@ -171,8 +171,8 @@ class PeopleControllerTest extends BaseControllerTest {
                 .param("role","LEADER")
                 .param("area","Seoul")
         )
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].grade").value(1))
-                .andExpect(jsonPath("_embedded.peopleDtoList[0].area").value("Seoul"))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print())
                 .andDo(document("get-people",
                         links(
@@ -190,12 +190,12 @@ class PeopleControllerTest extends BaseControllerTest {
                         ),
                         responseFields(
 
-                                fieldWithPath("_embedded.peopleDtoList[].userId").description("유저의 아이디"),
-                                fieldWithPath("_embedded.peopleDtoList[].userName").description("유저의 이름"),
-                                fieldWithPath("_embedded.peopleDtoList[].stacks").description("유저의 기술 스택"),
-                                fieldWithPath("_embedded.peopleDtoList[].area").description("유저의 활동지역"),
-                                fieldWithPath("_embedded.peopleDtoList[].grade").description("유저의 레벨"),
-                                fieldWithPath("_embedded.peopleDtoList[].role").description("유저가 관심 있는 분야"),
+                                fieldWithPath("_embedded.peopleList[].userId").description("유저의 아이디"),
+                                fieldWithPath("_embedded.peopleList[].userName").description("유저의 이름"),
+                                fieldWithPath("_embedded.peopleList[].stacks").description("유저의 기술 스택"),
+                                fieldWithPath("_embedded.peopleList[].area").description("유저의 활동지역"),
+                                fieldWithPath("_embedded.peopleList[].grade").description("유저의 레벨"),
+                                fieldWithPath("_embedded.peopleList[].role").description("유저가 관심 있는 분야"),
                                 fieldWithPath("_links.self.href").description("Self 링크"),
                                 fieldWithPath("_links.first.href").description("리스트 첫번째 페이지"),
                                 fieldWithPath("_links.next.href").description("다음 리스트"),
