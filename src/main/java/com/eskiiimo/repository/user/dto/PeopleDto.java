@@ -1,5 +1,6 @@
-package com.eskiiimo.repository.user.model;
+package com.eskiiimo.repository.user.dto;
 
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,20 +14,22 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @Table(name = "T_PEOPLE")
-public class People {
+public class PeopleDto {
     private String userId;
     private String userName;
     @Builder.Default
     private List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
     private String area;
     private Long grade;
+    private ProjectRole role;
 
-    public People(String userId , String userName, List<TechnicalStack> stacks, String area, Long grade){
+    public PeopleDto(String userId , String userName, List<TechnicalStack> stacks, String area, Long grade, ProjectRole role){
         super();
         this.userId = userId;
         this.area =area;
         this.userName = userName;
         this.grade = grade;
         this.stacks =stacks;
+        this.role = role;
     }
 }
