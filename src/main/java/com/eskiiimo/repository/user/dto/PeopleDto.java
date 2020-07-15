@@ -1,32 +1,28 @@
-package com.eskiiimo.repository.user.model;
+package com.eskiiimo.repository.user.dto;
 
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "T_PEOPLE")
-public class People {
+@Builder
+@Relation(collectionRelation = "peopleList")
+public class PeopleDto {
     private String userId;
     private String userName;
     @Builder.Default
     private List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
     private String area;
     private Long grade;
-
-    public People(String userId , String userName, List<TechnicalStack> stacks, String area, Long grade){
-        super();
-        this.userId = userId;
-        this.area =area;
-        this.userName = userName;
-        this.grade = grade;
-        this.stacks =stacks;
-    }
+    private ProjectRole role;
 }
