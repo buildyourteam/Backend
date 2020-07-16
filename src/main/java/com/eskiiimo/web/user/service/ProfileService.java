@@ -13,7 +13,6 @@ import com.eskiiimo.web.common.exception.UserNotFoundException;
 import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.web.user.exception.ProjectMemberNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,9 +30,6 @@ public class ProfileService {
     ProjectRepository projectRepository;
     @Autowired
     ProjectMemberRepository projectMemberRepository;
-
-    @Autowired
-    ModelMapper modelMapper;
 
     @Transactional
     public ProfileDto getProfile(String user_id) {

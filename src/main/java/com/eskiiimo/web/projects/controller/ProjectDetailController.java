@@ -1,19 +1,18 @@
 package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
+import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.dto.UpdateDto;
+import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.common.ErrorResource;
 import com.eskiiimo.web.index.controller.DocsController;
-import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.validator.ProjectValidator;
 import com.eskiiimo.web.projects.controller.resource.ProjectDetailResource;
-import com.eskiiimo.web.projects.service.ProjectDetailService;
 import com.eskiiimo.web.projects.controller.resource.ProjectMemberResource;
-import com.eskiiimo.web.projects.controller.resource.RecruitsResource;
-import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.web.projects.controller.resource.RecruitResource;
-import org.modelmapper.ModelMapper;
+import com.eskiiimo.web.projects.controller.resource.RecruitsResource;
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import com.eskiiimo.web.projects.service.ProjectDetailService;
+import com.eskiiimo.web.projects.validator.ProjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
@@ -42,9 +41,6 @@ public class ProjectDetailController {
 
     @Autowired
     ProjectDetailService projectDetailService;
-
-    @Autowired
-    ModelMapper modelMapper;
 
     @Autowired
     ProjectValidator projectValidator;
