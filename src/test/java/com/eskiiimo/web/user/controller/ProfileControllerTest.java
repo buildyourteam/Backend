@@ -1,27 +1,17 @@
 package com.eskiiimo.web.user.controller;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
-import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.model.UsersStack;
-import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
-import com.eskiiimo.web.projects.enumtype.*;
+import com.eskiiimo.web.projects.enumtype.State;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -37,22 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("프로필")
 class ProfileControllerTest extends BaseControllerTest {
 
-    @Autowired
-    UserRepository profileRepository;
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    ProjectRepository projectRepository;
-    @Autowired
-    ProjectMemberRepository projectMemberRepository;
-
     @Test
     @Transactional
     @DisplayName("본인의 프로필 조회")
     @WithMockUser(username = "user1")
     void getMyProfile() throws Exception {
-        this.generateProfile(1);
+        testUserFactory.generateUser(1);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}", "user1"))
                 .andExpect(status().isOk())
@@ -90,7 +70,7 @@ class ProfileControllerTest extends BaseControllerTest {
     @Transactional
     @DisplayName("프로필 조회")
     void getProfile() throws Exception {
-        this.generateProfile(1);
+        testUserFactory.generateUser(1);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}", "user1"))
                 .andExpect(status().isOk())
@@ -124,18 +104,8 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("프로필 수정")
     @WithMockUser(username = "user1")
     void updateProfile() throws Exception {
-        this.generateProfile(1);
-        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
-        stacks.add(TechnicalStack.DJANGO);
-        ProfileDto profileDto = ProfileDto.builder()
-                .area("서울시 구로구")
-                .contact("010-9876-5432")
-                .introduction("프로필 업데이트 하기")
-                .role(ProjectRole.LEADER)
-                .stacks(stacks)
-                .userName("회원 01")
-                .grade((long) 100)
-                .build();
+        testUserFactory.generateUser(1);
+        ProfileDto profileDto = testProjectFactory.generateProfileDto();
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}", "user1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -179,19 +149,19 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("사용자가 참여중인 프로젝트 리스트 가져오기")
     public void getRunningProjectList() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        Project project1 = this.generateProject(1, user1, State.RUNNING);
-        Project project2 = this.generateProject(2, user1, State.RECRUTING);
-        Project project3 = this.generateProject(3, user1, State.RUNNING);
+        Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
+        Project project2 = testProjectFactory.generateProject(2, user1, State.RECRUTING);
+        Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
 
-        Project project4 = this.generateProject(4, user2, State.RUNNING);
-        Project project5 = this.generateProject(5, user2, State.RECRUTING);
-        Project project6 = this.generateProject(6, user2, State.RUNNING);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
+        Project project5 = testProjectFactory.generateProject(5, user2, State.RECRUTING);
+        Project project6 = testProjectFactory.generateProject(6, user2, State.RUNNING);
 
-        this.joinProject(project4, user1, Boolean.FALSE);
-        this.joinProject(project6, user1, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user1, project4, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project1, Boolean.TRUE);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/running")
@@ -248,19 +218,19 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("사용자가 참여했던 프로젝트 리스트 가져오기")
     public void getEndedProjectList() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        Project project1 = this.generateProject(1, user1, State.ENDED);
-        Project project2 = this.generateProject(2, user1, State.ENDED);
-        Project project3 = this.generateProject(3, user1, State.RUNNING);
+        Project project1 = testProjectFactory.generateProject(1, user1, State.ENDED);
+        Project project2 = testProjectFactory.generateProject(2, user1, State.ENDED);
+        Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
 
-        Project project4 = this.generateProject(4, user2, State.ENDED);
-        Project project5 = this.generateProject(5, user2, State.RECRUTING);
-        Project project6 = this.generateProject(6, user2, State.RUNNING);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.ENDED);
+        Project project5 = testProjectFactory.generateProject(5, user2, State.RECRUTING);
+        Project project6 = testProjectFactory.generateProject(6, user2, State.RUNNING);
 
-        this.joinProject(project4, user1, Boolean.TRUE);
-        this.joinProject(project5, user1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project4, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/ended")
@@ -318,17 +288,20 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("사용자가 기획한 프로젝트 리스트 가져오기")
     public void getPlannedProjectList() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        this.generateProject(1, user1, State.RUNNING);
-        this.generateProject(2, user1, State.RECRUTING);
-        this.generateProject(3, user1, State.RUNNING);
+        Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
+        Project project2 = testProjectFactory.generateProject(2, user1, State.RECRUTING);
+        Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
 
-        this.generateProject(4, user2, State.RUNNING);
-        this.generateProject(5, user2, State.RECRUTING);
-        this.generateProject(6, user2, State.RUNNING);
+        testProjectFactory.generateProject(4, user2, State.RUNNING);
+        testProjectFactory.generateProject(5, user2, State.RECRUTING);
+        testProjectFactory.generateProject(6, user2, State.RUNNING);
 
+        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project2, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project3, Boolean.FALSE);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/plan")
@@ -386,19 +359,24 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("사용자가 참여중인 숨겨진 프로젝트 리스트 가져오기")
     public void getRunningHiddenProjectList() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        Project project1 = this.generateProject(1, user1, State.RUNNING);
-        Project project2 = this.generateProject(2, user1, State.RECRUTING);
-        Project project3 = this.generateProject(3, user1, State.RUNNING);
+        Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
+        Project project2 = testProjectFactory.generateProject(2, user1, State.RECRUTING);
+        Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
 
-        Project project4 = this.generateProject(4, user2, State.RUNNING);
-        Project project5 = this.generateProject(5, user2, State.RECRUTING);
-        Project project6 = this.generateProject(6, user2, State.RUNNING);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
+        Project project5 = testProjectFactory.generateProject(5, user2, State.RECRUTING);
+        Project project6 = testProjectFactory.generateProject(6, user2, State.RUNNING);
 
-        this.joinProject(project4, user1, Boolean.FALSE);
-        this.joinProject(project6, user1, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project2, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user1, project3, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project4, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user1, project5, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project6, Boolean.TRUE);
+
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/running/hidden")
@@ -455,19 +433,19 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기")
     public void getEndedHiddenProjectList() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        Project project1 = this.generateProject(1, user1, State.ENDED);
-        Project project2 = this.generateProject(2, user1, State.ENDED);
-        Project project3 = this.generateProject(3, user1, State.RUNNING);
+        Project project1 = testProjectFactory.generateProject(1, user1, State.ENDED);
+        Project project2 = testProjectFactory.generateProject(2, user1, State.ENDED);
+        Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
 
-        Project project4 = this.generateProject(4, user2, State.ENDED);
-        Project project5 = this.generateProject(5, user2, State.RECRUTING);
-        Project project6 = this.generateProject(6, user2, State.RUNNING);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.ENDED);
+        Project project5 = testProjectFactory.generateProject(5, user2, State.RECRUTING);
+        Project project6 = testProjectFactory.generateProject(6, user2, State.RUNNING);
 
-        this.joinProject(project4, user1, Boolean.TRUE);
-        this.joinProject(project5, user1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project4, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/ended/hidden")
@@ -526,16 +504,17 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("사용자가 기획한 숨겨진 프로젝트 리스트 가져오기")
     public void getPlannedHiddenProjectList() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        Project project1 = this.generateProject(1, user1, State.RUNNING);
-        Project project2 = this.generateProject(2, user1, State.RECRUTING);
-        Project project3 = this.generateProject(3, user1, State.RUNNING);
+        Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
+        Project project2 = testProjectFactory.generateProject(2, user1, State.RECRUTING);
+        Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
 
-        this.generateProject(4, user2, State.RUNNING);
-        this.generateProject(5, user2, State.RECRUTING);
-        this.generateProject(6, user2, State.RUNNING);
+        testProjectFactory.generateProject(4, user2, State.RUNNING);
+        testProjectFactory.generateProject(5, user2, State.RECRUTING);
+        testProjectFactory.generateProject(6, user2, State.RUNNING);
+
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/projects/{projectId}", user1.getUserId(), project2.getProjectId()))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -597,14 +576,14 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("프로젝트 숨기기")
     public void hideProject() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        Project project4 = this.generateProject(4, user2, State.RUNNING);
-        Project project5 = this.generateProject(5, user2, State.RUNNING);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
+        Project project5 = testProjectFactory.generateProject(5, user2, State.RUNNING);
 
-        this.joinProject(project4, user1, Boolean.FALSE);
-        this.joinProject(project5, user1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project4, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project5, Boolean.FALSE);
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/projects/{projectId}", user1.getUserId(), project4.getProjectId()))
@@ -626,14 +605,14 @@ class ProfileControllerTest extends BaseControllerTest {
     @DisplayName("숨긴 프로젝트 취소하기")
     public void reShowProject() throws Exception {
         // Given
-        User user1 = this.generateProfile(1);
-        User user2 = this.generateProfile(2);
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
 
-        Project project4 = this.generateProject(4, user2, State.RUNNING);
-        Project project5 = this.generateProject(5, user2, State.RUNNING);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
+        Project project5 = testProjectFactory.generateProject(5, user2, State.RUNNING);
 
-        this.joinProject(project4, user1, Boolean.FALSE);
-        this.joinProject(project5, user1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project4, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user1, project5, Boolean.FALSE);
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/projects/{projectId}", user1.getUserId(), project4.getProjectId()))
@@ -643,71 +622,6 @@ class ProfileControllerTest extends BaseControllerTest {
                         pathParameters(
                                 parameterWithName("userId").description("사용자 아이디"),
                                 parameterWithName("projectId").description("프로젝트 아이디")
-                        )))
-
-        ;
-
-    }
-
-    private Project generateProject(int index, User user, State status) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1, 4, 6, 8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2, 1, 1, 2);
-
-        Project project = Project.builder()
-                .projectName("project" + index)
-                .teamName("project team" + index * 2)
-                .endDate(LocalDateTime.of(2020, 04, 30, 23, 59))
-                .introduction("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .state(status)
-                .projectField(ProjectField.APP)
-                .leaderId(user.getUserId())
-                .build();
-        ProjectMember projectMember = ProjectMember.builder()
-                .project(project)
-                .user(user)
-                .role(ProjectRole.DEVELOPER)
-                .introduction("프로젝트 팀장입니다.")
-                .hide(Boolean.FALSE)
-                .build();
-        project.getProjectMembers().add(projectMember);
-        this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
-        return project;
-    }
-
-    private void joinProject(Project project, User user, Boolean hide) {
-        ProjectMember projectMember = ProjectMember.builder()
-                .project(project)
-                .user(user)
-                .role(ProjectRole.DEVELOPER)
-                .introduction("프로젝트 팀장입니다.")
-                .hide(hide)
-                .build();
-        project.getProjectMembers().add(projectMember);
-
-        this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
-    }
-
-    private User generateProfile(int index) {
-        List<UsersStack> stacks = new ArrayList<UsersStack>();
-        stacks.add(new UsersStack(TechnicalStack.SPRINGBOOT));
-        stacks.add(new UsersStack(TechnicalStack.DJANGO));
-        User profile = User.builder()
-                .userId("user" + index)
-                .password("testpassword")
-                .userName("회원" + index)
-                .area("seoul")
-                .contact("010-1234-5678")
-                .introduction("테스트용 가계정" + index)
-                .grade((long) (index * 100))
-                .role(ProjectRole.DEVELOPER)
-                .stacks(stacks)
-                .build();
-        this.profileRepository.save(profile).getAccountId();
-        return profile;
-
+                        )));
     }
 }

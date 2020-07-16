@@ -1,18 +1,12 @@
 package com.eskiiimo.web.user.controller;
 
-import com.eskiiimo.web.common.BaseControllerTest;
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.repository.user.model.UsersStack;
+import com.eskiiimo.web.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -26,7 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-
 @DisplayName("피플")
 class PeopleControllerTest extends BaseControllerTest {
 
@@ -38,9 +31,7 @@ class PeopleControllerTest extends BaseControllerTest {
     @DisplayName("팀을 구하는 사람들")
     @Transactional
     void getJobSeekers() throws Exception {
-        IntStream.range(35,40).forEach(i -> {
-            this.generatePeople(i);
-        });
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
@@ -53,9 +44,7 @@ class PeopleControllerTest extends BaseControllerTest {
     @DisplayName("팀을 구하는 사람들_레벨")
     @Transactional
     void getJobSeekers_grade() throws Exception {
-        IntStream.range(5,9).forEach(i -> {
-            this.generatePeople(i);
-        });
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
@@ -71,9 +60,7 @@ class PeopleControllerTest extends BaseControllerTest {
     @DisplayName("팀을 구하는 사람들_역할")
     @Transactional
     void getJobSeekers_role() throws Exception {
-        IntStream.range(10,14).forEach(i -> {
-            this.generatePeople(i);
-        });
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
@@ -87,9 +74,7 @@ class PeopleControllerTest extends BaseControllerTest {
     @DisplayName("팀을 구하는 사람들_지역")
     @Transactional
     void getJobSeekers_area() throws Exception {
-        IntStream.range(15,19).forEach(i -> {
-            this.generatePeople(i);
-        });
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
@@ -104,64 +89,57 @@ class PeopleControllerTest extends BaseControllerTest {
     @DisplayName("팀을 구하는 사람들_레벨_역할")
     @Transactional
     void getJobSeekers_gradeAndRole() throws Exception {
-        IntStream.range(20,24).forEach(i -> {
-            this.generatePeople(i);
-        });
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade","2")
+                .param("grade","1")
                 .param("role","DEVELOPER")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(2))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andDo(print());
     }
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_지역")
     @Transactional
     void getJobSeekers_gradeAndArea() throws Exception {
-        IntStream.range(25,29).forEach(i -> {
-            this.generatePeople(i);
-        });
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade","2")
-                .param("area","Busan")
+                .param("grade","1")
+                .param("area","Seoul")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(2))
-                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Busan"))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());
     }
     @Test
     @DisplayName("팀을 구하는 사람들_역할_지역")
     @Transactional
     void getJobSeekers_RoleAndArea() throws Exception {
-        IntStream.range(30,34).forEach(i -> {
-            this.generatePeople(i);
-        });
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
                 .param("role","DEVELOPER")
-                .param("area","Daegu")
+                .param("area","Seoul")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Daegu"))
+                .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());
     }
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_역할_지역")
     @Transactional
     void getJobSeekers_LevelAndRoleAndArea() throws Exception {
-        IntStream.range(0,4).forEach(i -> {
-            this.generatePeople(i);
-        });
+        IntStream.range(0,4).forEach(testUserFactory::generateLeader);
+        testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
@@ -206,47 +184,6 @@ class PeopleControllerTest extends BaseControllerTest {
                                 fieldWithPath("page.number").description("현재 페이지")
 
                         )
-                ))
-        ;
-    }
-
-    public void generatePeople(int index){
-        List<UsersStack> stacks1 = new ArrayList<UsersStack>();
-        stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
-        List<UsersStack> stacks2 = new ArrayList<UsersStack>();
-        stacks2.add(new UsersStack(TechnicalStack.DJANGO));
-        List<UsersStack> stacks3 = new ArrayList<UsersStack>();
-        stacks3.add(new UsersStack(TechnicalStack.SPRINGBOOT));
-        User user1 =  User.builder()
-                .userId("testUser"+(3*index+1))
-                .password("testpassword")
-                .grade((long)1)
-                .stacks(stacks1)
-                .area("Seoul")
-                .userName("User"+(3*index+1))
-                .role(ProjectRole.LEADER)
-                .build();
-        User user2 = User.builder()
-                .userId("testUser"+(3*index+2))
-                .password("testpassword")
-                .grade((long)2)
-                .stacks(stacks2)
-                .area("Busan")
-                .userName("User"+(3*index+2))
-                .role(ProjectRole.DEVELOPER)
-
-                .build();
-        User user3 =  User.builder()
-                .userId("testUser"+(3*index+3))
-                .password("testpassword")
-                .grade((long)3)
-                .stacks(stacks3)
-                .area("Daegu")
-                .userName("User"+(3*index+3))
-                .role(ProjectRole.DEVELOPER)
-                .build();
-        this.userRepository.save(user1);
-        this.userRepository.save(user2);
-        this.userRepository.save(user3);
+                ));
     }
 }
