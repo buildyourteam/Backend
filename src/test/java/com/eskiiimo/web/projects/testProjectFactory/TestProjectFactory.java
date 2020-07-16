@@ -39,20 +39,26 @@ public class TestProjectFactory {
     }
 
     public Project generateProject(int index, User user, State status) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1, 4, 6, 8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2, 1, 1, 2);
-
         Project project = Project.builder()
                 .projectName("project" + index)
                 .teamName("project team" + index * 2)
                 .endDate(LocalDateTime.of(2022, 04, 30, 23, 59))
                 .introduction("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
+                .currentMember(new ProjectMemberSet(2, 1, 1, 2))
+                .needMember(new ProjectMemberSet(1, 4, 6, 8))
                 .state(status)
                 .projectField(ProjectField.APP)
                 .leaderId(user.getUserId())
                 .build();
+        ProjectMember projectMember = ProjectMember.builder()
+                .project(project)
+                .user(user)
+                .hide(Boolean.FALSE)
+                .role(ProjectRole.LEADER)
+                .introduction("프로젝트 팀장 입니다.")
+                .build();
+        project.getProjectMembers().add(projectMember);
+        this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
         return project;
     }
@@ -62,19 +68,12 @@ public class TestProjectFactory {
                 .project(project)
                 .user(user)
                 .role(ProjectRole.DEVELOPER)
-                .introduction("프로젝트 팀장입니다.")
+                .introduction("프로젝트 팀원 입니다.")
                 .hide(hide)
                 .build();
         project.getProjectMembers().add(projectMember);
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
         return projectMember;
-    }
-
-    public void joinProject(Project project, User user, Boolean hide) {
-        ProjectMember projectMember = generateProjectMember(user, project, hide);
-        project.getProjectMembers().add(projectMember);
-
-        this.projectRepository.save(project);
     }
 }
