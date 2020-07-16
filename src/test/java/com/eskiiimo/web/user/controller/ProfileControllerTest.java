@@ -515,8 +515,6 @@ class ProfileControllerTest extends BaseControllerTest {
         testProjectFactory.generateProject(5, user2, State.RECRUTING);
         testProjectFactory.generateProject(6, user2, State.RUNNING);
 
-        testProjectFactory.generateProjectMember(user1, project2, Boolean.TRUE);
-
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/projects/{projectId}", user1.getUserId(), project2.getProjectId()))
                 .andDo(print())
                 .andExpect(status().isOk())
