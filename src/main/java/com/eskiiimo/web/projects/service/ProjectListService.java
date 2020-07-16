@@ -4,7 +4,6 @@ import com.eskiiimo.repository.projects.dto.ProjectListDto;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class ProjectListService {
 
     private final ProjectRepository projectRepository;
-    private final ModelMapper modelMapper;
 
     /*
     1. 직군별, 분야별 둘다 선택되어있을 경우
