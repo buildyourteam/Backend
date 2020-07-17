@@ -48,10 +48,8 @@ public class ProfileController {
 
     @PutMapping("/{user_id}")
     public ResponseEntity updateProfile(@PathVariable String user_id, @RequestBody ProfileDto updateData) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String userId = authentication.getName();
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         if (!userId.equals(user_id))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         ProfileDto profileDto = profileService.updateProfile(user_id, updateData);
@@ -122,18 +120,22 @@ public class ProfileController {
 
     // 숨긴 프로젝트 살리기
     @PutMapping("/{user_id}/projects/{projectId}")
-    public ResponseEntity reShowProject(@PathVariable(value = "user_id") String user_id,
-                                        @PathVariable(value = "projectId") Long projectId,
-                                        Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler) {
+    public ResponseEntity reShowProject(
+            @PathVariable(value = "user_id") String user_id,
+            @PathVariable(value = "projectId") Long projectId,
+            Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler
+    ) {
         this.profileService.reShowProject(user_id, projectId);
         return ResponseEntity.ok().build();
     }
 
     // 프로젝트 숨기기
     @DeleteMapping("/{user_id}/projects/{projectId}")
-    public ResponseEntity hideProject(@PathVariable(value = "user_id") String user_id,
-                                      @PathVariable(value = "projectId") Long projectId,
-                                      Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler) {
+    public ResponseEntity hideProject(
+            @PathVariable(value = "user_id") String user_id,
+            @PathVariable(value = "projectId") Long projectId,
+            Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler
+    ) {
         this.profileService.hideProject(user_id, projectId);
         return ResponseEntity.ok().build();
     }

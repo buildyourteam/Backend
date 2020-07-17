@@ -63,6 +63,12 @@ public class ExceptionHandleController {
     public ErrorResponse handleYouAreNotReader(YouAreNotReaderException exception){
         return new ErrorResponse(HttpStatus.FORBIDDEN,exception);
     }
+    @ExceptionHandler(WrongDateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleWrongDate(WrongDateException exception){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST,exception);
+    }
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
