@@ -85,22 +85,13 @@ public class ProjectDetailController {
     }
 
     @PostMapping
-    public ResponseEntity createProject(@RequestBody @Valid ProjectDetailDto projectDetailDto, Errors errors) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String userId = authentication.getName();
-        if(errors.hasErrors()) {
-            return badRequest(errors);
-        }
+    public ResponseEntity createProject(@RequestBody @Valid ProjectDetailDto projectDetailDto) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         /*
         ProjectDetail validator
          */
-
-        this.projectValidator.validate(projectDetailDto, errors);
-        if(errors.hasErrors()) {
-            return badRequest(errors);
-        }
+        this.projectValidator.validate(projectDetailDto);
 
         Project newProject = this.projectDetailService.storeProject(projectDetailDto,userId);
         ControllerLinkBuilder selfLinkBuilder = linkTo(ProjectDetailController.class).slash(newProject.getProjectId());
@@ -116,10 +107,8 @@ public class ProjectDetailController {
     public ResponseEntity updateProject(@PathVariable Long project_id,
                                         @RequestBody UpdateDto updateDto,
                                         Errors errors) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String userId = authentication.getName();
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         ProjectDetailDto project = projectDetailService.updateProject(project_id, updateDto,userId);
         ProjectDetailResource projectDetailResource = new ProjectDetailResource(project, project_id);
         projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
@@ -128,10 +117,8 @@ public class ProjectDetailController {
 
     @DeleteMapping("/{project_id}")
     public ResponseEntity deleteProject(@PathVariable Long project_id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String userId = authentication.getName();
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         this.projectDetailService.deleteProject(project_id,userId);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 
@@ -146,9 +133,5 @@ public class ProjectDetailController {
             }
         }
         return Boolean.FALSE;
-    }
-
-    private ResponseEntity badRequest(Errors errors) {
-        return ResponseEntity.badRequest().body(new ErrorResource(errors));
     }
 }

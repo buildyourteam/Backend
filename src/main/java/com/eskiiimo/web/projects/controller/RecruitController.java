@@ -28,19 +28,18 @@ public class RecruitController {
 
     // 프로젝트에 영입하기
     @PostMapping("/{projectId}")
-    public ResponseEntity recruitProject(@PathVariable String userId, @PathVariable Long projectId,
-                                  @RequestBody RecruitDto recruit) {
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+    public ResponseEntity recruitProject(
+            @PathVariable String userId,
+            @PathVariable Long projectId,
+            @RequestBody RecruitDto recruit
+    ) {
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // 프로젝트 영입제안
-        try{
+        try {
             this.recruitService.recruitProject(userId, recruit, projectId, visitorId);
             return ResponseEntity.created(linkTo(RecruitController.class, userId).slash(projectId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -50,13 +49,13 @@ public class RecruitController {
     @GetMapping
     public ResponseEntity getRecruitList(@PathVariable String userId) {
         // 계정 확인
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
-        List<RecruitDto> recruitList=this.recruitService.getRecruitList(userId, visitorId);
-        List<RecruitResource> recruitResources =new ArrayList<RecruitResource>();
-        for(RecruitDto recruitDto : recruitList){
+        List<RecruitDto> recruitList = this.recruitService.getRecruitList(userId, visitorId);
+        List<RecruitResource> recruitResources = new ArrayList<RecruitResource>();
+        for (RecruitDto recruitDto : recruitList) {
             RecruitResource recruitResource = new RecruitResource(recruitDto, userId);
             recruitResources.add(recruitResource);
         }
@@ -70,7 +69,7 @@ public class RecruitController {
     public ResponseEntity getRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
         // 계정 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
+        if (authentication == null)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         String visitorId = authentication.getName();
         RecruitDto recruitDto = this.recruitService.getRecruit(userId, projectId, visitorId);
@@ -84,15 +83,12 @@ public class RecruitController {
     // 영입제안 승락하기
     @PutMapping("/{projectId}")
     public ResponseEntity acceptRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
-        try{
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        try {
             this.recruitService.acceptRecruit(userId, projectId, visitorId);
             return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#acceptRecruit").withRel("self"));
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -101,15 +97,12 @@ public class RecruitController {
     // 영입제안 거절하기
     @DeleteMapping("/{projectId}")
     public ResponseEntity rejectRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
-        try{
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        try {
             this.recruitService.rejectRecruit(userId, projectId, visitorId);
             return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#rejectRecruit").withRel("self"));
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

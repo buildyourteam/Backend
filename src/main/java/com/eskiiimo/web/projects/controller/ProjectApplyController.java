@@ -32,22 +32,16 @@ public class ProjectApplyController {
 
     @PostMapping
     ResponseEntity applyProject(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply){
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         //지원서 저장
        this.projectApplyService.applyProject(projectId,apply,visitorId);
         return ResponseEntity.created(linkTo(ProjectApplyController.class,projectId).slash(visitorId).toUri()).body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
     }
     @PutMapping
     ResponseEntity updateApply(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply){
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         //지원서 수정
         this.projectApplyService.updateApply(projectId,apply,visitorId);
         return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#updateApply").withRel("self"));
@@ -96,11 +90,7 @@ public class ProjectApplyController {
     }
     @PutMapping("/{userId}")
     ResponseEntity acceptMember(@PathVariable Long projectId, @PathVariable String userId){
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 쿼리
         if(this.projectApplyService.acceptApply(projectId,userId,visitorId))
@@ -110,11 +100,7 @@ public class ProjectApplyController {
     }
     @DeleteMapping("/{userId}")
     ResponseEntity rejectMember(@PathVariable Long projectId, @PathVariable String userId){
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 쿼리
        if(this.projectApplyService.rejectApply(projectId,userId,visitorId))
