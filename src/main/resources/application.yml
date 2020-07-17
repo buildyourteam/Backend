@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mariadb://192.168.0.100:3307/Eskimo?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mariadb://172.17.0.1:3306/Eskimo?useUnicode=true&characterEncoding=utf8
     username: eskimo
     password: Eskimo2020Dev!
     driver-class-name: org.mariadb.jdbc.Driver
@@ -11,7 +11,7 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
-      ddl-auto: update
+      ddl-auto: create
 
   jackson:
     deserialization:
