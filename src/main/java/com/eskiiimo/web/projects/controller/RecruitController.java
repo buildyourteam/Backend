@@ -36,26 +36,22 @@ public class RecruitController {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // 프로젝트 영입제안
-        try {
-            this.recruitService.recruitProject(userId, recruit, projectId, visitorId);
-            return ResponseEntity.created(linkTo(RecruitController.class, userId).slash(projectId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
+        this.recruitService.recruitProject(userId, recruit, projectId, visitorId);
+        return ResponseEntity.created(linkTo(RecruitController.class, userId).slash(projectId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
     }
 
     // 나한테 온 영입제안 리스트
     @GetMapping
-    public ResponseEntity getRecruitList(@PathVariable String userId) {
+    public ResponseEntity getRecruitList(
+            @PathVariable String userId
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         List<RecruitDto> recruitList = this.recruitService.getRecruitList(userId, visitorId);
         List<RecruitResource> recruitResources = new ArrayList<RecruitResource>();
-        for (RecruitDto recruitDto : recruitList) {
-            RecruitResource recruitResource = new RecruitResource(recruitDto, userId);
-            recruitResources.add(recruitResource);
-        }
+        for (RecruitDto recruitDto : recruitList)
+            recruitResources.add(new RecruitResource(recruitDto, userId));
+
         RecruitListResource recruitListResource = new RecruitListResource(recruitResources, userId);
         recruitListResource.add(linkTo(DocsController.class).slash("#getRecruits").withRel("profile"));
         return ResponseEntity.ok(recruitListResource);
@@ -63,11 +59,15 @@ public class RecruitController {
 
     // 나한테 온 영입제안 확인하기(열람시 읽음상태로 전환)
     @GetMapping("/{projectId}")
-    public ResponseEntity getRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
+    public ResponseEntity getRecruitProject(
+            @PathVariable String userId,
+            @PathVariable Long projectId
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        RecruitDto recruitDto = this.recruitService.getRecruit(userId, projectId, visitorId);
-        RecruitResource recruitResource = new RecruitResource(recruitDto, userId);
+        RecruitResource recruitResource = new RecruitResource(
+                this.recruitService.getRecruit(userId, projectId, visitorId),
+                userId);
         recruitResource.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("acceptRecruit"));
         recruitResource.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("rejectRecruit"));
         recruitResource.add(linkTo(DocsController.class).slash("#getRecruit").withRel("profile"));
@@ -79,13 +79,8 @@ public class RecruitController {
     public ResponseEntity acceptRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        try {
-            this.recruitService.acceptRecruit(userId, projectId, visitorId);
-            return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#acceptRecruit").withRel("self"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
+        this.recruitService.acceptRecruit(userId, projectId, visitorId);
+        return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#acceptRecruit").withRel("self"));
     }
 
     // 영입제안 거절하기
@@ -93,11 +88,7 @@ public class RecruitController {
     public ResponseEntity rejectRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        try {
-            this.recruitService.rejectRecruit(userId, projectId, visitorId);
-            return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#rejectRecruit").withRel("self"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        this.recruitService.rejectRecruit(userId, projectId, visitorId);
+        return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#rejectRecruit").withRel("self"));
     }
 }

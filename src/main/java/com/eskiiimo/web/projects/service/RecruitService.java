@@ -33,36 +33,33 @@ public class RecruitService {
     @Transactional
     public void recruitProject(String userId, RecruitDto recruit, Long projectId, String visitorId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        User user =  userRepository.findByUserId(userId)
-                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        if(!this.isLeader(project,visitorId))
+                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        if (!this.isLeader(project, visitorId))
             throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
         Recruit projectRecruit = recruit.toEntity(user, project);
         this.recruitRepository.save(projectRecruit);
     }
 
     @Transactional
     public List<RecruitDto> getRecruitList(String userId, String visitorId) {
-        this.userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        if(!userId.equals(visitorId)){
-            throw new RecruitNotAuthException("영입제안 권한이 없습니다.");
-        }
+        if (!userId.equals(visitorId))
+            throw new RecruitNotAuthException("확인 권한이 없습니다.");
+
+        List<Recruit> RecruitList = this.recruitRepository.findAllByUser_UserId(visitorId)
+                .orElseThrow(()->new RecruitNotFoundException("영입을 제안한 사람이 없습니다."));
         List<RecruitDto> projectRecruits = new ArrayList<RecruitDto>();
-        List<Recruit> RecruitList=this.recruitRepository.findAllByUser_UserId(visitorId);
-        for(Recruit recruit : RecruitList){
-            RecruitDto dto = this.modelMapper.map(recruit, RecruitDto.class);
-            projectRecruits.add(dto);
-        }
+        for (Recruit recruit : RecruitList)
+            projectRecruits.add(this.modelMapper.map(recruit, RecruitDto.class));
         return projectRecruits;
     }
 
     @Transactional
     public RecruitDto getRecruit(String userId, Long projectId, String visitorId) {
-        UserAndProjectNotFoundCheck(userId, projectId, visitorId);
-        Recruit recruit = this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId).orElseThrow(()->new RecruitNotFoundException("해당 영입제안이 없습니다."));
-        if(recruit.getState().equals(RecruitState.UNREAD)){
+        Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
+        if (recruit.getState().equals(RecruitState.UNREAD)) {
             recruit.setState(RecruitState.READ);
             this.recruitRepository.save(recruit);
         }
@@ -70,41 +67,31 @@ public class RecruitService {
     }
 
     @Transactional
-    public void acceptRecruit(String userId, Long projectId,String visitorId) {
-        UserAndProjectNotFoundCheck(userId, projectId, visitorId);
-        Recruit recruit = this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId).orElseThrow(()->new RecruitNotFoundException("해당 영입제안이 없습니다."));
-        if(!recruit.getState().equals(RecruitState.ACCEPT)){
-            recruit.setState(RecruitState.ACCEPT);
-            this.recruitRepository.save(recruit);
-        }
+    public void acceptRecruit(String userId, Long projectId, String visitorId) {
+        Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
+        recruit.setState(RecruitState.ACCEPT);
+        this.recruitRepository.save(recruit);
     }
 
     @Transactional
     public void rejectRecruit(String userId, Long projectId, String visitorId) {
-        UserAndProjectNotFoundCheck(userId, projectId, visitorId);
-        Recruit recruit = this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId).orElseThrow(()->new RecruitNotFoundException("해당 영입제안이 없습니다."));
+        Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
         recruit.setState(RecruitState.REJECT);
         this.recruitRepository.save(recruit);
     }
 
-    private void UserAndProjectNotFoundCheck(String userId, Long projectId, String visitorId) {
-        Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        User user = this.userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        if(!userId.equals(visitorId)){
+    private Recruit getRecruitToMe(String userId, Long projectId, String visitorId) {
+        if (!userId.equals(visitorId))
             throw new RecruitNotAuthException("확인 권한이 없습니다.");
-        }
+        return this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId)
+                .orElseThrow(() -> new RecruitNotFoundException("해당 영입제안이 없습니다."));
     }
 
-    public Boolean isLeader(Project project,String visitorId){
-        for(ProjectMember projectMember : project.getProjectMembers()){
-            if(projectMember.getRole().equals(ProjectRole.LEADER)){
-                if(projectMember.getUser().getUserId().equals(visitorId)) {
+    public Boolean isLeader(Project project, String visitorId) {
+        for (ProjectMember projectMember : project.getProjectMembers())
+            if (projectMember.getRole().equals(ProjectRole.LEADER))
+                if (projectMember.getUser().getUserId().equals(visitorId))
                     return Boolean.TRUE;
-                }
-            }
-        }
         return Boolean.FALSE;
     }
 

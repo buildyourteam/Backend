@@ -1,7 +1,6 @@
 package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.ProjectListDto;
-import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.service.ProjectListService;
 import lombok.extern.slf4j.Slf4j;
