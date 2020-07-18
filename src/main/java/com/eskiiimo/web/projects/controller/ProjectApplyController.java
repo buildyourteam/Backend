@@ -29,83 +29,92 @@ public class ProjectApplyController {
     @Autowired
     ProjectApplyService projectApplyService;
 
-
     @PostMapping
-    ResponseEntity applyProject(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply){
+    ResponseEntity applyProject(
+            @PathVariable Long projectId,
+            @RequestBody ProjectApplyDto apply
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 저장
-       this.projectApplyService.applyProject(projectId,apply,visitorId);
-        return ResponseEntity.created(linkTo(ProjectApplyController.class,projectId).slash(visitorId).toUri()).body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
+        this.projectApplyService.applyProject(projectId, apply, visitorId);
+        return ResponseEntity.created(linkTo(ProjectApplyController.class, projectId).slash(visitorId).toUri()).body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
     }
+
     @PutMapping
-    ResponseEntity updateApply(@PathVariable Long projectId, @RequestBody ProjectApplyDto apply){
+    ResponseEntity updateApply(
+            @PathVariable Long projectId,
+            @RequestBody ProjectApplyDto apply
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 수정
-        this.projectApplyService.updateApply(projectId,apply,visitorId);
+        this.projectApplyService.updateApply(projectId, apply, visitorId);
         return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#updateApply").withRel("self"));
     }
+
     @GetMapping
-    ResponseEntity getApplicants(@PathVariable Long projectId, PagedResourcesAssembler<ProjectApplicantDto> assembler){
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+    ResponseEntity getApplicants(
+            @PathVariable Long projectId,
+            PagedResourcesAssembler<ProjectApplicantDto> assembler
+    ) {
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // 지원자 리스트 쿼리
-        List<ProjectApplicantDto> applicants  = this.projectApplyService.getApplicants(projectId,visitorId);
+        List<ProjectApplicantDto> applicants = this.projectApplyService.getApplicants(projectId, visitorId);
+
         //Add Link
         List<ProjectApplicantResource> projectApplicantResources = new ArrayList<ProjectApplicantResource>();
-        for(ProjectApplicantDto projectApplicantDto: applicants){
-            ProjectApplicantResource projectApplicantResource = new ProjectApplicantResource(projectApplicantDto,projectId);
+        for (ProjectApplicantDto projectApplicantDto : applicants) {
+            ProjectApplicantResource projectApplicantResource = new ProjectApplicantResource(projectApplicantDto, projectId);
             projectApplicantResources.add(projectApplicantResource);
         }
 
-        ProjectApplicantsResource projectApplicantsResource =new ProjectApplicantsResource(projectApplicantResources,projectId);
+        ProjectApplicantsResource projectApplicantsResource = new ProjectApplicantsResource(projectApplicantResources, projectId);
         projectApplicantsResource.add(linkTo(DocsController.class).slash("#getApplicants").withRel("profile"));
         return ResponseEntity.ok(projectApplicantsResource);
     }
+
     @GetMapping("/{userId}")
-    ResponseEntity getApply(@PathVariable Long projectId, @PathVariable String userId){
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+    ResponseEntity getApply(
+            @PathVariable Long projectId,
+            @PathVariable String userId
+    ) {
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 쿼리
-        ProjectApplyDto projectApplyDto = this.projectApplyService.getApply(projectId,userId,visitorId);
-        if(projectApplyDto == null)
-            return ResponseEntity.notFound().build();
+        ProjectApplyDto projectApplyDto = this.projectApplyService.getApply(projectId, userId, visitorId);
 
         //Add Link
-        ProjectApplyResource projectApplyResource = new ProjectApplyResource(projectApplyDto,projectId,userId);
-        projectApplyResource.add(linkTo(ProjectApplyController.class,projectId).slash(userId).withRel("acceptApply"));
-        projectApplyResource.add(linkTo(ProjectApplyController.class,projectId).slash(userId).withRel("rejectApply"));
+        ProjectApplyResource projectApplyResource = new ProjectApplyResource(projectApplyDto, projectId, userId);
+        projectApplyResource.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("acceptApply"));
+        projectApplyResource.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("rejectApply"));
         projectApplyResource.add(linkTo(DocsController.class).slash("#getApply").withRel("profile"));
 
         return ResponseEntity.ok(projectApplyResource);
     }
+
     @PutMapping("/{userId}")
-    ResponseEntity acceptMember(@PathVariable Long projectId, @PathVariable String userId){
+    ResponseEntity acceptMember(
+            @PathVariable Long projectId,
+            @PathVariable String userId
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 쿼리
-        if(this.projectApplyService.acceptApply(projectId,userId,visitorId))
-            return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#acceptApply").withRel("self"));
-        else
-            return ResponseEntity.badRequest().build();
+        this.projectApplyService.acceptApply(projectId, userId, visitorId);
+        return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#acceptApply").withRel("self"));
     }
+
     @DeleteMapping("/{userId}")
-    ResponseEntity rejectMember(@PathVariable Long projectId, @PathVariable String userId){
+    ResponseEntity rejectMember(
+            @PathVariable Long projectId,
+            @PathVariable String userId
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 쿼리
-       if(this.projectApplyService.rejectApply(projectId,userId,visitorId))
-            return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#rejecttApply").withRel("self"));
-       else
-            return ResponseEntity.badRequest().build();
+        this.projectApplyService.rejectApply(projectId, userId, visitorId);
+        return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#rejecttApply").withRel("self"));
     }
 }
