@@ -69,10 +69,8 @@ public class ProjectDetailController {
     // 내가 보낸 영입제안 리스트
     @GetMapping(value="/{project_id}/recruits")
     public ResponseEntity getRecruits(@PathVariable Long project_id){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         List<RecruitDto> recruits=this.projectDetailService.getRecruits(visitorId, project_id);
         List<RecruitResource> recruitResources =new ArrayList<RecruitResource>();
         for(RecruitDto recruitDto : recruits){

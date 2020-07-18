@@ -356,6 +356,7 @@ class ProfileControllerTest extends BaseControllerTest {
 
     @Test
     @Transactional
+    @WithMockUser(username = "user1")
     @DisplayName("사용자가 참여중인 숨겨진 프로젝트 리스트 가져오기")
     public void getRunningHiddenProjectList() throws Exception {
         // Given
@@ -430,6 +431,7 @@ class ProfileControllerTest extends BaseControllerTest {
 
     @Test
     @Transactional
+    @WithMockUser(username = "user1")
     @DisplayName("사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기")
     public void getEndedHiddenProjectList() throws Exception {
         // Given
