@@ -26,7 +26,6 @@ public class PeopleService {
     @Transactional
     public Page<PeopleDto> getPeople(Long grade, ProjectRole role, String area, Pageable pageable){
         Page<User> page = userRepository.findAll(pageable);
-        Page<PeopleDto> dtopage;
 
         if(grade != null){
             if(role!=null){
@@ -60,23 +59,18 @@ public class PeopleService {
                     page = userRepository.findAllByArea(area,pageable);
                 }
                 else{//null
-                    dtopage = page.map(this::convertToPeopleList);
-                    return dtopage;
+                    return page.map(this::convertToPeopleList);
                 }
             }
         }
-        dtopage = page.map(this::convertToPeopleList);
-        return dtopage;
+        return page.map(this::convertToPeopleList);
     }
     public PeopleDto convertToPeopleList(User profile) {
         List<TechnicalStack> stackList = new ArrayList<TechnicalStack>();
-        for(UsersStack stack : profile.getStacks()){
-            TechnicalStack technicalStack = stack.getStack();
-            stackList.add(technicalStack);
-        }
-        PeopleDto dto = new PeopleDto();
-        // Conversion logic
-        dto = PeopleDto.builder()
+        for(UsersStack stack : profile.getStacks())
+            stackList.add(stack.getStack());
+
+        return   PeopleDto.builder()
                 .userId(profile.getUserId())
                 .userName(profile.getUserName())
                 .stacks(stackList)
@@ -84,7 +78,6 @@ public class PeopleService {
                 .area(profile.getArea())
                 .grade(profile.getGrade())
                 .build();
-        return dto;
     }
 
 }
