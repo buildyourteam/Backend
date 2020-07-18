@@ -48,11 +48,8 @@ public class RecruitController {
     // 나한테 온 영입제안 리스트
     @GetMapping
     public ResponseEntity getRecruitList(@PathVariable String userId) {
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         List<RecruitDto> recruitList = this.recruitService.getRecruitList(userId, visitorId);
         List<RecruitResource> recruitResources = new ArrayList<RecruitResource>();
         for (RecruitDto recruitDto : recruitList) {
@@ -67,11 +64,8 @@ public class RecruitController {
     // 나한테 온 영입제안 확인하기(열람시 읽음상태로 전환)
     @GetMapping("/{projectId}")
     public ResponseEntity getRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
-        // 계정 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String visitorId = authentication.getName();
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+
         RecruitDto recruitDto = this.recruitService.getRecruit(userId, projectId, visitorId);
         RecruitResource recruitResource = new RecruitResource(recruitDto, userId);
         recruitResource.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("acceptRecruit"));
