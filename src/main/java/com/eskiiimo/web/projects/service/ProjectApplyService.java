@@ -33,12 +33,12 @@ public class ProjectApplyService {
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
     private final ProjectApplyRepository projectApplyRepository;
-    private final ObjectMapper objectMapper;
 
     @Transactional
-    public void addLeader(Project project, String userId){
-        User user =  userRepository.findByUserId(userId)
-                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
+    public void addLeader(Project project, String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
         ProjectMember projectMember = ProjectMember.builder()
                 .role(ProjectRole.LEADER)
                 .user(user)
@@ -46,151 +46,147 @@ public class ProjectApplyService {
                 .hide(Boolean.FALSE)
                 .build();
         project.getProjectMembers().add(projectMember);
+
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
     }
+
     @Transactional
-    public boolean applyProject(Long projectId, ProjectApplyDto apply, String visitorId){
+    public void applyProject(Long projectId, ProjectApplyDto apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        User user =  userRepository.findByUserId(visitorId)
-                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        ProjectApply projectApplyEntity = apply.toEntity(user);
-        project.getApplies().add(projectApplyEntity);
-        this.projectApplyRepository.save(projectApplyEntity);
+                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        User user = userRepository.findByUserId(visitorId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        ProjectApply projectApply = apply.toEntity(user);
+        project.getApplies().add(projectApply);
+
+        this.projectApplyRepository.save(projectApply);
         this.projectRepository.save(project);
-        return Boolean.TRUE;
     }
+
     @Transactional
-    public boolean updateApply(Long projectId, ProjectApplyDto apply, String visitorId) {
+    public void updateApply(Long projectId, ProjectApplyDto apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        ProjectApply projectApply = projectApplyRepository.findByUser_UserId(visitorId)
-                .orElseThrow(()->new ApplyNotFoundException("지원정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        ProjectApply projectApply = findApply(project, visitorId);
+
         project.getApplies().remove(projectApply);
         projectApply.setIntroduction(apply.getIntroduction());
         projectApply.setRole(apply.getRole());
+
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        for(String answer : apply.getAnswers())
+        for (String answer : apply.getAnswers())
             answers.add(ProjectApplyAnswer.builder().answer(answer).build());
         projectApply.setAnswers(answers);
         project.getApplies().add(projectApply);
+
         this.projectApplyRepository.save(projectApply);
         this.projectRepository.save(project);
-        return Boolean.TRUE;
     }
-    @Transactional
-    public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId){
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        if(!this.isLeader(project,visitorId))
-            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
-            List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
 
-            for(ProjectApply projectApply : project.getApplies()){
-                ProjectApplicantDto projectApplicantDto =ProjectApplicantDto.builder()
-                        .state(projectApply.getState())
-                        .userId(projectApply.getUser().getUserId())
-                        .userName(projectApply.getUser().getUserName())
-                        .role(projectApply.getRole())
-                        .build();
-                applicants.add(projectApplicantDto);
-            }
-        if(applicants.isEmpty())
-            throw new ApplicantNotFoundException("지원자가 없습니다.");
+    @Transactional
+    public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId) {
+        Project project = getProjectForLeader(projectId, visitorId);
+
+        List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
+        for (ProjectApply projectApply : project.getApplies()) {
+            ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
+                    .state(projectApply.getState())
+                    .userId(projectApply.getUser().getUserId())
+                    .userName(projectApply.getUser().getUserName())
+                    .role(projectApply.getRole())
+                    .build();
+            applicants.add(projectApplicantDto);
+        }
         return applicants;
     }
+
     @Transactional
     public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        if(this.isLeader(project,visitorId)) {
-            for(ProjectApply projectApply : project.getApplies()){
-                if(projectApply.getUser().getUserId().equals(userId)){
-                    if(projectApply.getState()== ProjectApplyState.UNREAD)
-                        projectApply.setState(ProjectApplyState.READ);
-                    projectApplyRepository.save(projectApply);
-                    ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                            .userName(projectApply.getUser().getUsername())
-                            .questions(project.getQuestions())
-                            .answers(projectApply.getAnswers())
-                            .introduction(projectApply.getIntroduction())
-                            .state(projectApply.getState())
-                            .role(projectApply.getRole())
-                            .build();
-                    this.projectRepository.save(project);
-                    return projectApplyDto;
-                }
-            }
-        }
-        return null;
+        Project project = getProjectForLeader(projectId, visitorId);
+
+        ProjectApply projectApply = findApply(project, userId);
+        if (projectApply.getState() == ProjectApplyState.UNREAD)
+            projectApply.setState(ProjectApplyState.READ);
+
+        projectApplyRepository.save(projectApply);
+        projectRepository.save(project);
+
+        return ProjectApplyDto.builder()
+                .userName(projectApply.getUser().getUsername())
+                .questions(project.getQuestions())
+                .answers(projectApply.getAnswers())
+                .introduction(projectApply.getIntroduction())
+                .state(projectApply.getState())
+                .role(projectApply.getRole())
+                .build();
     }
+
     @Transactional
-    public Boolean acceptApply(Long projectId, String userId, String visitorId){
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        if(isLeader(project,visitorId)){
-            ProjectRole memberRole=null;
-            for(ProjectApply projectApply : project.getApplies()){
-                if(projectApply.getUser().getUserId().equals(userId)){
-                    project.getApplies().remove(projectApply);
-                    memberRole= projectApply.getRole();
-                    projectApply.setState(ProjectApplyState.ACCEPT);
-                    project.getApplies().add(projectApply);
-                    this.projectApplyRepository.save(projectApply);
-                    break;
-                }
-            }
-            User user =  userRepository.findByUserId(userId)
-                    .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
-            ProjectMember projectMember = ProjectMember.builder()
-                    .role(memberRole)
-                    .user(user)
-                    .project(project)
-                    .hide(Boolean.FALSE)
-                    .build();
-            project.getProjectMembers().add(projectMember);
-            if(projectMember.getRole()==ProjectRole.DEVELOPER)
-                project.getCurrentMember().setDeveloper(project.getCurrentMember().getDeveloper()+1);
-            else if(projectMember.getRole()==ProjectRole.DESIGNER)
-                project.getCurrentMember().setDesigner(project.getCurrentMember().getDesigner()+1);
-            else if(projectMember.getRole()==ProjectRole.PLANNER)
-                project.getCurrentMember().setPlanner(project.getCurrentMember().getPlanner()+1);
-            else if(projectMember.getRole()==ProjectRole.ETC)
-                project.getCurrentMember().setEtc(project.getCurrentMember().getEtc()+1);
-            this.projectMemberRepository.save(projectMember);
-            this.projectRepository.save(project);
-            return Boolean.TRUE;
-        }
-        else
-            return Boolean.FALSE;
+    public void acceptApply(Long projectId, String userId, String visitorId) {
+        Project project = getProjectForLeader(projectId, visitorId);
+
+        ProjectApply projectApply = findApply(project, userId);
+        project.getApplies().remove(projectApply);
+        projectApply.setState(ProjectApplyState.ACCEPT);
+        project.getApplies().add(projectApply);
+
+        ProjectMember projectMember = ProjectMember.builder()
+                .role(projectApply.getRole())
+                .user(projectApply.getUser())
+                .project(project)
+                .hide(Boolean.FALSE)
+                .build();
+        project.getProjectMembers().add(projectMember);
+
+        if (projectMember.getRole() == ProjectRole.DEVELOPER)
+            project.getCurrentMember().setDeveloper(project.getCurrentMember().getDeveloper() + 1);
+        else if (projectMember.getRole() == ProjectRole.DESIGNER)
+            project.getCurrentMember().setDesigner(project.getCurrentMember().getDesigner() + 1);
+        else if (projectMember.getRole() == ProjectRole.PLANNER)
+            project.getCurrentMember().setPlanner(project.getCurrentMember().getPlanner() + 1);
+        else if (projectMember.getRole() == ProjectRole.ETC)
+            project.getCurrentMember().setEtc(project.getCurrentMember().getEtc() + 1);
+
+        this.projectApplyRepository.save(projectApply);
+        this.projectMemberRepository.save(projectMember);
+        this.projectRepository.save(project);
     }
+
     @Transactional
-    public Boolean rejectApply(Long projectId, String userId, String visitorId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        if(isLeader(project,visitorId)) {
-            for (ProjectApply projectApply : project.getApplies()) {
-                if (projectApply.getUser().getUserId().equals(userId)) {
-                    projectApply.setState(ProjectApplyState.REJECT);
-                    this.projectApplyRepository.save(projectApply);
-                    this.projectRepository.save(project);
-                    return Boolean.TRUE;
-                }
-            }
-        }
-        return Boolean.FALSE;
+    public void rejectApply(Long projectId, String userId, String visitorId) {
+        Project project = getProjectForLeader(projectId, visitorId);
+
+        ProjectApply projectApply = findApply(project, userId);
+        projectApply.setState(ProjectApplyState.REJECT);
+
+        this.projectApplyRepository.save(projectApply);
+        this.projectRepository.save(project);
     }
-    public Boolean isLeader(Project project,String visitorId){
-        for(ProjectMember projectMember : project.getProjectMembers()){
-            if(projectMember.getRole().equals(ProjectRole.LEADER)){
-                if(projectMember.getUser().getUserId().equals(visitorId)) {
+
+    public Boolean isLeader(Project project, String visitorId) {
+        for (ProjectMember projectMember : project.getProjectMembers())
+            if (projectMember.getRole().equals(ProjectRole.LEADER))
+                if (projectMember.getUser().getUserId().equals(visitorId))
                     return Boolean.TRUE;
-                }
-            }
-        }
         return Boolean.FALSE;
     }
 
+    private ProjectApply findApply(Project project, String userId) {
+        for (ProjectApply projectApply : project.getApplies())
+            if (projectApply.getUser().getUserId().equals(userId))
+                return projectApply;
+        throw new ApplyNotFoundException("지원정보가 존재하지 않습니다.");
+    }
 
+    private Project getProjectForLeader(Long projectId, String visitorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        if (!this.isLeader(project, visitorId))
+            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+        if (project.getApplies().isEmpty())
+            throw new ApplicantNotFoundException("지원자가 없습니다.");
+        return project;
+    }
 }
