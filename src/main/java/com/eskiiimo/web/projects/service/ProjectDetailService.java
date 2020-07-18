@@ -1,19 +1,18 @@
 package com.eskiiimo.web.projects.service;
 
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
+import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectMember;
+import com.eskiiimo.repository.projects.model.Recruit;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
-import com.eskiiimo.web.common.exception.ProjectNotFoundException;
-import com.eskiiimo.web.common.exception.UserNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotReaderException;
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.repository.projects.model.Recruit;
-import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
+import com.eskiiimo.web.common.exception.ProjectNotFoundException;
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
+import com.eskiiimo.web.projects.exception.YouAreNotReaderException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ public class ProjectDetailService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectApplyService projectApplyService;
-    private final UserRepository userRepository;
     private final RecruitRepository recruitRepository;
     private final ModelMapper modelMapper;
 
@@ -39,64 +37,44 @@ public class ProjectDetailService {
         projectDetailDto.toEntity(project);
         project.setLeaderId(user_id);
         Project newProject = this.projectRepository.save(project);
-        this.projectApplyService.addLeader(newProject,user_id);
+        this.projectApplyService.addLeader(newProject, user_id);
         return newProject;
     }
 
     @Transactional
-    public Boolean deleteProject(Long id,String userId) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        if(!this.isLeader(project,userId))
-            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
-            for(ProjectMember projectMember : project.getProjectMembers()){
-                this.projectMemberRepository.delete(projectMember);
-            }
-            this.projectRepository.deleteByProjectId(id);
-            return Boolean.TRUE;
-
+    public void deleteProject(Long project_id, String visitorId) {
+        for (ProjectMember projectMember : getProjectForLeader(project_id,visitorId).getProjectMembers())
+            this.projectMemberRepository.delete(projectMember);
+        this.projectRepository.deleteByProjectId(project_id);
     }
 
     @Transactional
-    public ProjectDetailDto updateProject(Long project_id, UpdateDto updateDto, String userId) {
-        Project project = projectRepository.findById(project_id)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        if(!this.isLeader(project,userId))
-            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+    public ProjectDetailDto updateProject(Long project_id, UpdateDto updateDto, String visitorId) {
+        Project project = getProjectForLeader(project_id,visitorId);
         updateDto.toEntity(project);
-        Project project1 = this.projectRepository.save(project);
-        ProjectDetailDto projectDetailDto1 = this.projectToDto(project1);
-
-        return projectDetailDto1;
+        return this.projectToDto(this.projectRepository.save(project));
     }
 
     @Transactional
-    public ProjectDetailDto getProject(Long project_id){
+    public ProjectDetailDto getProject(Long project_id) {
         Project project = projectRepository.findById(project_id)
-                .orElseThrow(()->new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-            return this.projectToDto(project);
+                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        return this.projectToDto(project);
     }
 
     @Transactional
     public List<RecruitDto> getRecruits(String visitorId, Long project_id) {
-        Project project = this.projectRepository.findById(project_id)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
-        this.userRepository.findByUserId(visitorId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+        getProjectForLeader(project_id,visitorId);
+        List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(project_id)
+                .orElseThrow(() -> new RecruitNotFoundException("영입을 제안한 사람이 없습니다."));
 
-        if (!visitorId.equals(project.getLeaderId())){
-            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
-        }
         List<RecruitDto> recruitDtos = new ArrayList<RecruitDto>();
-        List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(project_id);
-        for(Recruit recruit : recruits){
-            RecruitDto recruitDto = this.modelMapper.map(recruit, RecruitDto.class);
-            recruitDtos.add(recruitDto);
-        }
+        for (Recruit recruit : recruits)
+            recruitDtos.add(this.modelMapper.map(recruit, RecruitDto.class));
         return recruitDtos;
     }
 
-    public ProjectDetailDto projectToDto(Project project){
+    public ProjectDetailDto projectToDto(Project project) {
         ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
                 .projectName(project.getProjectName())
                 .teamName(project.getTeamName())
@@ -112,19 +90,22 @@ public class ProjectDetailService {
                 .build();
 
         return projectDetailDto;
-
     }
-    public Boolean isLeader(Project project,String visitorId){
-        for(ProjectMember projectMember : project.getProjectMembers()){
-            if(projectMember.getRole().equals(ProjectRole.LEADER)){
-                if(projectMember.getUser().getUserId().equals(visitorId)) {
+
+    private Boolean isLeader(Project project, String visitorId) {
+        for (ProjectMember projectMember : project.getProjectMembers())
+            if (projectMember.getRole().equals(ProjectRole.LEADER))
+                if (projectMember.getUser().getUserId().equals(visitorId))
                     return Boolean.TRUE;
-                }
-            }
-        }
         return Boolean.FALSE;
     }
 
-
+    private Project getProjectForLeader(Long project_id, String visitorId){
+        Project project = projectRepository.findById(project_id)
+                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        if (!this.isLeader(project, visitorId))
+            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+        return project;
+    }
 }
 

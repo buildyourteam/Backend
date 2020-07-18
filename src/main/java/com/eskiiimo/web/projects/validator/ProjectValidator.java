@@ -9,10 +9,8 @@ import java.time.LocalDateTime;
 
 @Component
 public class ProjectValidator {
-    public void validate(ProjectDetailDto projectDetailDto) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime endDate = projectDetailDto.getEndDate();
-        if(endDate.isBefore(now))
-            throw new WrongDateException(endDate.toString());
+    public void validateDate(ProjectDetailDto projectDetailDto) {
+        if(projectDetailDto.getEndDate().isBefore(LocalDateTime.now()))
+            throw new WrongDateException(projectDetailDto.getEndDate().toString());
     }
 }
