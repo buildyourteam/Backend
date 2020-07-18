@@ -5,6 +5,8 @@ import com.eskiiimo.web.common.exception.*;
 import com.eskiiimo.web.files.exception.FileDownloadException;
 import com.eskiiimo.web.files.exception.FileNameException;
 import com.eskiiimo.web.projects.exception.*;
+import com.eskiiimo.web.user.exception.NotYourProfileException;
+import com.eskiiimo.web.user.exception.YouAreNotMemberException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -61,6 +63,18 @@ public class ExceptionHandleController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleYouAreNotReader(YouAreNotReaderException exception){
+        return new ErrorResponse(HttpStatus.FORBIDDEN,exception);
+    }
+    @ExceptionHandler(YouAreNotMemberException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleYouAreNotReader(YouAreNotMemberException exception){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST,exception);
+    }
+    @ExceptionHandler(NotYourProfileException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse handleNotYourProfile(NotYourProfileException exception){
         return new ErrorResponse(HttpStatus.FORBIDDEN,exception);
     }
     @ExceptionHandler(WrongDateException.class)

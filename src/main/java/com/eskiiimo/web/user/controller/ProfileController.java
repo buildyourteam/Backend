@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,9 +31,12 @@ public class ProfileController {
     ProjectListService projectListService;
 
     @GetMapping("/{user_id}")
-    public ResponseEntity getProfile(@PathVariable String user_id) {
-        ProfileDto profileDto = profileService.getProfile(user_id);
-        ProfileResource profileResource = new ProfileResource(profileDto, user_id);
+    public ResponseEntity getProfile(
+            @PathVariable String user_id
+    ) {
+        ProfileResource profileResource = new ProfileResource(
+                profileService.getProfile(user_id),
+                user_id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             if (user_id.equals(authentication.getName())) {
@@ -47,12 +49,13 @@ public class ProfileController {
     }
 
     @PutMapping("/{user_id}")
-    public ResponseEntity updateProfile(@PathVariable String user_id, @RequestBody ProfileDto updateData) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity updateProfile(
+            @PathVariable String user_id,
+            @RequestBody ProfileDto updateData
+    ) {
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (!userId.equals(user_id))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        ProfileDto profileDto = profileService.updateProfile(user_id, updateData);
+        ProfileDto profileDto = profileService.updateProfile(user_id, visitorId, updateData);
         ProfileResource profileResource = new ProfileResource(profileDto, user_id);
         profileResource.add(linkTo(DocsController.class).slash("#resourcesProfileUpdate").withRel("profile"));
         return ResponseEntity.ok(profileResource);
@@ -95,7 +98,8 @@ public class ProfileController {
             Pageable pageable,
             PagedResourcesAssembler<ProjectListDto> assembler
     ) {
-        return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenRunning(user_id, pageable)));
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenRunning(user_id, visitorId, pageable)));
     }
 
     //사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기
@@ -105,7 +109,8 @@ public class ProfileController {
             Pageable pageable,
             PagedResourcesAssembler<ProjectListDto> assembler
     ) {
-        return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenEnded(user_id, pageable)));
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenEnded(user_id, visitorId, pageable)));
     }
 
     // 사용자가 기획한 숨겨진 프로젝트 리스트 가져오기
@@ -115,7 +120,8 @@ public class ProfileController {
             Pageable pageable,
             PagedResourcesAssembler<ProjectListDto> assembler
     ) {
-        return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenPlanner(user_id, pageable)));
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(assembler.toModel(this.profileService.getHiddenPlanner(user_id, visitorId, pageable)));
     }
 
     // 숨긴 프로젝트 살리기
@@ -125,7 +131,8 @@ public class ProfileController {
             @PathVariable(value = "projectId") Long projectId,
             Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler
     ) {
-        this.profileService.reShowProject(user_id, projectId);
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        this.profileService.reShowProject(user_id, visitorId, projectId);
         return ResponseEntity.ok().build();
     }
 
@@ -136,7 +143,8 @@ public class ProfileController {
             @PathVariable(value = "projectId") Long projectId,
             Pageable pageable, PagedResourcesAssembler<ProjectListDto> assembler
     ) {
-        this.profileService.hideProject(user_id, projectId);
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        this.profileService.hideProject(user_id, visitorId, projectId);
         return ResponseEntity.ok().build();
     }
 }
