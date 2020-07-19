@@ -33,11 +33,11 @@ public class RecruitService {
     @Transactional
     public void recruitProject(String userId, RecruitDto recruit, Long projectId, String visitorId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         Recruit projectRecruit = recruit.toEntity(user, project);
         this.recruitRepository.save(projectRecruit);

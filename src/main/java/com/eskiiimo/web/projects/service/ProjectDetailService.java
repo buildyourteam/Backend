@@ -42,31 +42,31 @@ public class ProjectDetailService {
     }
 
     @Transactional
-    public void deleteProject(Long project_id, String visitorId) {
-        Project project = getProjectForLeader(project_id, visitorId);
+    public void deleteProject(Long projectId, String visitorId) {
+        Project project = getProjectForLeader(projectId, visitorId);
         for (ProjectMember projectMember : project.getProjectMembers())
             this.projectMemberRepository.delete(projectMember);
-        this.projectRepository.deleteByProjectId(project_id);
+        this.projectRepository.deleteByProjectId(projectId);
     }
 
     @Transactional
-    public ProjectDetailDto updateProject(Long project_id, UpdateDto updateDto, String visitorId) {
-        Project project = getProjectForLeader(project_id, visitorId);
+    public ProjectDetailDto updateProject(Long projectId, UpdateDto updateDto, String visitorId) {
+        Project project = getProjectForLeader(projectId, visitorId);
         updateDto.toEntity(project);
         return this.projectToDto(this.projectRepository.save(project));
     }
 
     @Transactional
-    public ProjectDetailDto getProject(Long project_id) {
-        Project project = projectRepository.findById(project_id)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+    public ProjectDetailDto getProject(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
         return this.projectToDto(project);
     }
 
     @Transactional
-    public List<RecruitDto> getRecruits(String visitorId, Long project_id) {
-        getProjectForLeader(project_id, visitorId);
-        List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(project_id)
+    public List<RecruitDto> getRecruits(String visitorId, Long projectId) {
+        getProjectForLeader(projectId, visitorId);
+        List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(projectId)
                 .orElseThrow(() -> new RecruitNotFoundException("영입을 제안한 사람이 없습니다."));
 
         List<RecruitDto> recruitDtos = new ArrayList<RecruitDto>();
@@ -101,9 +101,9 @@ public class ProjectDetailService {
         return Boolean.FALSE;
     }
 
-    private Project getProjectForLeader(Long project_id, String visitorId) {
-        Project project = projectRepository.findById(project_id)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+    private Project getProjectForLeader(Long projectId, String visitorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
         return project;
