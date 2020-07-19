@@ -1,11 +1,12 @@
 package com.eskiiimo.web.files.service;
 
 
+import com.eskiiimo.repository.files.dto.FileUploadDto;
 import com.eskiiimo.repository.files.model.ProfileImage;
 import com.eskiiimo.repository.files.repository.ProfileImageRepository;
-import com.eskiiimo.repository.files.dto.FileUploadDto;
 import com.eskiiimo.web.configs.FileUploadProperties;
-import com.eskiiimo.web.files.exception.FileDownloadException;
+import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
+import com.eskiiimo.web.files.exception.ProfileImageNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -24,49 +25,40 @@ public class ProfileImageService {
 
     private final ProfileImageRepository profileImageRepository;
 
-
-
     @Autowired
     public ProfileImageService(FileUploadProperties prop, ProfileImageRepository profileImageRepository, FileService fileService) {
         this.profileImageRepository = profileImageRepository;
-        this.fileService=  fileService;
+        this.fileService = fileService;
         this.profileImageLocation = Paths.get(prop.getProfileimageDir())
                 .toAbsolutePath().normalize();
         try {
-
             Files.createDirectories(this.profileImageLocation);
-        }catch(Exception e) {
-            throw new com.eskiiimo.web.files.exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
+        } catch (Exception e) {
+            throw new CantCreateFileDirectoryException(this.profileImageLocation.toString(), e);
         }
     }
 
-
-
-
-    public FileUploadDto storeProfileImage(String user_id, MultipartFile file){
-        String fileName = fileService.storeFile(file,this.profileImageLocation,user_id);
+    public FileUploadDto storeProfileImage(String user_id, MultipartFile file) {
+        String fileName = fileService.storeFile(file, this.profileImageLocation, user_id);
 
         ProfileImage profileImage = this.profileImageRepository.findByUserId(user_id).orElse(new ProfileImage());
-                profileImage.setUserId(user_id);
-                profileImage.setFilePath(this.profileImageLocation.resolve(fileName).toString());
+        profileImage.setUserId(user_id);
+        profileImage.setFilePath(this.profileImageLocation.resolve(fileName).toString());
         profileImageRepository.save(profileImage);
-        FileUploadDto fileUploadDto= FileUploadDto.builder()
+        FileUploadDto fileUploadDto = FileUploadDto.builder()
                 .fileName(fileName)
                 .fileType(file.getContentType())
                 .size(file.getSize())
-                .build()
-        ;
+                .build();
 
         return fileUploadDto;
     }
 
-
-    public Resource getProfileImage(String userId){
+    public Resource getProfileImage(String userId) {
         ProfileImage profileImage = this.profileImageRepository.findByUserId(userId)
-                .orElseThrow(()-> new FileDownloadException("프로필 이미지가 존재하지 않습니다."));
+                .orElseThrow(() -> new ProfileImageNotFoundException(userId));
+
         Path filePath = Paths.get(profileImage.getFilePath());
         return fileService.loadFileAsResource(filePath);
     }
-
-
 }
