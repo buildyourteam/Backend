@@ -33,75 +33,75 @@ public class ProfileService {
     ProjectMemberRepository projectMemberRepository;
 
     @Transactional
-    public ProfileDto getProfile(String user_id) {
-        User profile = userRepository.findByUserId(user_id)
-                .orElseThrow(() -> new UserNotFoundException(user_id));
+    public ProfileDto getProfile(String userId) {
+        User profile = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         ProfileDto profileDto = profile.toProfileDto();
         return profileDto;
     }
 
     @Transactional
-    public ProfileDto updateProfile(String user_id, String visitorId, ProfileDto updateData) {
-        if (!user_id.equals(visitorId))
-            throw new NotYourProfileException("프로필 수정 권한이 없습니다.");
-        User profile = userRepository.findByUserId(user_id)
-                .orElseThrow(() -> new UserNotFoundException(user_id));
+    public ProfileDto updateProfile(String userId, String visitorId, ProfileDto updateData) {
+        if (!userId.equals(visitorId))
+            throw new NotYourProfileException(userId);
+        User profile = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
         updateData.updateProfile(profile);
         return this.userRepository.save(profile).toProfileDto();
     }
 
-    public Page<ProjectListDto> getRunning(String user_id, Pageable pageable) {
-        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id, Boolean.FALSE, State.RUNNING, pageable);
+    public Page<ProjectListDto> getRunning(String userId, Pageable pageable) {
+        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.FALSE, State.RUNNING, pageable);
         return page;
     }
 
-    public Page<ProjectListDto> getEnded(String user_id, Pageable pageable) {
-        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id, Boolean.FALSE, State.ENDED, pageable);
+    public Page<ProjectListDto> getEnded(String userId, Pageable pageable) {
+        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.FALSE, State.ENDED, pageable);
         return page;
     }
 
-    public Page<ProjectListDto> getPlanner(String user_id, Pageable pageable) {
-        Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(user_id, Boolean.FALSE, pageable);
+    public Page<ProjectListDto> getPlanner(String userId, Pageable pageable) {
+        Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.FALSE, pageable);
         return page;
     }
 
-    public Page<ProjectListDto> getHiddenRunning(String user_id, String visitorId, Pageable pageable) {
-        if (!user_id.equals(visitorId))
-            throw new NotYourProfileException("프로필 수정 권한이 없습니다.");
-        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id, Boolean.TRUE, State.RUNNING, pageable);
+    public Page<ProjectListDto> getHiddenRunning(String userId, String visitorId, Pageable pageable) {
+        if (!userId.equals(visitorId))
+            throw new NotYourProfileException(userId);
+        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.TRUE, State.RUNNING, pageable);
         return page;
     }
 
-    public Page<ProjectListDto> getHiddenEnded(String user_id, String visitorId, Pageable pageable) {
-        if (!user_id.equals(visitorId))
-            throw new NotYourProfileException("프로필 수정 권한이 없습니다.");
-        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(user_id, Boolean.TRUE, State.ENDED, pageable);
+    public Page<ProjectListDto> getHiddenEnded(String userId, String visitorId, Pageable pageable) {
+        if (!userId.equals(visitorId))
+            throw new NotYourProfileException(userId);
+        Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.TRUE, State.ENDED, pageable);
         return page;
     }
 
-    public Page<ProjectListDto> getHiddenPlanner(String user_id, String visitorId, Pageable pageable) {
-        if (!user_id.equals(visitorId))
-            throw new NotYourProfileException("프로필 수정 권한이 없습니다.");
-        Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(user_id, Boolean.TRUE, pageable);
+    public Page<ProjectListDto> getHiddenPlanner(String userId, String visitorId, Pageable pageable) {
+        if (!userId.equals(visitorId))
+            throw new NotYourProfileException(userId);
+        Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.TRUE, pageable);
         return page;
     }
 
-    public void reShowProject(String user_id, String visitorId, Long projectId) {
-        setProjectVisible(user_id, visitorId, projectId, Boolean.TRUE);
+    public void reShowProject(String userId, String visitorId, Long projectId) {
+        setProjectVisible(userId, visitorId, projectId, Boolean.TRUE);
     }
 
 
-    public void hideProject(String user_id, String visitorId, Long projectId) {
-        setProjectVisible(user_id, visitorId, projectId, Boolean.FALSE);
+    public void hideProject(String userId, String visitorId, Long projectId) {
+        setProjectVisible(userId, visitorId, projectId, Boolean.FALSE);
     }
 
-    public void setProjectVisible(String user_id, String visitorId, Long projectId, Boolean visible) {
-        if (!user_id.equals(visitorId))
-            throw new NotYourProfileException("프로필 수정 권한이 없습니다.");
+    public void setProjectVisible(String userId, String visitorId, Long projectId, Boolean visible) {
+        if (!userId.equals(visitorId))
+            throw new NotYourProfileException(userId);
         Project project = this.projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        ProjectMember projectMember = this.projectMemberRepository.findByProject_ProjectIdAndUser_UserId(projectId, user_id)
-                .orElseThrow(() -> new YouAreNotMemberException("프로젝트에 소속되어있지 않습니다."));
+        ProjectMember projectMember = this.projectMemberRepository.findByProject_ProjectIdAndUser_UserId(projectId, userId)
+                .orElseThrow(() -> new YouAreNotMemberException(projectId));
         project.getProjectMembers().remove(projectMember);
         projectMember.setHide(!visible);
         project.getProjectMembers().add(projectMember);
