@@ -2,6 +2,9 @@ package com.eskiiimo.web.files.service;
 
 
 import com.eskiiimo.web.configs.FileUploadProperties;
+import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
+import com.eskiiimo.web.files.exception.FileDownloadException;
+import com.eskiiimo.web.files.exception.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -28,42 +31,40 @@ public class FileService {
                 .toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileLocation);
-
-        }catch(Exception e) {
-            throw new com.eskiiimo.web.files.exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
+        } catch (Exception e) {
+            throw new CantCreateFileDirectoryException(this.fileLocation.toString(), e);
         }
     }
 
-    public String storeFile(MultipartFile file, Path location,String id) {
+    public String storeFile(MultipartFile file, Path location, String id) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        StringTokenizer tockens =new StringTokenizer(fileName);
+        StringTokenizer tockens = new StringTokenizer(fileName);
         tockens.nextToken(".");
-        fileName = id+"."+ tockens.nextToken();
+        fileName = id + "." + tockens.nextToken();
         try {
             // 파일명에 부적합 문자가 있는지 확인한다.
-            if(fileName.contains(".."))
-                throw new com.eskiiimo.web.files.exception.FileNameException("파일명에 부적합 문자가 포함되어 있습니다. " + fileName);
+            if (fileName.contains(".."))
+                throw new com.eskiiimo.web.files.exception.FileNameException(fileName);
 
             Path targetLocation = location.resolve(fileName);
 
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;
-        }catch(Exception e) {
-            throw new com.eskiiimo.web.files.exception.FileUploadException("["+fileName+"] 파일 업로드에 실패하였습니다. 다시 시도하십시오.",e);
+        } catch (Exception e) {
+            throw new FileUploadException(fileName, e);
         }
     }
 
     public Resource loadFileAsResource(Path filePath) {
         try {
             Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
+            if (resource.exists())
                 return resource;
-            }else {
-                throw new com.eskiiimo.web.files.exception.FileDownloadException(filePath.getFileName() + " 파일을 찾을 수 없습니다.");
-            }
-        }catch(MalformedURLException e) {
-            throw new com.eskiiimo.web.files.exception.FileDownloadException(filePath.getFileName() + " 파일을 찾을 수 없습니다.", e);
+            else
+                throw new FileDownloadException(filePath.getFileName().toString());
+        } catch (MalformedURLException e) {
+            throw new FileDownloadException(filePath.getFileName().toString(), e);
         }
     }
 

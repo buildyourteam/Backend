@@ -5,7 +5,9 @@ import com.eskiiimo.repository.files.model.ProjectImage;
 import com.eskiiimo.repository.files.repository.ProjectImageRepository;
 import com.eskiiimo.repository.files.dto.FileUploadDto;
 import com.eskiiimo.web.configs.FileUploadProperties;
+import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
 import com.eskiiimo.web.files.exception.FileDownloadException;
+import com.eskiiimo.web.files.exception.ProjectImageNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -24,46 +26,39 @@ public class ProjectImageService {
 
     private final ProjectImageRepository projectImageRepository;
 
-
-
     @Autowired
     public ProjectImageService(FileUploadProperties prop, ProjectImageRepository projectImageRepository, FileService fileService) {
         this.projectImageRepository = projectImageRepository;
-        this.fileService=  fileService;
+        this.fileService = fileService;
         this.projectImageLocation = Paths.get(prop.getProjectimageDir())
                 .toAbsolutePath().normalize();
         try {
-
             Files.createDirectories(this.projectImageLocation);
-        }catch(Exception e) {
-            throw new com.eskiiimo.web.files.exception.FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
+        } catch (Exception e) {
+            throw new CantCreateFileDirectoryException(this.projectImageLocation.toString(), e);
         }
     }
 
+    public FileUploadDto storeProjectImage(Long projectId, MultipartFile file) {
+        String fileName = fileService.storeFile(file, this.projectImageLocation, projectId.toString());
 
-    public FileUploadDto storeProjectImage(Long projectid, MultipartFile file){
-        String fileName = fileService.storeFile(file,this.projectImageLocation,projectid.toString());
-
-        ProjectImage projectImage = this.projectImageRepository.findByProjectid(projectid).orElse(new ProjectImage());
-        projectImage.setProjectid(projectid);
+        ProjectImage projectImage = this.projectImageRepository.findByProjectid(projectId).orElse(new ProjectImage());
+        projectImage.setProjectid(projectId);
         projectImage.setFilePath(this.projectImageLocation.resolve(fileName).toString());
         projectImageRepository.save(projectImage);
-        FileUploadDto fileUploadDto= FileUploadDto.builder()
+        FileUploadDto fileUploadDto = FileUploadDto.builder()
                 .fileName(fileName)
                 .fileType(file.getContentType())
                 .size(file.getSize())
-                .build()
-                ;
+                .build();
         return fileUploadDto;
     }
 
+    public Resource getProjectImage(Long projectId) {
+        ProjectImage projectImage = this.projectImageRepository.findByProjectid(projectId)
+                .orElseThrow(() -> new ProjectImageNotFoundException(projectId));
 
-    public Resource getProjectImage(Long projectid){
-        ProjectImage projectImage =this.projectImageRepository.findByProjectid(projectid)
-                .orElseThrow(()->new FileDownloadException("프로필 이미지가 존재하지 않습니다."));
         Path filePath = Paths.get(projectImage.getFilePath());
         return fileService.loadFileAsResource(filePath);
     }
-
-
 }
