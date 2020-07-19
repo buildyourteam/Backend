@@ -1,6 +1,6 @@
-package com.eskiiimo.web.error.filters;
+package com.eskiiimo.web.errorbot.filters;
 
-import com.eskiiimo.web.error.util.MultiReadableHttpServletRequest;
+import com.eskiiimo.web.errorbot.util.MultiReadableHttpServletRequest;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

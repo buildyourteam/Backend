@@ -1,8 +1,8 @@
-package com.eskiiimo.web.error.filters;
+package com.eskiiimo.web.errorbot.filters;
 
-import com.eskiiimo.web.error.util.HttpUtils;
-import com.eskiiimo.web.error.util.MDCUtil;
-import com.eskiiimo.web.error.util.RequestWrapper;
+import com.eskiiimo.web.errorbot.util.HttpUtils;
+import com.eskiiimo.web.errorbot.util.MDCUtil;
+import com.eskiiimo.web.errorbot.util.RequestWrapper;
 import org.slf4j.MDC;
 
 import javax.servlet.*;

@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.service;
+package com.eskiiimo.web.errorbot.service;
 
 import com.eskiiimo.repository.error.model.ErrorLog;
 import com.eskiiimo.repository.error.repository.ErrorLogRepository;

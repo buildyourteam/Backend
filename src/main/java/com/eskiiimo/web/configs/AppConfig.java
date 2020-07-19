@@ -1,8 +1,8 @@
 package com.eskiiimo.web.configs;
 
 
-import com.eskiiimo.web.error.filters.LogbackMdcFilter;
-import com.eskiiimo.web.error.filters.MultiReadableHttpServletRequestFilter;
+import com.eskiiimo.web.errorbot.filters.LogbackMdcFilter;
+import com.eskiiimo.web.errorbot.filters.MultiReadableHttpServletRequestFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +27,6 @@ public class AppConfig {
     }
 
     //logack
-
     @Bean
     public FilterRegistrationBean multiReadableHttpServletRequestFilterRegistrationBean() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
