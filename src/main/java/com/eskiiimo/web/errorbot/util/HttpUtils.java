@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.util;
+package com.eskiiimo.web.errorbot.util;
 
 import eu.bitwalker.useragentutils.Browser;
 import org.springframework.web.context.request.RequestContextHolder;

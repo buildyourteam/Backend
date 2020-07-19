@@ -1,8 +1,8 @@
-package com.eskiiimo.web.error.config;
+package com.eskiiimo.web.errorbot.config;
 
 import ch.qos.logback.classic.LoggerContext;
-import com.eskiiimo.web.error.appender.CustomLogbackAppender;
-import com.eskiiimo.web.error.service.ErrorLogService;
+import com.eskiiimo.web.errorbot.appender.CustomLogbackAppender;
+import com.eskiiimo.web.errorbot.service.ErrorLogService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.eskiiimo.repository.error.dto;
+package com.eskiiimo.web.common.response;
 
 
 import lombok.Getter;
@@ -14,11 +14,11 @@ public class ErrorResponse {
     private String error;
     private String message;
 
-    public ErrorResponse(HttpStatus Httpstatus, Exception e){
+    public ErrorResponse(HttpStatus Httpstatus, String message){
         this.timestamp = LocalDateTime.now();
         this.status  = Httpstatus.value();
         this.error = Httpstatus.toString();
-        this.message = e.getMessage();
+        this.message = message;
     }
 
 

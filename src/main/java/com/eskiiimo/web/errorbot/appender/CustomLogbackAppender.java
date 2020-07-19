@@ -1,14 +1,14 @@
-package com.eskiiimo.web.error.appender;
+package com.eskiiimo.web.errorbot.appender;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.util.ContextUtil;
-import com.eskiiimo.web.error.config.LogConfig;
+import com.eskiiimo.web.errorbot.config.LogConfig;
 import com.eskiiimo.repository.error.model.ErrorLog;
-import com.eskiiimo.web.error.service.ErrorLogService;
-import com.eskiiimo.web.error.util.JsonUtils;
-import com.eskiiimo.web.error.util.MDCUtil;
+import com.eskiiimo.web.errorbot.service.ErrorLogService;
+import com.eskiiimo.web.errorbot.util.JsonUtils;
+import com.eskiiimo.web.errorbot.util.MDCUtil;
 import net.gpedro.integrations.slack.SlackApi;
 import net.gpedro.integrations.slack.SlackAttachment;
 import net.gpedro.integrations.slack.SlackField;

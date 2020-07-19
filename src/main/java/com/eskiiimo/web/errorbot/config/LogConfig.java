@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.config;
+package com.eskiiimo.web.errorbot.config;
 
 import ch.qos.logback.classic.Level;
 import lombok.Getter;

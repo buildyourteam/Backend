@@ -1,4 +1,4 @@
-package com.eskiiimo.web.error.util;
+package com.eskiiimo.web.errorbot.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
