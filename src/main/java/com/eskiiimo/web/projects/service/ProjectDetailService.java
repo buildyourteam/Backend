@@ -43,14 +43,15 @@ public class ProjectDetailService {
 
     @Transactional
     public void deleteProject(Long project_id, String visitorId) {
-        for (ProjectMember projectMember : getProjectForLeader(project_id,visitorId).getProjectMembers())
+        Project project = getProjectForLeader(project_id, visitorId);
+        for (ProjectMember projectMember : project.getProjectMembers())
             this.projectMemberRepository.delete(projectMember);
         this.projectRepository.deleteByProjectId(project_id);
     }
 
     @Transactional
     public ProjectDetailDto updateProject(Long project_id, UpdateDto updateDto, String visitorId) {
-        Project project = getProjectForLeader(project_id,visitorId);
+        Project project = getProjectForLeader(project_id, visitorId);
         updateDto.toEntity(project);
         return this.projectToDto(this.projectRepository.save(project));
     }
@@ -64,7 +65,7 @@ public class ProjectDetailService {
 
     @Transactional
     public List<RecruitDto> getRecruits(String visitorId, Long project_id) {
-        getProjectForLeader(project_id,visitorId);
+        getProjectForLeader(project_id, visitorId);
         List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(project_id)
                 .orElseThrow(() -> new RecruitNotFoundException("영입을 제안한 사람이 없습니다."));
 
@@ -100,7 +101,7 @@ public class ProjectDetailService {
         return Boolean.FALSE;
     }
 
-    private Project getProjectForLeader(Long project_id, String visitorId){
+    private Project getProjectForLeader(Long project_id, String visitorId) {
         Project project = projectRepository.findById(project_id)
                 .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
         if (!this.isLeader(project, visitorId))
