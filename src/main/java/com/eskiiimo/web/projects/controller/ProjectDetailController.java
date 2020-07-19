@@ -102,10 +102,8 @@ public class ProjectDetailController {
             @RequestBody UpdateDto updateDto
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        ProjectDetailResource projectDetailResource = new ProjectDetailResource(
-                projectDetailService.updateProject(project_id, updateDto, visitorId),
-                project_id);
+        ProjectDetailDto project = projectDetailService.updateProject(project_id, updateDto, visitorId);
+        ProjectDetailResource projectDetailResource = new ProjectDetailResource(project, project_id);
         projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
         return ResponseEntity.ok(projectDetailResource);
     }
