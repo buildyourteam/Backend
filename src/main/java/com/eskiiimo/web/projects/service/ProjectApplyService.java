@@ -182,16 +182,16 @@ public class ProjectApplyService {
         for (ProjectApply projectApply : project.getApplies())
             if (projectApply.getUser().getUserId().equals(userId))
                 return projectApply;
-        throw new ApplyNotFoundException("지원정보가 존재하지 않습니다.");
+        throw new ApplyNotFoundException(userId);
     }
 
     private Project getProjectForLeader(Long projectId, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
-            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+            throw new YouAreNotReaderException(projectId);
         if (project.getApplies().isEmpty())
-            throw new ApplicantNotFoundException("지원자가 없습니다.");
+            throw new ApplicantNotFoundException(projectId);
         return project;
     }
 }
