@@ -35,7 +35,7 @@ public class ProfileService {
     @Transactional
     public ProfileDto getProfile(String user_id) {
         User profile = userRepository.findByUserId(user_id)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException(user_id));
         ProfileDto profileDto = profile.toProfileDto();
         return profileDto;
     }
@@ -45,7 +45,7 @@ public class ProfileService {
         if (!user_id.equals(visitorId))
             throw new NotYourProfileException("프로필 수정 권한이 없습니다.");
         User profile = userRepository.findByUserId(user_id)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException(user_id));
         updateData.updateProfile(profile);
         return this.userRepository.save(profile).toProfileDto();
     }
@@ -99,7 +99,7 @@ public class ProfileService {
         if (!user_id.equals(visitorId))
             throw new NotYourProfileException("프로필 수정 권한이 없습니다.");
         Project project = this.projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
         ProjectMember projectMember = this.projectMemberRepository.findByProject_ProjectIdAndUser_UserId(projectId, user_id)
                 .orElseThrow(() -> new YouAreNotMemberException("프로젝트에 소속되어있지 않습니다."));
         project.getProjectMembers().remove(projectMember);

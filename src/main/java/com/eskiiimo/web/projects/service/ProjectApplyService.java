@@ -37,7 +37,7 @@ public class ProjectApplyService {
     @Transactional
     public void addLeader(Project project, String userId) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         ProjectMember projectMember = ProjectMember.builder()
                 .role(ProjectRole.LEADER)
@@ -54,9 +54,9 @@ public class ProjectApplyService {
     @Transactional
     public void applyProject(Long projectId, ProjectApplyDto apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
         User user = userRepository.findByUserId(visitorId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException(visitorId));
 
         ProjectApply projectApply = apply.toEntity(user);
         project.getApplies().add(projectApply);
@@ -68,7 +68,7 @@ public class ProjectApplyService {
     @Transactional
     public void updateApply(Long projectId, ProjectApplyDto apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
         ProjectApply projectApply = findApply(project, visitorId);
 
         project.getApplies().remove(projectApply);
@@ -182,7 +182,7 @@ public class ProjectApplyService {
 
     private Project getProjectForLeader(Long projectId, String visitorId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
         if (project.getApplies().isEmpty())
