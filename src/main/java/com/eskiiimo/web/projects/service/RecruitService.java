@@ -35,7 +35,7 @@ public class RecruitService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
-            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+            throw new YouAreNotReaderException(projectId);
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -46,10 +46,10 @@ public class RecruitService {
     @Transactional
     public List<RecruitDto> getRecruitList(String userId, String visitorId) {
         if (!userId.equals(visitorId))
-            throw new RecruitNotAuthException("확인 권한이 없습니다.");
+            throw new RecruitNotAuthException();
 
         List<Recruit> RecruitList = this.recruitRepository.findAllByUser_UserId(visitorId)
-                .orElseThrow(()->new RecruitNotFoundException("영입을 제안한 사람이 없습니다."));
+                .orElseThrow(()->new RecruitNotFoundException());
         List<RecruitDto> projectRecruits = new ArrayList<RecruitDto>();
         for (Recruit recruit : RecruitList)
             projectRecruits.add(this.modelMapper.map(recruit, RecruitDto.class));
@@ -82,9 +82,9 @@ public class RecruitService {
 
     private Recruit getRecruitToMe(String userId, Long projectId, String visitorId) {
         if (!userId.equals(visitorId))
-            throw new RecruitNotAuthException("확인 권한이 없습니다.");
+            throw new RecruitNotAuthException();
         return this.recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, projectId)
-                .orElseThrow(() -> new RecruitNotFoundException("해당 영입제안이 없습니다."));
+                .orElseThrow(() -> new RecruitNotFoundException());
     }
 
     public Boolean isLeader(Project project, String visitorId) {

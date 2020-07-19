@@ -1,11 +1,7 @@
 package com.eskiiimo.web.projects.exception;
 
 public class RecruitNotAuthException extends RuntimeException {
-    public RecruitNotAuthException(String message) {
-        super(message);
-    }
-
-    public RecruitNotAuthException(String message, Throwable cause) {
-        super(message, cause);
+    public RecruitNotAuthException() {
+        super("확인 권한이 없습니다.");
     }
 }

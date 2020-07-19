@@ -1,11 +1,7 @@
 package com.eskiiimo.web.projects.exception;
 
 public class YouAreNotReaderException extends RuntimeException {
-    public YouAreNotReaderException(String message) {
-        super(message);
-    }
-
-    public YouAreNotReaderException(String message, Throwable cause) {
-        super(message, cause);
+    public YouAreNotReaderException(Long projectId) {
+        super("projectId : '" + projectId + "'당신은 팀장이 아닙니다.");
     }
 }

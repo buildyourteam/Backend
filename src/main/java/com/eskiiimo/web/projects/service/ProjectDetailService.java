@@ -67,7 +67,7 @@ public class ProjectDetailService {
     public List<RecruitDto> getRecruits(String visitorId, Long projectId) {
         getProjectForLeader(projectId, visitorId);
         List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(projectId)
-                .orElseThrow(() -> new RecruitNotFoundException("영입을 제안한 사람이 없습니다."));
+                .orElseThrow(() -> new RecruitNotFoundException());
 
         List<RecruitDto> recruitDtos = new ArrayList<RecruitDto>();
         for (Recruit recruit : recruits)
@@ -105,7 +105,7 @@ public class ProjectDetailService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
-            throw new YouAreNotReaderException("당신은 팀장이 아닙니다.");
+            throw new YouAreNotReaderException(projectId);
         return project;
     }
 }
