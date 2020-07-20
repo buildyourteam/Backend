@@ -1,20 +1,16 @@
 package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
+import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectMember;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
-import com.eskiiimo.repository.projects.repository.ProjectRepository;
-import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
-import com.eskiiimo.web.projects.enumtype.*;
 import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.repository.projects.dto.RecruitDto;
+import com.eskiiimo.web.common.BaseControllerTest;
+import com.eskiiimo.web.projects.enumtype.ProjectField;
+import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,10 +19,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -45,25 +39,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("프로젝트 상세 페이지")
 class ProjectDetailControllerTest extends BaseControllerTest {
 
-    @Autowired
-    ProjectRepository projectRepository;
-
-    @Autowired
-    ProjectMemberRepository projectMemberRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
     @Test
     @DisplayName("프로젝트 상세 페이지 확인하기")
     @Transactional
     void getProjectDetail() throws Exception {
         // Given
-        Project project = this.generateOneProject(2);
-        this.joinProjectMember(project.getProjectId(),1);
-        this.joinProjectMember(project.getProjectId(),2);
+        Project project = testProjectFactory.generateMyProject(0);
+        User user2 = testUserFactory.generateUser(1);
+        testProjectFactory.generateProjectMember(user2, project, false);
+
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}",project.getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}", project.getProjectId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("projectName").exists())
                 .andExpect(jsonPath("_links.self").exists())
@@ -73,13 +59,13 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("apply").description("apply to project"),
                                 linkWithRel("profile").description("link to profile")
-                            ),
+                        ),
                         pathParameters(
                                 parameterWithName("projectId").description("Project id")
-                            ),
+                        ),
                         responseHeaders(
-                               headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                            ),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
                         responseFields(
                                 fieldWithPath("projectName").description("프로젝트 이름"),
                                 fieldWithPath("teamName").description("팀명"),
@@ -108,63 +94,39 @@ class ProjectDetailControllerTest extends BaseControllerTest {
 
 
                         )
-                 ))
+                ))
         ;
     }
-
 
     @Test
     @Transactional
     @DisplayName("내가 보낸 영입제안 리스트 확인하기")
-    @WithMockUser(username = "tester")
-    public void getRecruits() throws Exception{
-        Project project = this.generateProject(1);
-        Long project_id = project.getProjectId();
-        this.joinProjectLeader(project_id,"tester");
+    @WithMockUser(username = "user0")
+    public void getRecruits() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
+        Long projectId = project.getProjectId();
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
+        RecruitDto recruitDto1 = testProjectFactory.toRecruitDto(projectId, user1);
+        RecruitDto recruitDto2 = testProjectFactory.toRecruitDto(projectId, user2);
 
-
-        User user01 = User.builder()
-                .userName("유저01")
-                .userId("user01")
-                .password("testpassword")
-                .build();
-        this.userRepository.save(user01);
-        User user02 = User.builder()
-                .userName("유저02")
-                .userId("user02")
-                .password("testpassword2")
-                .build();
-        this.userRepository.save(user02);
-
-        RecruitDto recruitDto1 = RecruitDto.builder()
-//                .project(project)
-                .projectId(project_id)
-                .userName("user01")
-                .introduction("프로젝트 영입하고 싶습니다.")
-                .role(ProjectRole.DEVELOPER)
-                .build();
-        RecruitDto recruitDto2 = RecruitDto.builder()
-//                .project(project)
-                .projectId(project_id)
-                .userName("user02")
-                .introduction("프로젝트 영입하고 싶습니다.")
-                .role(ProjectRole.DEVELOPER)
-                .build();
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","user01", project_id)
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}", "user1", projectId)
                 .content(objectMapper.writeValueAsString(recruitDto1))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}","user02", project_id)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}", "user2", projectId)
                 .content(objectMapper.writeValueAsString(recruitDto2))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", project_id))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", projectId))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("getSendRecruits",
@@ -190,28 +152,16 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         ;
     }
 
-
-
     @Test
-    @WithMockUser(username="projectLeader")
+    @WithMockUser(username = "user0")
     @Transactional
     @DisplayName("프로젝트 생성하기")
     public void createProject() throws Exception {
-        this.generateUser("projectLeader");
-        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("question1").build());
-        questions.add(ProjectApplyQuestion.builder().question("question2").build());
-        ProjectDetailDto project = ProjectDetailDto.builder()
-                .projectName("project1")
-                .teamName("Team1")
-                .endDate(LocalDateTime.of(2022,05,20,11,11))
-                .introduction("Hi this is project1.")
-                .needMember(new ProjectMemberSet(3,4,4,5))
-                .projectField(ProjectField.WEB)
-                .applyCanFile(Boolean.TRUE)
-                .questions(questions)
-                .build();
+        // Given
+        Project myProject = testProjectFactory.generateMyProject(0);
+        ProjectDetailDto project = testProjectFactory.toProjectDetailDto(myProject);
 
+        // When & Then
         mockMvc.perform(post("/projects")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON)
@@ -236,7 +186,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("state").description("프로젝트 상태(모집중)"),
                                 fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember").description("팀원 현황"),
+                                fieldWithPath("currentMember").description("현재 개발자 수"),
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("needMember.developer").description("필요한 개발자 수"),
@@ -249,31 +199,32 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                         )
                 ))
         ;
-        mockMvc.perform(get("/projects/12"))
-        .andDo(print());
+        mockMvc.perform(get("/projects/", myProject.getProjectId()))
+                .andDo(print());
     }
 
     @Test
-    @WithMockUser(username="projectLeader")
+    @WithMockUser(username = "user0")
     @Transactional
     @DisplayName("프로젝트 생성 실패")
     public void createProjectFailed() throws Exception {
-        this.generateUser("projectLeader");
+        // Given
+        testUserFactory.generateUser(0);
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
         questions.add(ProjectApplyQuestion.builder().question("question1").build());
         questions.add(ProjectApplyQuestion.builder().question("question2").build());
         ProjectDetailDto project = ProjectDetailDto.builder()
                 .projectName("project1")
 //                .teamName("Team1")
-                .endDate(LocalDateTime.of(2022,05,20,11,11))
+                .endDate(LocalDateTime.of(2022, 05, 20, 11, 11))
 //                .description("Hi this is project1.")
-                .needMember(new ProjectMemberSet(3,4,4,5))
-                .currentMember(new ProjectMemberSet(0,4,4,5))
+                .needMember(new ProjectMemberSet(3, 4, 4, 5))
                 .projectField(ProjectField.WEB)
                 .applyCanFile(Boolean.TRUE)
                 .questions(questions)
                 .build();
 
+        // When & Then
         mockMvc.perform(post("/projects")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON)
@@ -282,33 +233,18 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-
     @Test
-    @WithMockUser(username="testuser")
+    @WithMockUser(username = "user0")
     @DisplayName("프로젝트 수정하기")
     @Transactional
     public void updateProject() throws Exception {
         // Given
-        Project project = this.generateOneProject(1);
-        this.joinProjectLeader(project.getProjectId(),"testuser");
-        this.joinProjectMember(project.getProjectId(),2);
-        Project project1 = this.projectRepository.findById(project.getProjectId()).get();
-        UpdateDto updateDto = UpdateDto.builder()
-                .projectName(project1.getProjectName())
-                .teamName(project1.getTeamName())
-                .endDate(project1.getEndDate())
-                .introduction(project1.getIntroduction())
-                .state(project1.getState())
-                .needMember(project1.getNeedMember())
-                .questions(project1.getQuestions())
-                .applyCanFile(project1.getApplyCanFile())
-                .projectField(project1.getProjectField())
-                .build();
-        updateDto.setProjectName("Hi project....");
-
+        Project myProject = testProjectFactory.generateMyProject(0);
+        UpdateDto updateDto = testProjectFactory.toProjectUpdateDto(myProject);
+        updateDto.setProjectName("Hi updated project....");
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", myProject.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(this.objectMapper.writeValueAsString(updateDto)))
                 .andDo(print())
@@ -372,15 +308,13 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         ;
     }
 
-
     @Test
-    @WithMockUser(username="tester")
+    @WithMockUser(username = "user0")
     @Transactional
     @DisplayName("프로젝트 삭제하기")
     public void deleteProject() throws Exception {
         // Given
-        Project project = this.generateOneProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
+        Project project = testProjectFactory.generateMyProject(0);
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", project.getProjectId())
@@ -394,108 +328,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
                         )
-                ))
-
-        ;
-
-    }
-
-    private Project generateOneProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
-        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("question1").build());
-        questions.add(ProjectApplyQuestion.builder().question("question2").build());
-        Project project = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .introduction("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .state(State.RECRUTING)
-                .projectField(ProjectField.APP)
-                .questions(questions)
-                .dday(ChronoUnit.DAYS.between(LocalDateTime.now(), LocalDateTime.of(2020,04,30,23,59)))
-                .applyCanFile(Boolean.TRUE)
-                .build();
-        this.projectRepository.save(project);
-        return project;
-
-    }
-
-    private void joinProjectMember(Long index,int memberno){
-        Optional<Project> optionalProject = this.projectRepository.findById(index);
-        Project project = optionalProject.get();
-        User user = generateUser(memberno);
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.DEVELOPER)
-                .stack(TechnicalStack.SPRINGBOOT)
-                .project(project)
-                .introduction("개발자 입니다.")
-                .user(user)
-                .build();
-        project.getProjectMembers().add(projectMember);
-        this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
-    }
-
-    private Project generateProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
-//        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-//        questions.add(ProjectApplyQuestion.builder().question("1번 질문").build());
-//        questions.add(ProjectApplyQuestion.builder().question("2번 질문").build());
-//        questions.add(ProjectApplyQuestion.builder().question("3번 질문").build());
-        Project project = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .introduction("need yes 입니다.")
-                .currentMember(currentMember)
-//                .leaderId("tester")
-                .needMember(need_yes)
-                .state(State.RECRUTING)
-                .projectField(ProjectField.APP)
-//                .questions(questions)
-                .build();
-        this.projectRepository.save(project);
-        return project;
-
-    }
-
-    private void joinProjectLeader(Long index,String memberId){
-        Optional<Project> optionalProject = this.projectRepository.findById(index);
-        Project project = optionalProject.get();
-        User user = generateUser(memberId);
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.LEADER)
-                .stack(TechnicalStack.SPRINGBOOT)
-                .project(project)
-                .user(user)
-                .build();
-        project.getProjectMembers().add(projectMember);
-        project.setLeaderId(memberId);
-        this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
-    }
-
-    private User generateUser(int index){
-        User user = User.builder()
-                .userName("테스터"+index)
-                .userId("tester"+index)
-                .password("testpassword")
-                .build();
-       return this.userRepository.save(user);
-    }
-    private User generateUser(String tester){
-        User user = User.builder()
-                .userName("테스터")
-                .userId(tester)
-                .userEmail("UserEmail")
-                .password("pasword")
-                .build();
-        return this.userRepository.save(user);
+                ));
     }
 
 }
