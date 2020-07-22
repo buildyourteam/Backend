@@ -104,7 +104,12 @@ public class ProjectApplyService {
 
     @Transactional
     public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
-        Project project = getProjectForLeader(projectId, visitorId);
+        Project project;
+        if (userId.equals(visitorId))
+            project = projectRepository.findById(projectId)
+                    .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+        else
+            project = getProjectForLeader(projectId, visitorId);
 
         ProjectApply projectApply = findApply(project, userId);
         if (projectApply.getState() == ProjectApplyState.UNREAD)
