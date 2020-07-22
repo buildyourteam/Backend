@@ -108,8 +108,8 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         Long projectId = project.getProjectId();
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
-        RecruitDto recruitDto1 = testProjectFactory.toRecruitDto(projectId, user1);
-        RecruitDto recruitDto2 = testProjectFactory.toRecruitDto(projectId, user2);
+        RecruitDto recruitDto1 = testProjectFactory.generateRecruitDto(projectId, user1);
+        RecruitDto recruitDto2 = testProjectFactory.generateRecruitDto(projectId, user2);
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}", "user1", projectId)
@@ -159,7 +159,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     public void createProject() throws Exception {
         // Given
         Project myProject = testProjectFactory.generateMyProject(0);
-        ProjectDetailDto project = testProjectFactory.toProjectDetailDto(myProject);
+        ProjectDetailDto project = testProjectFactory.generateProjectDetailDto(myProject);
 
         // When & Then
         mockMvc.perform(post("/projects")
@@ -240,7 +240,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     public void updateProject() throws Exception {
         // Given
         Project myProject = testProjectFactory.generateMyProject(0);
-        UpdateDto updateDto = testProjectFactory.toProjectUpdateDto(myProject);
+        UpdateDto updateDto = testProjectFactory.generateProjectUpdateDto(myProject);
         updateDto.setProjectName("Hi updated project....");
 
         // When & Then
