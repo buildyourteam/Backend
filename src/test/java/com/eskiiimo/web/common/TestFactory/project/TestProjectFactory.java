@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Component
 public class TestProjectFactory {
@@ -31,18 +32,8 @@ public class TestProjectFactory {
     @Autowired
     TestUserFactory testUserFactory;
 
-    public ProfileDto generateProfileDto() {
-        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
-        stacks.add(TechnicalStack.DJANGO);
-        ProfileDto profileDto = ProfileDto.builder()
-                .area("서울시 구로구")
-                .contact("010-9876-5432")
-                .introduction("프로필 업데이트 하기")
-                .role(ProjectRole.LEADER)
-                .stacks(stacks)
-                .userName("회원 01")
-                .grade((long) 100)
-                .build();
+    @Autowired
+    ProjectApplyRepository projectApplyRepository;
 
         return profileDto;
     }
@@ -132,7 +123,27 @@ public class TestProjectFactory {
         return projectMember;
     }
 
-    public ProjectDetailDto toProjectDetailDto(Project myProject) {
+    public ProjectApply generateApply(Project project, User user){
+        ProjectApplyDto projectApplyDto = generateProjectApplyDto();
+        ProjectApply projectApply =projectApplyDto.toEntity(user);
+        List<ProjectApply> applies  = project.getApplies();
+        applies.add(projectApply);
+        project.setApplies(applies);
+
+        this.projectApplyRepository.save(projectApply);
+        this.projectRepository.save(project);
+        return projectApply;
+    }
+
+    public Project generateProjectApplies(int index) {
+        Project project = generateMyProject(0);
+        IntStream.range(1, index+1).forEach(i -> {
+            generateApply(project, testUserFactory.generateUser(i));
+        });
+        return project;
+    }
+
+    public ProjectDetailDto generateProjectDetailDto(Project myProject) {
         ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
                 .projectName(myProject.getProjectName())
                 .teamName(myProject.getTeamName())
@@ -170,4 +181,19 @@ public class TestProjectFactory {
                 .build();
         return recruitDto;
     }
+
+    public ProjectApplyDto generateProjectApplyDto() {
+        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
+        answers.add(ProjectApplyAnswer.builder().answer("1번 응답").build());
+        answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
+        answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
+        ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
+                .role(ProjectRole.DEVELOPER)
+                .introduction("안녕하세요? 저는 그냥 개발자입니다.")
+                .answers(answers)
+                .build();
+        return projectApplyDto;
+    }
+
+
 }

@@ -1,27 +1,16 @@
 package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
-import com.eskiiimo.repository.projects.model.*;
-import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
-import com.eskiiimo.repository.projects.repository.ProjectRepository;
+import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
-import com.eskiiimo.web.projects.enumtype.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -37,32 +26,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("프로젝트 지원하기")
 class ProjectApplyControllerTest extends BaseControllerTest {
-    @Autowired
-    ProjectRepository projectRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    ProjectApplyRepository projectApplyRepository;
-    @Autowired
-    ProjectMemberRepository projectMemberRepository;
 
     @Test
     @Transactional
-    @DisplayName("프로젝트 지원하기")
-    @WithMockUser(username = "tester")
+    @DisplayName("프로젝트 지원하고 내 지원서 확인하기")
+    @WithMockUser(username = "user1")
     void applyProject() throws Exception{
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
-        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        answers.add(ProjectApplyAnswer.builder().answer("1번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
-        ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                .role(ProjectRole.DEVELOPER)
-                .introduction("안녕하세요? 저는 그냥 개발자입니다.")
-                .answers(answers)
-                .build();
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
+        User me = testUserFactory.generateUser(1);
+        ProjectApplyDto projectApplyDto = testProjectFactory.generateProjectApplyDto();
 
+        // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/projects/{projectId}/apply",project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -83,9 +58,9 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                         )
                         ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"tester"))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),me.getUserId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("userName").value("tester"))
+                .andExpect(jsonPath("userName").value("user1"))
                 .andExpect(jsonPath("role").value("DEVELOPER"))
                 .andExpect(jsonPath("introduction").value("안녕하세요? 저는 그냥 개발자입니다."))
                 .andExpect(jsonPath("answers[0]").value("1번 응답"))
@@ -98,21 +73,14 @@ class ProjectApplyControllerTest extends BaseControllerTest {
     @Test
     @Transactional
     @DisplayName("프로젝트 지원서 수정하기")
-    @WithMockUser(username = "tester")
+    @WithMockUser(username = "user1")
     void updateApply() throws Exception {
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
-        this.generateApply(project.getProjectId(), this.userRepository.findByUserId("tester").get());
-        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        answers.add(ProjectApplyAnswer.builder().answer("1번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
-        ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                .role(ProjectRole.DESIGNER)
-                .introduction("안녕하세요? 저는 그냥 개발자가 아니라 디자이너입니다.")
-                .answers(answers)
-                .build();
+        // Given
+        Project project = testProjectFactory.generateProjectApplies(1);
+        ProjectApplyDto projectApplyDto = testProjectFactory.generateProjectApplyDto();
+        projectApplyDto.setIntroduction("지원서 수정 완료!");
 
+        // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply",project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -133,23 +101,21 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                         )
                 ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"tester"))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("introduction").value("안녕하세요? 저는 그냥 개발자가 아니라 디자이너입니다."))
+                .andExpect(jsonPath("introduction").value("지원서 수정 완료!"))
         ;
     }
 
     @Test
     @Transactional
     @DisplayName("프로젝트 지원자 확인하기")
-    @WithMockUser(username = "tester")
+    @WithMockUser(username = "user0")
     void getApplicants() throws Exception {
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
+        // Given
+        Project project = testProjectFactory.generateProjectApplies(2);
 
-        this.generateApply(project.getProjectId(), this.generateUser("testApplicant1"));
-        this.generateApply(project.getProjectId(), this.generateUser("testApplicant2"));
-
+        // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply", project.getProjectId()))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -173,27 +139,31 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                 ))
         ;
     }
+
     @Test
     @Transactional
     @DisplayName("프로젝트 지원자 확인하기_지원자가 없을때")
-    @WithMockUser(username = "tester")
+    @WithMockUser(username = "user0")
     void getApplicantsNoApply() throws Exception {
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
 
+        // When & Then
         this.mockMvc.perform(get("/projects/{projectId}/apply", project.getProjectId()))
                 .andExpect(status().isNotFound())
                 .andDo(print())
         ;
     }
+
     @Test
     @Transactional
     @DisplayName("프로젝트 지원자 확인하기_권한없는 사용자")
-    @WithMockUser(username = "testers")
+    @WithMockUser(username = "authX")
     void getApplicantsWrongUser() throws Exception {
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
 
+        // When & Then
         this.mockMvc.perform(get("/projects/{projectId}/apply", project.getProjectId()))
                 .andExpect(status().isForbidden())
                 .andDo(print())
@@ -202,14 +172,14 @@ class ProjectApplyControllerTest extends BaseControllerTest {
 
     @Test
     @Transactional
-    @DisplayName("프로젝트 지원서 확인하기")
-    @WithMockUser(username = "tester")
+    @DisplayName("프로젝트 지원서 하나 확인하기_팀장일때")
+    @WithMockUser(username = "user0")
     void getApply() throws Exception {
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
-        this.generateApply(project.getProjectId(), this.generateUser("testApplicant"));
+        // Given
+        Project project = testProjectFactory.generateProjectApplies(1);
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("getApply",
@@ -243,12 +213,13 @@ class ProjectApplyControllerTest extends BaseControllerTest {
     @Test
     @Transactional
     @DisplayName("프로젝트 지원자 수락하기")
-    @WithMockUser(username = "tester")
+    @WithMockUser(username = "user0")
     void acceptMember() throws Exception {
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
-        this.generateApply(project.getProjectId(), this.generateUser("testApplicant"));
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        // Given
+        Project project = testProjectFactory.generateProjectApplies(1);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("acceptApply",
@@ -258,13 +229,13 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                         )
                 ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("state").value("ACCEPT"))
         ;
         this.mockMvc.perform(get("/projects/{projectId}", project.getProjectId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("memberList[1].userName").value("테스터"))
+                .andExpect(jsonPath("memberList[1].userName").value("UserName4"))
                 .andExpect(jsonPath("memberList[1].role").value("DEVELOPER"))
         ;
     }
@@ -272,12 +243,13 @@ class ProjectApplyControllerTest extends BaseControllerTest {
     @Test
     @Transactional
     @DisplayName("프로젝트 지원자 거절하기")
-    @WithMockUser(username = "tester")
+    @WithMockUser(username = "user0")
     void rejectMember() throws Exception {
-        Project project = this.generateProject(1);
-        this.joinProjectLeader(project.getProjectId(),"tester");
-        this.generateApply(project.getProjectId(), this.generateUser("testApplicant"));
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        // Given
+        Project project = testProjectFactory.generateProjectApplies(1);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
                 .andExpect(status().isOk())
                 .andDo(document("rejectApply",
                         pathParameters(
@@ -286,80 +258,9 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                         )
                 ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"testApplicant"))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("state").value("REJECT"))
         ;
     }
-
-    private Project generateProject(int index) {
-        ProjectMemberSet need_yes = new ProjectMemberSet(1,4,6,8);
-        ProjectMemberSet currentMember = new ProjectMemberSet(2,1,1,2);
-        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("1번 질문").build());
-        questions.add(ProjectApplyQuestion.builder().question("2번 질문").build());
-        questions.add(ProjectApplyQuestion.builder().question("3번 질문").build());
-        Project project = Project.builder()
-                .projectName("project"+index)
-                .teamName("project team"+index*2)
-                .endDate(LocalDateTime.of(2020,04,30,23,59))
-                .introduction("need yes 입니다.")
-                .currentMember(currentMember)
-                .needMember(need_yes)
-                .state(State.RECRUTING)
-                .projectField(ProjectField.APP)
-                .questions(questions)
-                .build();
-        this.projectRepository.save(project);
-        return project;
-
-    }
-
-    private User generateUser(String tester){
-        User user = User.builder()
-                .userName("테스터")
-                .userId(tester)
-                .userEmail("UserEmail")
-                .password("pasword")
-                .build();
-        return this.userRepository.save(user);
-    }
-    private void joinProjectLeader(Long index,String member){
-        Optional<Project> optionalProject = this.projectRepository.findById(index);
-        Project project = optionalProject.get();
-        User user = generateUser(member);
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.LEADER)
-                .stack(TechnicalStack.SPRINGBOOT)
-                .project(project)
-                .user(user)
-                .build();
-        project.getProjectMembers().add(projectMember);
-        this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
-    }
-
-    private ProjectApply generateApply(Long projectId,User user){
-        Optional<Project> optionalProject= this.projectRepository.findById(projectId);
-        Project project = optionalProject.get();
-        List<ProjectApply> applies  = project.getApplies();
-        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        answers.add(ProjectApplyAnswer.builder().answer("1번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
-        ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
-                .role(ProjectRole.DEVELOPER)
-                .introduction("안녕하세요? 저는 그냥 개발자입니다.")
-                .answers(answers)
-                .build();
-        ProjectApply projectApply =projectApplyDto.toEntity(user);
-        List<ProjectApply> projectApplies;
-        applies.add(projectApply);
-        project.setApplies(applies);
-        this.projectApplyRepository.save(projectApply);
-        this.projectRepository.save(project);
-        return projectApply;
-    }
-
-
 }
