@@ -16,7 +16,7 @@ import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.exception.ApplicantNotFoundException;
 import com.eskiiimo.web.projects.exception.ApplyNotFoundException;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotReaderException;
+import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -189,7 +189,7 @@ public class ProjectApplyService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
-            throw new YouAreNotReaderException(projectId);
+            throw new YouAreNotLeaderException(visitorId);
         if (project.getApplies().isEmpty())
             throw new ApplicantNotFoundException(projectId);
         return project;

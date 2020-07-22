@@ -16,31 +16,32 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FilesExceptionHandleController {
-    @ExceptionHandler(FileNameException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResponse handleCantUploadFile(FileNameException exception){
-        return new ErrorResponse(303,exception.getMessage());
-    }
 
     @ExceptionHandler(FileDownloadException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse handleNotFoundFile(FileDownloadException exception){
-        return new ErrorResponse(302,exception.getMessage());
+    public ErrorResponse handleNotFoundFile(FileDownloadException exception) {
+        return new ErrorResponse(302, exception.getMessage());
+    }
+
+    @ExceptionHandler(FileNameException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleCantUploadFile(FileNameException exception) {
+        return new ErrorResponse(303, exception.getMessage());
     }
 
     @ExceptionHandler(ProfileImageNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse handleProfileImageNotFound(ProfileImageNotFoundException exception){
-        return new ErrorResponse(305,exception.getMessage());
+    public ErrorResponse handleProfileImageNotFound(ProfileImageNotFoundException exception) {
+        return new ErrorResponse(305, exception.getMessage());
     }
 
     @ExceptionHandler(ProjectImageNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse handleProjectImageNotFound(ProjectImageNotFoundException exception){
-        return new ErrorResponse(306,exception.getMessage());
+    public ErrorResponse handleProjectImageNotFound(ProjectImageNotFoundException exception) {
+        return new ErrorResponse(306, exception.getMessage());
     }
 }

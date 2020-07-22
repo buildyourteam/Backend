@@ -12,7 +12,7 @@ import com.eskiiimo.repository.projects.repository.RecruitRepository;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotReaderException;
+import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -105,7 +105,7 @@ public class ProjectDetailService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
-            throw new YouAreNotReaderException(projectId);
+            throw new YouAreNotLeaderException(visitorId);
         return project;
     }
 }

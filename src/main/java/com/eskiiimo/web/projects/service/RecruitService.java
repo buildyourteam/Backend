@@ -13,7 +13,7 @@ import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.exception.RecruitNotAuthException;
 import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotReaderException;
+import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -36,7 +36,7 @@ public class RecruitService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
-            throw new YouAreNotReaderException(projectId);
+            throw new YouAreNotLeaderException(visitorId);
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
