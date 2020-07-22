@@ -107,7 +107,7 @@ public class ProjectApplyService {
         Project project;
         if (userId.equals(visitorId))
             project = projectRepository.findById(projectId)
-                    .orElseThrow(() -> new ProjectNotFoundException("존재하지 않는 프로젝트입니다."));
+                    .orElseThrow(() -> new ProjectNotFoundException(projectId));
         else
             project = getProjectForLeader(projectId, visitorId);
 
