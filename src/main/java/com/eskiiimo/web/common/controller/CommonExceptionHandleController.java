@@ -1,8 +1,6 @@
 package com.eskiiimo.web.common.controller;
 
 import com.eskiiimo.web.common.response.ErrorResponse;
-import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
-import com.eskiiimo.web.user.exception.UserNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -33,7 +31,7 @@ public class CommonExceptionHandleController {
                 .map(constraintViolation -> String.format("%s value '%s' %s", constraintViolation.getPropertyPath(),
                         constraintViolation.getInvalidValue(), constraintViolation.getMessage()))
                 .collect(Collectors.toList()));
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),messages.toString());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), messages.toString());
     }
 
     // 지원하지 않는 HTTP METHOD 대응

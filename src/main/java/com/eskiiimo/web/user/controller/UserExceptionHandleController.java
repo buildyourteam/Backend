@@ -19,7 +19,7 @@ public class UserExceptionHandleController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleNotYourProfile(NotYourProfileException exception) {
-        return new ErrorResponse(201,exception.getMessage());
+        return new ErrorResponse(201, exception.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -33,6 +33,6 @@ public class UserExceptionHandleController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse handleYouAreNotMember(YouAreNotMemberException exception) {
-        return new ErrorResponse(203,exception.getMessage());
+        return new ErrorResponse(203, exception.getMessage());
     }
 }
