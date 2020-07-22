@@ -1,4 +1,4 @@
-package com.eskiiimo.web.common.exception;
+package com.eskiiimo.web.projects.exception;
 
 public class ProjectNotFoundException extends RuntimeException {
     public ProjectNotFoundException(Long projectId) {

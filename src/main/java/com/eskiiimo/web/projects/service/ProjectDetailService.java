@@ -9,7 +9,7 @@ import com.eskiiimo.repository.projects.model.Recruit;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
-import com.eskiiimo.web.common.exception.ProjectNotFoundException;
+import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
 import com.eskiiimo.web.projects.exception.YouAreNotReaderException;
