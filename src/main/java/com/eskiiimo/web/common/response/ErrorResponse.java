@@ -9,15 +9,11 @@ import java.time.LocalDateTime;
 @Getter
 public class ErrorResponse {
 
-    private LocalDateTime timestamp;
-    private int status;
-    private String error;
+    private int error;
     private String message;
 
-    public ErrorResponse(HttpStatus Httpstatus, String message){
-        this.timestamp = LocalDateTime.now();
-        this.status  = Httpstatus.value();
-        this.error = Httpstatus.toString();
+    public ErrorResponse(int error, String message){
+        this.error  = error;
         this.message = message;
     }
 
