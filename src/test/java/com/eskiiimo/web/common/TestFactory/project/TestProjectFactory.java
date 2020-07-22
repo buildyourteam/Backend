@@ -1,17 +1,18 @@
 package com.eskiiimo.web.common.TestFactory.project;
 
+import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
 import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.dto.UpdateDto;
-import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
-import com.eskiiimo.repository.projects.model.ProjectMember;
+import com.eskiiimo.repository.projects.model.*;
+import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
+import com.eskiiimo.repository.projects.repository.RecruitRepository;
 import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.web.projects.enumtype.*;
 import com.eskiiimo.web.common.TestFactory.user.TestUserFactory;
+import com.eskiiimo.web.projects.enumtype.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +36,8 @@ public class TestProjectFactory {
     @Autowired
     ProjectApplyRepository projectApplyRepository;
 
-        return profileDto;
-    }
+    @Autowired
+    RecruitRepository recruitRepository;
 
     /*
     프로젝트를 생성하고, 해당 프로젝트 팀장을 연결
@@ -143,6 +144,23 @@ public class TestProjectFactory {
         return project;
     }
 
+    public Recruit generateRecruit(User user01, Project project01) {
+        RecruitDto recruitDto = generateRecruitDto(project01.getProjectId(), user01);
+        Recruit recruit = recruitDto.toEntity(user01, project01);
+        this.recruitRepository.save(recruit);
+        return recruit;
+    }
+
+    public List<Project> generateProjectRecruits(int index, User user) {
+        List<Project> projects = new ArrayList<>();
+        IntStream.range(0, index).forEach(i -> {
+            Project project = generateProject(i, ProjectField.WEB, Boolean.TRUE);
+            generateRecruit(user, project);
+            projects.add(project);
+        });
+        return projects;
+    }
+
     public ProjectDetailDto generateProjectDetailDto(Project myProject) {
         ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
                 .projectName(myProject.getProjectName())
@@ -157,7 +175,23 @@ public class TestProjectFactory {
         return projectDetailDto;
     }
 
-    public UpdateDto toProjectUpdateDto(Project project) {
+    public ProfileDto generateProfileDto() {
+        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
+        stacks.add(TechnicalStack.DJANGO);
+        ProfileDto profileDto = ProfileDto.builder()
+                .area("서울시 구로구")
+                .contact("010-9876-5432")
+                .introduction("프로필 업데이트 하기")
+                .role(ProjectRole.LEADER)
+                .stacks(stacks)
+                .userName("회원 01")
+                .grade((long) 100)
+                .build();
+
+        return profileDto;
+    }
+
+    public UpdateDto generateProjectUpdateDto(Project project) {
         UpdateDto updateDto = UpdateDto.builder()
                 .projectName(project.getProjectName())
                 .teamName(project.getTeamName())
@@ -172,11 +206,11 @@ public class TestProjectFactory {
         return updateDto;
     }
 
-    public RecruitDto toRecruitDto(Long projectId, User user) {
+    public RecruitDto generateRecruitDto(Long projectId, User user) {
         RecruitDto recruitDto = RecruitDto.builder()
                 .projectId(projectId)
                 .userName(user.getUserName())
-                .introduction(user.getIntroduction())
+                .introduction("플젝에 영입하고 싶어요")
                 .role(user.getRole())
                 .build();
         return recruitDto;
