@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class ProjectListService {
     2. 직군별, 분야별 둘 중 하나만 선택되어있을 경우
     3.       ...     둘다 선택되어있지 않을 경우
     */
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> getAllByField(String occupation, ProjectField field, Pageable pageable) {
         Page<ProjectListDto> page = this.projectRepository.findAllProjectedBy(pageable);
         if (occupation != null) {
@@ -62,6 +64,7 @@ public class ProjectListService {
         return page;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
         Page<ProjectListDto> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
         return page;

@@ -56,14 +56,14 @@ public class ProjectDetailService {
         return this.projectToDto(this.projectRepository.save(project));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ProjectDetailDto getProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         return this.projectToDto(project);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<RecruitDto> getRecruits(String visitorId, Long projectId) {
         getProjectForLeader(projectId, visitorId);
         List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(projectId)
