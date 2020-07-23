@@ -2,68 +2,50 @@
 version 0.1.0
 ---
 
-> ## **목차**  
-> 
-> **1. 프로젝트 소개**  
+## 시스템 설명
+시스템 설명하기
 
-> 1. 프로젝트 목적
-> 2. 프로젝트 설명
-
-> **2. User Interface**
-
-> 1. UI 다이어그램
-
-> **3. 디렉토리 구성**  
-
-> 1. Back-End 
->
-> **4. 스펙 문서**  
-
-> 1. project
-> 2. user 
-> 
-
-----
-
-## **1. 프로젝트 소개**
--------------
-
-### **프로젝트 목적**
-> 프로젝트 진행을 희망하는 인원들이 팀 빌딩부터 프로젝트 마무리까지 성공적으로 할 수 있도록 도와주는 서비스
-### **프로젝트 설명**
-#### **문제점**
-가. IT 계열 직군을 준비하는 사람들은 제대로 된 프로젝트 경험을 할 기회가 없음
-
-나. 프로젝트 진행 기회가 생기더라도 원하는 기술 스택을 경험하지 못하고 종료될 가능성이 높음
-#### **프로젝트 팀 빌딩에 도움을 주는 서비스**
-가. 사용자가 원하는 기술 스택을 요구하는 프로젝트 팀에 매칭
-
-나. 각 사용자가 가진 실력을 검증하기 위해 프로젝트 경험을 등급으로 구분
-
-## **2. User Interface**
-### **UI 다이어그램**
-![UI 다이어그램](./image/user-inteface-diagram.png)
-
-## **3. 디렉토리 구성**
-### **Back-End**
- ![디렉토리 구성](./image/directory.png)  
- 
-## **4. 스펙 문서**
-### **1. Project**
-#### **1. 프로젝트 상세 페이지**
-특정 프로젝트 상세 페이지 관련 로직을 정의
-
-#### **공통 사용 메소드**
-1. **정의**
- - 프로젝트 리더가 해당 유저인지 확인
-```
-public boolean isMyProject(
-		ProjectDetailDto : 프로젝트 정보, 
-		String : 유저 ID
-) { ... }
-```
-
-#### **2. 사용하는 API**
-1. **정의**  
- - [프로젝트 상세 정보 조회](http://34.105.29.115:8080/docs/index.html#indexProjectsDetail )
+## 디렉토리 구성
+  - repository
+    - error
+        - [error_log](./repository/error/error_log.md)
+    - files
+        - [profile_image](./repository/files/profile_image.md)
+        - [project_image](./repository/files/project_image.md)
+    - projects
+        - [project](./repository/projects/project.md)
+        - [project_apply](./repository/projects/project_apply.md)
+        - [project_apply_answer](./repository/projects/project_apply_answer.md)
+        - [project_apply_question](./repository/projects/project_apply_question.md)
+        - [project_member](./repository/projects/project_member.md)
+        - [recruit](./repository/projects/recruit.md)
+    - user
+        - [user](./repository/user/user.md)
+        - [users_stack](./repository/user/users_stack.md)
+  - web
+    - common
+        - [common_exception_handler](./web/common/common_exception_handler.md)
+    - config
+        - [configuration](./web/config/configuration.md)
+    - error_bot
+        - [exception_handle](./web/error_bot/exception_handle.md)
+    - files
+        - [files_exception_handle](./web/files/files_exception_handle.md)
+        - [profile_image](./web/files/profile_image.md)
+        - [project_image](./web/files/project_image.md)
+    - index
+        - [docs](./web/index/docs.md)
+        - [index](./web/index/index.md)
+    - projects
+        - [project_apply](./web/projects/project_apply.md)
+        - [project_detail](./web/projects/project_detail.md)
+        - [project_list](./web/projects/project_list.md)
+        - [projects_exception_handle](./web/projects/projects_exception_handle.md)
+        - [recruit](./web/projects/recruit.md)
+    - security
+        - [auth](./web/security/auth.md)
+    - user
+        - [people](./web/user/people.md)
+        - [profile](./web/user/profile.md)
+        - [user_exception_handle](./web/user/user_exception_handle.md)
 
