@@ -44,7 +44,7 @@ public class RecruitService {
         this.recruitRepository.save(projectRecruit);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<RecruitDto> getRecruitList(String userId, String visitorId) {
         if (!userId.equals(visitorId))
             throw new RecruitNotAuthException();

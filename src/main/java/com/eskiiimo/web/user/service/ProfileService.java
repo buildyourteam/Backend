@@ -29,10 +29,11 @@ public class ProfileService {
 
     @Autowired
     ProjectRepository projectRepository;
+
     @Autowired
     ProjectMemberRepository projectMemberRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ProfileDto getProfile(String userId) {
         User profile = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -50,21 +51,25 @@ public class ProfileService {
         return this.userRepository.save(profile).toProfileDto();
     }
 
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> getRunning(String userId, Pageable pageable) {
         Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.FALSE, State.RUNNING, pageable);
         return page;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> getEnded(String userId, Pageable pageable) {
         Page<ProjectListDto> page = this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.FALSE, State.ENDED, pageable);
         return page;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> getPlanner(String userId, Pageable pageable) {
         Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.FALSE, pageable);
         return page;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> getHiddenRunning(String userId, String visitorId, Pageable pageable) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);
@@ -72,6 +77,7 @@ public class ProfileService {
         return page;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> getHiddenEnded(String userId, String visitorId, Pageable pageable) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);
@@ -79,6 +85,7 @@ public class ProfileService {
         return page;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProjectListDto> getHiddenPlanner(String userId, String visitorId, Pageable pageable) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);

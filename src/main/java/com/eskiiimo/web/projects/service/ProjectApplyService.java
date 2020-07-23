@@ -85,7 +85,7 @@ public class ProjectApplyService {
         this.projectRepository.save(project);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId) {
         Project project = getProjectForLeader(projectId, visitorId);
 
