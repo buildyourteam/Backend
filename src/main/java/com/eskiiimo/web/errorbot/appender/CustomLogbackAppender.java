@@ -127,13 +127,11 @@ public class CustomLogbackAppender extends UnsynchronizedAppenderBase<ILoggingEv
         bodyInformation.setValue(errorLog.getBody());
         bodyInformation.setShorten(false);
         fields.add(bodyInformation);
-        /*
         SlackField agentDetail = new SlackField();
         agentDetail.setTitle("사용자 환경정보");
         agentDetail.setValue(JsonUtils.toPrettyJson(errorLog.getAgentDetail()));
         agentDetail.setShorten(false);
         fields.add(agentDetail);
-        */
         String title = errorLog.getMessage();
 
         if (logConfig.getDatabase().isEnabled()) {
