@@ -5,7 +5,7 @@ version 0.1.0
 ## 시스템 설명
 시스템 설명하기
 
-## 디렉토리 구성
+## 패키지 구성
   - repository
     - error
         - [error_log](./repository/error/error_log.md)
