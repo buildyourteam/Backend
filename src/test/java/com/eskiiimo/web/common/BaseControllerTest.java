@@ -1,7 +1,7 @@
 package com.eskiiimo.web.common;
 
-import com.eskiiimo.web.projects.testProjectFactory.TestProjectFactory;
-import com.eskiiimo.web.user.testUserFactory.TestUserFactory;
+import com.eskiiimo.web.common.TestFactory.project.TestProjectFactory;
+import com.eskiiimo.web.common.TestFactory.user.TestUserFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs(uriScheme= "https",uriHost = "api.eskiiimo.com" ,uriPort = 443)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "api.eskiiimo.com", uriPort = 443)
 @Transactional
 @Import(RestDocsConfiguration.class)
 @ActiveProfiles("test")

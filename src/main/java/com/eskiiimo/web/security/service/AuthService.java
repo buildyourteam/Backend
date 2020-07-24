@@ -9,6 +9,7 @@ import com.eskiiimo.web.security.exception.CUserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -33,6 +34,7 @@ public class AuthService {
         return true;
     }
 
+    @Transactional(readOnly = true)
     public User signin(SignInDto signInDto) {
         Optional<User> optionalUser = userRepository.findByUserId(signInDto.getUserId());
         if(optionalUser.isEmpty())
@@ -43,6 +45,7 @@ public class AuthService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public boolean idCheck(String checkId) {
         Optional<User> optionalUser = userRepository.findByUserId(checkId);
         if(optionalUser.isEmpty())
