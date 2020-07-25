@@ -15,21 +15,21 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserIdAndActivate(String userId, UserActivate activate);
 
-    Page<User> findAllByActivate(UserActivate activate,Pageable pageable);
+    Page<User> findAllByActivateAndState(UserActivate activate, UserState state, Pageable pageable);
 
-    Page<User> findAllByGradeAndActivate(Long grade, UserActivate activate, Pageable pageable);
+    Page<User> findAllByGradeAndActivateAndState(Long grade, UserActivate activate, UserState state, Pageable pageable);
 
-    Page<User> findAllByRoleAndActivate(ProjectRole role, UserActivate activate, Pageable pageable);
+    Page<User> findAllByRoleAndActivateAndState(ProjectRole role, UserActivate activate, UserState state, Pageable pageable);
 
-    Page<User> findAllByAreaAndActivate(String area, UserActivate activate, Pageable pageable);
+    Page<User> findAllByAreaAndActivateAndState(String area, UserActivate activate, UserState state, Pageable pageable);
 
-    Page<User> findAllByGradeAndAreaAndActivate(Long grade, String area, UserActivate activate, Pageable pageable);
+    Page<User> findAllByGradeAndAreaAndActivateAndState(Long grade, String area, UserActivate activate, UserState state, Pageable pageable);
 
-    Page<User> findAllByAreaAndRoleAndActivate(String area, ProjectRole role, UserActivate activate, Pageable pageable);
+    Page<User> findAllByAreaAndRoleAndActivateAndState(String area, ProjectRole role, UserActivate activate, UserState state, Pageable pageable);
 
-    Page<User> findAllByRoleAndGradeAndActivate(ProjectRole role, Long grade, UserActivate activate, Pageable pageable);
+    Page<User> findAllByRoleAndGradeAndActivateAndState(ProjectRole role, Long grade, UserActivate activate, UserState state, Pageable pageable);
 
-    Page<User> findAllByAreaAndRoleAndGradeAndActivate(String area, ProjectRole role, Long grade, UserActivate activate, Pageable pageable);
+    Page<User> findAllByAreaAndRoleAndGradeAndActivateAndState(String area, ProjectRole role, Long grade, UserActivate activate, UserState state, Pageable pageable);
 
     long countAllByState(UserState state);
 }
