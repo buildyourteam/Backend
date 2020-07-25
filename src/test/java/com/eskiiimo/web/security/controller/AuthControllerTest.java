@@ -5,6 +5,7 @@ import com.eskiiimo.repository.security.dto.SignInDto;
 import com.eskiiimo.repository.security.dto.SignUpDto;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,13 +99,8 @@ class AuthControllerTest extends BaseControllerTest {
     @DisplayName("아이디 중복체크_중복일때")
     @WithMockUser(username = "tester")
     void icCheckNo() throws Exception {
-        User user = User.builder()
-                .userName("테스터")
-                .userId("tester")
-                .userEmail("UserEmail")
-                .password("pasword")
-                .build();
-        this.userRepository.save(user);
+        testUserFactory.generateUser(1);
+
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","tester"))
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
@@ -116,13 +112,8 @@ class AuthControllerTest extends BaseControllerTest {
     @DisplayName("아이디 중복체크_사용가능")
     @WithMockUser(username = "tester")
     void icCheckOk() throws Exception {
-        User user = User.builder()
-                .userName("테스터")
-                .userId("tester")
-                .userEmail("UserEmail")
-                .password("pasword")
-                .build();
-        this.userRepository.save(user);
+        testUserFactory.generateUser(1);
+
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","test"))
                 .andExpect(status().isOk())
                 .andDo(print())

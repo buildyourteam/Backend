@@ -5,6 +5,7 @@ import com.eskiiimo.repository.user.model.UsersStack;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ public class TestUserFactory {
                 .role(ProjectRole.DEVELOPER)
                 .contact("010-1234-5678")
                 .introduction("테스트용 가계정" + index)
+                .activate(UserActivate.REGULAR)
                 .build();
         return this.userRepository.save(user);
     }
@@ -46,6 +48,7 @@ public class TestUserFactory {
                 .area("Seoul")
                 .userName("User" + (3 * index + 1))
                 .role(ProjectRole.LEADER)
+                .activate(UserActivate.REGULAR)
                 .build();
         return this.userRepository.save(user);
     }

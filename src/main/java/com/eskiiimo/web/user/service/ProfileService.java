@@ -9,6 +9,7 @@ import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.web.user.exception.NotYourProfileException;
@@ -35,7 +36,7 @@ public class ProfileService {
 
     @Transactional(readOnly = true)
     public ProfileDto getProfile(String userId) {
-        User profile = userRepository.findByUserId(userId)
+        User profile = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         ProfileDto profileDto = profile.toProfileDto();
         return profileDto;
@@ -45,7 +46,7 @@ public class ProfileService {
     public ProfileDto updateProfile(String userId, String visitorId, ProfileDto updateData) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);
-        User profile = userRepository.findByUserId(userId)
+        User profile = userRepository.findByUserIdAndActivate(userId,UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         updateData.updateProfile(profile);
         return this.userRepository.save(profile).toProfileDto();

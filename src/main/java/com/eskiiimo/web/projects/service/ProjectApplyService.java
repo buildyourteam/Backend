@@ -17,6 +17,7 @@ import com.eskiiimo.web.projects.exception.ApplicantNotFoundException;
 import com.eskiiimo.web.projects.exception.ApplyNotFoundException;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class ProjectApplyService {
 
     @Transactional
     public void addLeader(Project project, String userId) {
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         ProjectMember projectMember = ProjectMember.builder()
@@ -55,7 +56,7 @@ public class ProjectApplyService {
     public void applyProject(Long projectId, ProjectApplyDto apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        User user = userRepository.findByUserId(visitorId)
+        User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
 
         ProjectApply projectApply = apply.toEntity(user);

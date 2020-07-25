@@ -3,6 +3,7 @@ package com.eskiiimo.repository.user.model;
 import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.enumtype.UserState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -55,6 +56,8 @@ public class User implements UserDetails {
     private String contact;
     @Size(min = 0, max = 10000)
     private String introduction;
+    @Enumerated(EnumType.STRING)
+    private UserActivate activate;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
