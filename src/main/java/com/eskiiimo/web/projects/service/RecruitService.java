@@ -32,9 +32,9 @@ public class RecruitService {
     private final ModelMapper modelMapper;
 
     @Transactional
-    public void recruitProject(String userId, RecruitDto recruit, Long projectId, String visitorId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+    public void recruitProject(String userId, RecruitDto recruit, String visitorId) {
+        Project project = projectRepository.findById(recruit.getProjectId())
+                .orElseThrow(() -> new ProjectNotFoundException(recruit.getProjectId()));
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotLeaderException(visitorId);
         User user = userRepository.findByUserId(userId)
