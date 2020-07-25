@@ -54,15 +54,4 @@ public class AuthController {
         else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-    @ExceptionHandler(CUserNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected ResponseEntity userNotFound(HttpServletRequest request, CUserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 회원입니다.");
-    }
-
-    @ExceptionHandler(CSigninFailedException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected ResponseEntity signinFailed(HttpServletRequest request, CSigninFailedException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("아이디 또는 비밀번호가 정확하지 않습니다.");
-    }
 }
