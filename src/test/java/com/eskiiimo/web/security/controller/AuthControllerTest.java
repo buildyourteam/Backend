@@ -101,7 +101,7 @@ class AuthControllerTest extends BaseControllerTest {
     void icCheckNo() throws Exception {
         testUserFactory.generateUser(1);
 
-        this.mockMvc.perform(post("/auth/idcheck/{checkId}","tester"))
+        this.mockMvc.perform(post("/auth/idcheck/{checkId}","user1"))
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andDo(document("idCheck"))

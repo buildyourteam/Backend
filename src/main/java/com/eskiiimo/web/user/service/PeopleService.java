@@ -7,6 +7,7 @@ import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import com.eskiiimo.web.user.enumtype.UserActivate;
+import com.eskiiimo.web.user.enumtype.UserState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,32 +27,32 @@ public class PeopleService {
 
     @Transactional(readOnly = true)
     public Page<PeopleDto> getPeople(Long grade, ProjectRole role, String area, Pageable pageable) {
-        Page<User> page = userRepository.findAllByActivate(UserActivate.REGULAR, pageable);
+        Page<User> page = userRepository.findAllByActivateAndState(UserActivate.REGULAR, UserState.FREE, pageable);
 
         if (grade != null) {
             if (role != null) {
                 if (area != null) {//세개 다
-                    page = userRepository.findAllByAreaAndRoleAndGradeAndActivate(area, role, grade, UserActivate.REGULAR, pageable);
+                    page = userRepository.findAllByAreaAndRoleAndGradeAndActivateAndState(area, role, grade, UserActivate.REGULAR, UserState.FREE, pageable);
                 } else {//grade,role
-                    page = userRepository.findAllByRoleAndGradeAndActivate(role, grade, UserActivate.REGULAR, pageable);
+                    page = userRepository.findAllByRoleAndGradeAndActivateAndState(role, grade, UserActivate.REGULAR, UserState.FREE, pageable);
                 }
             } else {
                 if (area != null) {//grade, area
-                    page = userRepository.findAllByGradeAndAreaAndActivate(grade, area, UserActivate.REGULAR, pageable);
+                    page = userRepository.findAllByGradeAndAreaAndActivateAndState(grade, area, UserActivate.REGULAR, UserState.FREE, pageable);
                 } else {//grade
-                    page = userRepository.findAllByGradeAndActivate(grade, UserActivate.REGULAR, pageable);
+                    page = userRepository.findAllByGradeAndActivateAndState(grade, UserActivate.REGULAR, UserState.FREE, pageable);
                 }
             }
         } else {
             if (role != null) {
                 if (area != null) {//role, area
-                    page = userRepository.findAllByAreaAndRoleAndActivate(area, role, UserActivate.REGULAR, pageable);
+                    page = userRepository.findAllByAreaAndRoleAndActivateAndState(area, role, UserActivate.REGULAR, UserState.FREE, pageable);
                 } else {//role
-                    page = userRepository.findAllByRoleAndActivate(role, UserActivate.REGULAR, pageable);
+                    page = userRepository.findAllByRoleAndActivateAndState(role, UserActivate.REGULAR, UserState.FREE, pageable);
                 }
             } else {
                 if (area != null) {//area
-                    page = userRepository.findAllByAreaAndActivate(area, UserActivate.REGULAR, pageable);
+                    page = userRepository.findAllByAreaAndActivateAndState(area, UserActivate.REGULAR, UserState.FREE, pageable);
                 } else {//null
                     return page.map(this::convertToPeopleList);
                 }

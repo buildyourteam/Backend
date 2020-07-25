@@ -21,13 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class AuthExceptionHandleController {
     @ExceptionHandler(CUserNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ErrorResponse userNotFound(CUserNotFoundException exception) {
         return new ErrorResponse(001, exception.getMessage());
     }
 
     @ExceptionHandler(CSigninFailedException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     protected ErrorResponse signinFailed(CSigninFailedException exception) {
         return new ErrorResponse(002, exception.getMessage());
     }
