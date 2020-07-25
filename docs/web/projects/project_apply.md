@@ -12,6 +12,9 @@
 ### 정의
 웹 서비스 상에서 프로젝트 지원자 관리에 사용되는 인터페이스 제공
 
+### 의존성 리스트
+- ProjectApplyService projectApplyService
+
 ### 공통 도메인
 - Project
 - ProjectApply
@@ -24,31 +27,31 @@
         - User
     
 2. updateApply()
-    - 기존에 지원한 프로젝트에 제출한 지원서 내용을 수정
+    - 프로젝트 지원자가 기존에 지원한 프로젝트에 제출한 지원서 내용을 수정
     - [프로젝트 지원서 수정](http://34.105.29.115:8080/docs/index.html#updateApply "해당 API 문서로 이동")
     - 필요한 도메인
         - ProjectApplyAnswer
             
 3. getApplicants()
-    - 프로젝트 지원자 리스트를 조회
+    - 프로젝트 리더가 프로젝트에 지원한 인원에 대한 리스트를 조회
     - [프로젝트 지원서 수정](http://34.105.29.115:8080/docs/index.html#getApplicants "해당 API 문서로 이동")
     - 필요한 도메인
         - －
                 
 4. getApply()
-    - 특정 유저가 작성한 프로젝트 지원서를 조회
+    - 프로젝트 리더가 특정 유저가 작성한 프로젝트 지원서를 조회
     - [지원서 조회](http://34.105.29.115:8080/docs/index.html#getApply "해당 API 문서로 이동")
     - 필요한 도메인
         - －
         
 5. acceptMember()
-    - 프로젝트 지원자 중 합류할 인원은 accept
+    - 프로젝트 리더가 프로젝트 지원자 중 합류할 인원을 accept
     - [프로젝트 지원자 승인](http://34.105.29.115:8080/docs/index.html#acceptApply "해당 API 문서로 이동")
     - 필요한 도메인
         - ProjectMember
         
 6. rejectMember()
-    - 프로젝트 지원자 중 거절할 인원 reject
+    - 프로젝트 리더가 프로젝트 지원자 중 거절할 인원 reject
     - [프로젝트 지원자 거절](http://34.105.29.115:8080/docs/index.html#rejectApply "해당 API 문서로 이동")
     - 필요한 도메인
         - Project
