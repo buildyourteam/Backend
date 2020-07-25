@@ -7,9 +7,7 @@ import com.eskiiimo.web.projects.controller.resource.RecruitResource;
 import com.eskiiimo.web.projects.service.RecruitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -27,17 +25,16 @@ public class RecruitController {
     RecruitService recruitService;
 
     // 프로젝트에 영입하기
-    @PostMapping("/{projectId}")
+    @PostMapping
     public ResponseEntity recruitProject(
             @PathVariable String userId,
-            @PathVariable Long projectId,
             @RequestBody RecruitDto recruit
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // 프로젝트 영입제안
-        this.recruitService.recruitProject(userId, recruit, projectId, visitorId);
-        return ResponseEntity.created(linkTo(RecruitController.class, userId).slash(projectId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
+        this.recruitService.recruitProject(userId, recruit, visitorId);
+        return ResponseEntity.created(linkTo(RecruitController.class, userId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
     }
 
     // 나한테 온 영입제안 리스트

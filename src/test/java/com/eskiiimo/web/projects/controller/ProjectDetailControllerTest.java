@@ -112,14 +112,14 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         RecruitDto recruitDto2 = testProjectFactory.generateRecruitDto(projectId, user2);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}", "user1", projectId)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", "user1", projectId)
                 .content(objectMapper.writeValueAsString(recruitDto1))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}", "user2", projectId)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", "user2", projectId)
                 .content(objectMapper.writeValueAsString(recruitDto2))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
