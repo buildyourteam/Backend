@@ -18,12 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of="projectId")
+@EqualsAndHashCode(of = "projectId")
 @Entity
 @Table(name = "T_PROJECT")
-public class Project{
+public class Project {
 
-    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectId;
     @NotNull
     @Size(min = 0, max = 150)
@@ -36,7 +37,6 @@ public class Project{
     @Size(min = 0, max = 10000)
     @NotBlank
     private String introduction;
-    private long dday;
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private State state = State.RECRUTING;
@@ -47,10 +47,10 @@ public class Project{
     private ProjectMemberSet currentMember;
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name="developer", column = @Column(name="needDeveloper")),
-            @AttributeOverride(name="designer", column = @Column(name="needDesigner")),
-            @AttributeOverride(name="planner", column = @Column(name="needPlanner")),
-            @AttributeOverride(name="etc", column = @Column(name="needEtc"))
+            @AttributeOverride(name = "developer", column = @Column(name = "needDeveloper")),
+            @AttributeOverride(name = "designer", column = @Column(name = "needDesigner")),
+            @AttributeOverride(name = "planner", column = @Column(name = "needPlanner")),
+            @AttributeOverride(name = "etc", column = @Column(name = "needEtc"))
     })
     @NotNull
     private ProjectMemberSet needMember;
@@ -73,9 +73,9 @@ public class Project{
     @OneToMany(mappedBy = "project")
     private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
 
-    public void addMember(ProjectMember member){
+    public void addMember(ProjectMember member) {
         this.projectMembers.add(member);
-        if(member.getProject() != this)
+        if (member.getProject() != this)
             member.setProject(this);
     }
 }
