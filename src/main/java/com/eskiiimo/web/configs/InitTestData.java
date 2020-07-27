@@ -1,13 +1,11 @@
 package com.eskiiimo.web.configs;
 
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
+import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.repository.security.dto.SignUpDto;
 import com.eskiiimo.repository.user.dto.ProfileDto;
-import com.eskiiimo.web.projects.enumtype.ProjectField;
-import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.TechnicalStack;
+import com.eskiiimo.web.projects.enumtype.*;
 import com.eskiiimo.web.projects.service.ProjectDetailService;
 import com.eskiiimo.web.security.service.AuthService;
 import com.eskiiimo.web.user.service.ProfileService;
@@ -39,6 +37,10 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         System.out.println("Init Test User");
         generateProjects();
         System.out.println("Init Test Projects");
+        setProject((long)1,"1", State.ENDED);
+        setProject((long)2,"1", State.ENDED);
+        setProject((long)3,"1", State.RUNNING);
+        setProject((long)4,"1", State.RUNNING);
     }
 
     private void generateUser(int index) {
@@ -58,7 +60,7 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
                 "TestUser" + (index * 3 + 1),
                 "TestUser" + (index * 3 + 1),
                 ProfileDto.builder()
-                        .area("서울시 어딘가")
+                        .area("서울시")
                         .contact("010-1234-5678")
                         .grade((long) 0)
                         .introduction("테스트 유저" + (index * 3 + 1) + " 입니다.")
@@ -74,7 +76,7 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
                 "TestUser" + (index * 3 + 2),
                 "TestUser" + (index * 3 + 2),
                 ProfileDto.builder()
-                        .area("고양시 어딘가")
+                        .area("대구시")
                         .contact("010-1234-5678")
                         .grade((long) 0)
                         .introduction("테스트 유저" + (index * 3 + 2) + " 입니다.")
@@ -91,7 +93,7 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
                 "TestUser" + (index * 3 + 3),
                 "TestUser" + (index * 3 + 3),
                 ProfileDto.builder()
-                        .area("안양시 어딘가")
+                        .area("부산시")
                         .contact("010-1234-5678")
                         .grade((long) 0)
                         .introduction("테스트 유저" + (index * 3 + 3) + " 입니다.")
@@ -132,7 +134,30 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         projectDetailDto.setQuestions(questions);
         this.projectDetailService.storeProject(
                 projectDetailDto,
-                "TestUser" + index
+                "TestUser" + ((index - 1) / 5 + 1)
+        );
+    }
+
+    private void setProject(Long projectId, String visitorId, State state) {
+        List<String> questions = new ArrayList<String>();
+        List<ProjectApplyQuestion> questionList = new ArrayList<ProjectApplyQuestion>();
+        questions.add("왜 하고싶어요?");
+        UpdateDto updateDto = UpdateDto.builder()
+                .projectName("TestProject" + projectId)
+                .teamName("프로젝트 " + projectId)
+                .endDate(LocalDateTime.now().plusDays(20))
+                .introduction("테스트입니다.")
+                .state(state)
+                .projectField(ProjectField.WEB)
+                .applyCanFile(Boolean.TRUE)
+                .questions(questionList)
+                .needMember(new ProjectMemberSet(2, 2, 2, 2))
+                .build();
+        updateDto.setQuestions(questions);
+        this.projectDetailService.updateProject(
+                projectId,
+                updateDto,
+                "TestUser"+visitorId
         );
     }
 }
