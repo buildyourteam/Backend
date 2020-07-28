@@ -20,13 +20,13 @@
 2. `GET` `/projects/{projectId}` [getProjectsDeadline()](#2-getprojectsdeadline) : 프로젝트 영입 제안
 
 ### 기능 정의
-####1. getProjectsList()
+#### 1. getProjectsList()
   - 일반 사용자가 모든 프로젝트에 대한 리스트를 조회
   - [프로젝트 목록 조회](http://34.105.29.115:8080/docs/index.html#resourcesProjectList "해당 API 문서로 이동")
   - 연관 엔터티
       - －
 
-####2. getProjectsDeadline()
+#### 2. getProjectsDeadline()
   - 일반 사용자가 마감 임박한 프로젝트에 대한 리스트를 조회
   - [프로젝트 영입 제안](http://34.105.29.115:8080/docs/index.html#resourcesDeadlineProjectList "해당 API 문서로 이동")
   - 연관 엔터티
