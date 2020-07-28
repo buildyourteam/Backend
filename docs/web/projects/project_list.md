@@ -16,8 +16,8 @@
 - ProjectListDto
 
 ### 기능 리스트
-1. `GET` `/projects` [getProjectsList()](####1.-getprojectslist()) : 프로젝트 목록 조회
-2. `GET` `/projects/{projectId}` [getProjectsDeadline()](####1.-getprojectsdeadline()) : 프로젝트 영입 제안
+1. `GET` `/projects` [getProjectsList()](#1-getprojectslist) : 프로젝트 목록 조회
+2. `GET` `/projects/{projectId}` [getProjectsDeadline()](#2-getprojectsdeadline) : 프로젝트 영입 제안
 
 ### 기능 정의
 ####1. getProjectsList()
