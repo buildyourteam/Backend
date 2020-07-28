@@ -25,7 +25,7 @@
 ### 기능 정의
 #### 1. recruitProject()
   - 프로젝트 리더가 특정 사용자에게 영입을 제안
-  - [프로젝트 영입하기](http://34.105.29.115:8080/docs/index.html#projectRecruit "해당 API 문서로 이동")
+  - [프로젝트 영입하기](https://egluuapi.codingnome.dev/docs/index.html#projectRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Project
       - User
@@ -33,25 +33,25 @@
 
 #### 2. getRecruitList()
   - 인증된 사용자가 프로젝트 리더에게 받은 영입 제안 리스트를 조회
-  - [프로젝트 영입 리스트 조회](http://34.105.29.115:8080/docs/index.html#projectRecruit "해당 API 문서로 이동")
+  - [프로젝트 영입 리스트 조회](https://egluuapi.codingnome.dev/docs/index.html#projectRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Recruit
 
 #### 3. getRecruitProject()
   - 인증된 사용자가 받은 특정 영입 제안서를 조회
   - 해딩 제안서를 조회 시 해당 제안서는 읽음 상태로 변경
-  - [프로젝트 생성](http://34.105.29.115:8080/docs/index.html#getRecruit "해당 API 문서로 이동")
+  - [프로젝트 생성](https://egluuapi.codingnome.dev/docs/index.html#getRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       -  Recruit
                 
 #### 4. acceptRecruitProject()
   - 인증된 사용자가 받은 특정 영입 제안을 승인
-  - [프로젝트 영입 승인](http://34.105.29.115:8080/docs/index.html#acceptRecruit "해당 API 문서로 이동")
+  - [프로젝트 영입 승인](https://egluuapi.codingnome.dev/docs/index.html#acceptRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Project
         
 #### 5. rejectRecruitProject()
   - 인증된 사용자가 받은 튻정 영입 제안을 거절
-  - [프로젝트 영입 거절](http://34.105.29.115:8080/docs/index.html#rejectRecruit "해당 API 문서로 이동")
+  - [프로젝트 영입 거절](https://egluuapi.codingnome.dev/docs/index.html#rejectRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Recruit
