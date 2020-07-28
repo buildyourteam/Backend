@@ -1,0 +1,42 @@
+# 개요
+**사요자 인증 인터페이스** 관련하여 아래 항목을 정의
+1. 인터페이스 정의
+    - 사용자 인증 관련 인터페이스에 대한 설명
+2. API 문서 링크
+    - 각 인터페이스에 대한 API 문서 링크
+3. 사용 도메인
+    - 인터페이스에서 사용하는 도메인 리스트
+
+# 클래스 구성
+## 1. AuthController
+### 정의
+웹 서비스 상에서 사용자 인증 관련 인터페이스 제공  
+
+### 공통 엔터티
+- User
+
+### 기능 리스트
+1. `POST` `/auth/signin` [signin()](#1-signin) : 로그인
+2. `POST` `/auth/signup` [signup()](#2-signup) : 회원가입
+3. `POST` `/auth/idcheck/{checkId}` [canUseThisId()](#3-canusethisid) : ID 중복 확인
+
+### 기능 정의
+#### 1. signin()
+  - 사용자 로그인
+  - 로그인 성공 시 응답 헤더에 `JWT 인증 토큰`을 추가
+  - [로그인](https://egluuapi.codingnome.dev/docs/index.html#signIn "해당 API 문서로 이동")
+  - 연관 엔터티
+      - －
+
+#### 2. signup()
+  - 사용자 회원가입
+  - 패스워드는 `BCrypt 해싱 암호화` 방식을 사용
+  - [회원가입](https://egluuapi.codingnome.dev/docs/index.html#SignUp "해당 API 문서로 이동")
+  - 연관 엔터티
+      - －
+
+#### 3. canUseThisId()
+  - 회원가입 시 생성할 ID의 중복 여부 확인
+  - [ID 중복 확인](https://egluuapi.codingnome.dev/docs/index.html#SignUp "해당 API 문서로 이동")
+  - 연관 엔터티
+      - －
