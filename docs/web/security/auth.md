@@ -16,27 +16,21 @@
 - User
 
 ### 기능 리스트
-1. `POST` `/auth/signin` [signin()](#1-signin) : 로그인
-2. `POST` `/auth/signup` [signup()](#2-signup) : 회원가입
-3. `POST` `/auth/idcheck/{checkId}` [canUseThisId()](#3-canusethisid) : ID 중복 확인
+1. `POST` `/auth/signin` [signin(SignInDto)](#1-signin) : 로그인
+2. `POST` `/auth/signup` [signup(SignUpDto)](#2-signup) : 회원가입
+3. `POST` `/auth/idcheck/{checkId}` [canUseThisId(user_id)](#3-canusethisid) : ID 중복 확인
 
 ### 기능 정의
 #### 1. signin()
   - 사용자 로그인
   - 로그인 성공 시 응답 헤더에 `JWT 인증 토큰`을 추가
   - [로그인](https://egluuapi.codingnome.dev/docs/index.html#signIn "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
 
 #### 2. signup()
   - 사용자 회원가입
   - 패스워드는 `BCrypt 해싱 암호화` 방식을 사용
   - [회원가입](https://egluuapi.codingnome.dev/docs/index.html#SignUp "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
 
 #### 3. canUseThisId()
   - 회원가입 시 생성할 ID의 중복 여부 확인
   - [ID 중복 확인](https://egluuapi.codingnome.dev/docs/index.html#SignUp "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －

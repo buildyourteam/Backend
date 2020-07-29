@@ -16,21 +16,17 @@
 - ProfileImage
 
 ### 기능 리스트
-1. `POST` `/profile/image/{user_id}` [uploadProfileImage()](#1-uploadprofileimage) : 프로필 사진 업로드
-2. `GET` `/profile/image/{user_id}` [downloadProfileImage()](#2-downloadprofileimage) : 프로필 사진 가져오기
+1. `POST` `/profile/image/{user_id}` [uploadProfileImage(user_id, file)](#1-uploadprofileimage) : 프로필 사진 업로드
+2. `GET` `/profile/image/{user_id}` [downloadProfileImage(user_id, HTTP_request)](#2-downloadprofileimage) : 프로필 사진 가져오기
 
 ### 기능 정의
 #### 1. uploadProfileImage()
   - 인증된 사용자의 프로필 이미지 업로드
   - [프로필 이미지 업로드](https://egluuapi.codingnome.dev//docs/index.html#resourcesProfileImageUpload "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
 
 #### 2. downloadProfileImage()
-  - 인증된 사용자의 프로필 이미지 가져오기
+  - 사용자의 프로필 이미지 가져오기
   - [프로필 이미지 가져오기](https://egluuapi.codingnome.dev//docs/index.html#resourcesProfileImageUpload "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
       
 ## 2. Service
 ### 정의

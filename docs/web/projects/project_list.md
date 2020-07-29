@@ -13,24 +13,20 @@
 웹 서비스 상에서 일반 사용자에게 프로젝트 리스트 조회 관련 인터페이스 제공
 
 ### 공통 엔터티
-- ProjectListDto
+- Project
 
 ### 기능 리스트
-1. `GET` `/projects` [getProjectsList()](#1-getprojectslist) : 프로젝트 목록 조회
-2. `GET` `/projects/{projectId}` [getProjectsDeadline()](#2-getprojectsdeadline) : 프로젝트 영입 제안
+1. `GET` `/projects` [getProjectsList(pageable, assembler, occupation, field)](#1-getprojectslist) : 프로젝트 목록 조회
+2. `GET` `/projects/{projectId}` [getProjectsDeadline(pageable, assembler)](#2-getprojectsdeadline) : 프로젝트 영입 제안
 
 ### 기능 정의
 #### 1. getProjectsList()
   - 일반 사용자가 모든 프로젝트에 대한 리스트를 조회
   - [프로젝트 목록 조회](https://egluuapi.codingnome.dev/docs/index.html#resourcesProjectList "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
 
 #### 2. getProjectsDeadline()
   - 일반 사용자가 마감 임박한 프로젝트에 대한 리스트를 조회
   - [프로젝트 영입 제안](https://egluuapi.codingnome.dev/docs/index.html#resourcesDeadlineProjectList "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
 
 ## 2. Service
 ### 정의

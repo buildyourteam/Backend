@@ -17,12 +17,12 @@
 - ProjectApply
 
 ### 기능 리스트
-1. `POST` `/projects/{projectId}/apply` [applyProject()](#1-applyproject) : 프로젝트 지원
-2. `PUT` `/projects/{projectId}/apply` [updateApply()](#2-updateapply) : 프로젝트 수정
-3. `GET` `/projects/{projectId}/apply` [getApplicants()](#3-getapplicants) : 지원자 리스트 조회
-4. `GET` `/projects/{projectId}/apply/{userId}` [getApply()](#4-getapply) : 프로젝트 지원서 조회
-5. `PUT` `/projects/{projectId}/apply/{userId}`[acceptMember()](#5-acceptmember) : 프로젝트 참여 승인
-6. `DELETE` `/projects/{projectId}/apply/{userId}` [rejectMember()](#6-rejectmember) : 프로젝트 참여 거절
+1. `POST` `/projects/{projectId}/apply` [applyProject(project_id, ProjectApplyDto)](#1-applyproject) : 프로젝트 지원
+2. `PUT` `/projects/{projectId}/apply` [updateApply(project_id, ProjectApplyDto)](#2-updateapply) : 프로젝트 수정
+3. `GET` `/projects/{projectId}/apply` [getApplicants(project_id, pageable)](#3-getapplicants) : 지원자 리스트 조회
+4. `GET` `/projects/{projectId}/apply/{userId}` [getApply(project_id, user_id)](#4-getapply) : 프로젝트 지원서 조회
+5. `PUT` `/projects/{projectId}/apply/{userId}`[acceptMember(project_id, user_id)](#5-acceptmember) : 프로젝트 참여 승인
+6. `DELETE` `/projects/{projectId}/apply/{userId}` [rejectMember(project_id, user_id)](#6-rejectmember) : 프로젝트 참여 거절
 
 ### 기능 정의
 #### 1. applyProject()
@@ -40,14 +40,10 @@
 #### 3. getApplicants()
   - 프로젝트 리더가 프로젝트에 지원한 인원에 대한 리스트를 조회
   - [프로젝트 지원서 수정](https://egluuapi.codingnome.dev/docs/index.html#getApplicants "해당 API 문서로 이동")
-  - 연관 엔터티
-        - －
                 
 #### 4. getApply()
   - 프로젝트 리더가 특정 유저가 작성한 프로젝트 지원서를 조회
   - [지원서 조회](https://egluuapi.codingnome.dev/docs/index.html#getApply "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
         
 #### 5. acceptMember()
   - 프로젝트 리더가 프로젝트 지원자 중 합류할 인원을 accept
@@ -58,8 +54,6 @@
 #### 6. rejectMember()
   - 프로젝트 리더가 프로젝트 지원자 중 거절할 인원 reject
   - [프로젝트 지원자 거절](https://egluuapi.codingnome.dev/docs/index.html#rejectApply "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
 
 ## 2. Service
 ### 정의

@@ -16,7 +16,7 @@
 - －
 
 ### 기능 리스트
-1. `GET` `/people` [getJobSeekers()](#1-getjobseekers) : 구인자 목록 조회
+1. `GET` `/people` [getJobSeekers(pageable, assembler, grade, role, area)](#1-getjobseekers) : 구인자 목록 조회
 
 ### 기능 정의
 #### 1. getJobSeekers()

@@ -16,21 +16,17 @@
 - ProfileImage
 
 ### 기능 리스트
-1. `POST` `/projects/image/{projectid}` [uploadProjectImage()](#1-uploadprojectimage) : 프로젝트 사진 업로드
-2. `GET` `/projects/image/{projectid}` [downloadProjectImage()](#2-downloadprojectimage) : 프로젝트 사진 가져오기
+1. `POST` `/projects/image/{projectid}` [uploadProjectImage(user_id, file)](#1-uploadprojectimage) : 프로젝트 사진 업로드
+2. `GET` `/projects/image/{projectid}` [downloadProjectImage(project_id, HTTP_request)](#2-downloadprojectimage) : 프로젝트 사진 가져오기
 
 ### 기능 정의
 #### 1. uploadProjectImage()
   - 프로젝트 이미지 업로드
   - [프로젝트 이미지 업로드](https://egluuapi.codingnome.dev/docs/index.html#resourcesProjectImageUpload "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
 
 #### 2. downloadProjectImage()
   - 프로젝트 이미지 가져오기
   - [프로젝트 이미지 가져오기](https://egluuapi.codingnome.dev/docs/index.html#resourcesProjectImageUpload "해당 API 문서로 이동")
-  - 연관 엔터티
-      - －
       
 ## 2. Service
 ### 정의

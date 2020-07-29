@@ -12,19 +12,16 @@
 ### 정의
 웹 서비스 상에서 인증된 사용자에게 특정 프로젝트 정보와 관련된 인터페이스 제공
 
-### 공통 도메인
-- －
-
 ### 기능 리스트
-1. `GET` `/projects/{projectId}` [getProjectDetail()](#1-getprojectdetail) : 프로젝트 상세 정보 조회
-2. `GET` `/profile/{userId}/recruit/{projectId}` [getRecruits()](#2-getrecruits) : 프로젝트 영입 제안
-3. `POST` `/projects` [createProject()](#3-createproject) : 프로젝트 생성
-4. `PUT` `/projects/{project_id} [updateProject()](#4-updateproject) : 프로젝트 수정
-5. `DELETE` `/projects/{project_id} [deleteProject()](#5-deleteproject) : 프로젝트 삭제
+1. `GET` `/projects/{projectId}` [getProjectDetail(project_id)](#1-getprojectdetail) : 프로젝트 상세 정보 조회
+2. `GET` `/profile/{userId}/recruit/{projectId}` [getRecruits(project_id)](#2-getrecruits) : 프로젝트 영입 제안
+3. `POST` `/projects` [createProject(ProjectDetailDto)](#3-createproject) : 프로젝트 생성
+4. `PUT` `/projects/{project_id} [updateProject(project_id, UpdateDto)](#4-updateproject) : 프로젝트 수정
+5. `DELETE` `/projects/{project_id} [deleteProject(project_id)](#5-deleteproject) : 프로젝트 삭제
 
 ### 기능 정의
 #### 1. getProjectDetail()
-  - 인증된 사용자가 특정 프로젝트에 대한 상세 정보를 조회
+  - 특정 프로젝트에 대한 상세 정보를 조회
   - [프로젝트 상세 정보 조회](https://egluuapi.codingnome.dev/docs/index.html#resourcesProjectGet "해당 API 문서로 이동")
   - 연관 엔터티
       - Project

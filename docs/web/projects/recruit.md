@@ -16,11 +16,11 @@
 - －
 
 ### 기능 리스트
-1. `POST` `/profile/{userId}/recruit/{project_id}` [recruitProject()](#1-recruitproject) : 프로젝트 영입하기
-2. `GET` `/profile/{userId}/recruit` [getRecruitList()](#2-getrecruitlist) : 프로젝트 영입 리스트 조회
-3. `GET` `/profile/{userId}/recruit/{projectId}` [getRecruitProject()](#3-getrecruitproject) : 프로젝트 영입 리스트  조회
-4. `PUT` `/profile/{userId}/recruit/{projectId}` [acceptRecruitProject()](#4-acceptrecruitproject) : 프로젝트 영입 승인
-5. `DELETE` `/profile/{userId}/recruit/{projectId}` [rejectRecruitProject()](#5-rejectrecruitproject) : 프로젝트 영입 거절
+1. `POST` `/profile/{userId}/recruit/{project_id}` [recruitProject(user_id, project_id, RecruitDto)](#1-recruitproject) : 프로젝트 영입하기
+2. `GET` `/profile/{userId}/recruit` [getRecruitList(user_id)](#2-getrecruitlist) : 프로젝트 영입 리스트 조회
+3. `GET` `/profile/{userId}/recruit/{projectId}` [getRecruitProject(user_id, project_id)](#3-getrecruitproject) : 프로젝트 영입 제안 확인
+4. `PUT` `/profile/{userId}/recruit/{projectId}` [acceptRecruitProject(user_id, project_id)](#4-acceptrecruitproject) : 프로젝트 영입 승인
+5. `DELETE` `/profile/{userId}/recruit/{projectId}` [rejectRecruitProject(user_id, project_id)](#5-rejectrecruitproject) : 프로젝트 영입 거절
 
 ### 기능 정의
 #### 1. recruitProject()
@@ -32,13 +32,13 @@
       - Recruit
 
 #### 2. getRecruitList()
-  - 인증된 사용자가 프로젝트 리더에게 받은 영입 제안 리스트를 조회
+  - 사용자가 프로젝트 리더에게 받은 영입 제안 리스트를 조회
   - [프로젝트 영입 리스트 조회](https://egluuapi.codingnome.dev/docs/index.html#projectRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Recruit
 
 #### 3. getRecruitProject()
-  - 인증된 사용자가 받은 특정 영입 제안서를 조회
+  - 사용자가 받은 특정 영입 제안서를 조회
   - 해딩 제안서를 조회 시 해당 제안서는 읽음 상태로 변경
   - [프로젝트 생성](https://egluuapi.codingnome.dev/docs/index.html#getRecruit "해당 API 문서로 이동")
   - 연관 엔터티
@@ -51,7 +51,7 @@
       - Project
         
 #### 5. rejectRecruitProject()
-  - 인증된 사용자가 받은 튻정 영입 제안을 거절
+  - 인증된 사용자가 받은 특정 영입 제안을 거절
   - [프로젝트 영입 거절](https://egluuapi.codingnome.dev/docs/index.html#rejectRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Recruit
