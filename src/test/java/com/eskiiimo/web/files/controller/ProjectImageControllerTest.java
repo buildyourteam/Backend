@@ -78,7 +78,10 @@ class ProjectImageControllerTest extends BaseControllerTest {
     void downloadProjectImage () throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/web/files/testfiles/testimg.jpg");
 
-        ProjectImage projectImage = new ProjectImage((long)1,targetFile.getPath());
+        ProjectImage projectImage = ProjectImage.builder()
+                .projectId((long)1)
+                .filePath(targetFile.getPath())
+                .build();
         projectImageRepository.save(projectImage);
 
         this.mockMvc.perform(get("/projects/image/1"))
