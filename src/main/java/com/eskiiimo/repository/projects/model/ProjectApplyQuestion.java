@@ -9,7 +9,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @EqualsAndHashCode(of="questionId")
 @Entity
 @Table(name = "T_APPLY_QUESTION")

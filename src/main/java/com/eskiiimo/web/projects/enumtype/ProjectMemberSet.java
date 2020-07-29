@@ -9,11 +9,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Getter
-@Setter
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectMemberSet{
+public class ProjectMemberSet {
     @Column(name = "currentDeveloper")
     private int developer;
     @Column(name = "currentDesigner")
@@ -23,4 +22,14 @@ public class ProjectMemberSet{
     @Column(name = "currentEtc")
     private int etc;
 
+    public void addMember(ProjectRole role){
+        if (role == ProjectRole.DEVELOPER)
+            this.developer++;
+        else if (role == ProjectRole.DESIGNER)
+            this.designer++;
+        else if (role == ProjectRole.PLANNER)
+            this.planner++;
+        else if (role == ProjectRole.ETC)
+            this.etc++;
+    }
 }

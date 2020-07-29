@@ -1,9 +1,14 @@
 package com.eskiiimo.repository.projects.model;
 
+import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
+import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import com.eskiiimo.web.projects.enumtype.State;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -13,11 +18,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
-@Setter
 @EqualsAndHashCode(of = "projectId")
 @Entity
 @Table(name = "T_PROJECT")
@@ -37,9 +40,8 @@ public class Project {
     @Size(min = 0, max = 10000)
     @NotBlank
     private String introduction;
-    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private State state = State.RECRUTING;
+    private State state;
     @Enumerated(EnumType.STRING)
     private ProjectField projectField;
     @Embedded
@@ -59,23 +61,61 @@ public class Project {
 
     private Boolean applyCanFile;
 
-    @Builder.Default
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "projectId")
-    private List<ProjectApply> applies = new ArrayList<ProjectApply>();
+    private List<ProjectApply> applies;
 
-    @Builder.Default
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "projectId")
-    private List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+    private List<ProjectApplyQuestion> questions;
 
-    @Builder.Default
     @OneToMany(mappedBy = "project")
-    private List<ProjectMember> projectMembers = new ArrayList<ProjectMember>();
+    private List<ProjectMember> projectMembers;
 
     public void addMember(ProjectMember member) {
+        if (this.projectMembers == null)
+            this.projectMembers = new ArrayList<ProjectMember>();
         this.projectMembers.add(member);
-        if (member.getProject() != this)
-            member.setProject(this);
+        this.currentMember.addMember(member.getRole());
+    }
+
+    public void addApply(ProjectApply apply) {
+        if (this.applies == null)
+            this.applies = new ArrayList<ProjectApply>();
+        this.applies.add(apply);
+    }
+
+    public void updateApplies(ProjectApply apply) {
+        this.applies.set(this.applies.indexOf(apply), apply);
+    }
+
+    public void updateProject(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet needMember,  Boolean applyCanFile, List<String> newQuestions) {
+        this.projectName = projectName;
+        this.teamName = teamName;
+        this.endDate = endDate;
+        this.introduction = introduction;
+        this.state = state;
+        this.projectField = projectField;
+        this.needMember = needMember;
+        this.applyCanFile = applyCanFile;
+        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+        for (String question : newQuestions)
+            questions.add(ProjectApplyQuestion.builder().question(question).build());
+        this.questions = questions;
+    }
+
+    @Builder
+    public Project(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet currentMember, ProjectMemberSet needMember, String leaderId, Boolean applyCanFile, List<ProjectApplyQuestion> questions) {
+        this.projectName = projectName;
+        this.teamName = teamName;
+        this.endDate = endDate;
+        this.introduction = introduction;
+        this.state = state;
+        this.projectField = projectField;
+        this.currentMember = currentMember;
+        this.needMember = needMember;
+        this.leaderId = leaderId;
+        this.applyCanFile = applyCanFile;
+        this.questions = questions;
     }
 }

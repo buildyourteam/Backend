@@ -1,15 +1,15 @@
 package com.eskiiimo.web.projects.service;
 
 import com.eskiiimo.repository.projects.dto.RecruitDto;
-import com.eskiiimo.repository.projects.model.Recruit;
-import com.eskiiimo.repository.projects.repository.RecruitRepository;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectMember;
+import com.eskiiimo.repository.projects.model.Recruit;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.RecruitState;
+import com.eskiiimo.repository.projects.repository.RecruitRepository;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import com.eskiiimo.web.projects.enumtype.RecruitState;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.exception.RecruitNotAuthException;
 import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
@@ -61,24 +61,21 @@ public class RecruitService {
     @Transactional
     public RecruitDto getRecruit(String userId, Long projectId, String visitorId) {
         Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
-        if (recruit.getState().equals(RecruitState.UNREAD)) {
-            recruit.setState(RecruitState.READ);
-            this.recruitRepository.save(recruit);
-        }
+        recruit.markAsRead();
         return this.modelMapper.map(recruit, RecruitDto.class);
     }
 
     @Transactional
     public void acceptRecruit(String userId, Long projectId, String visitorId) {
         Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
-        recruit.setState(RecruitState.ACCEPT);
+        recruit.setRecruitState(RecruitState.ACCEPT);
         this.recruitRepository.save(recruit);
     }
 
     @Transactional
     public void rejectRecruit(String userId, Long projectId, String visitorId) {
         Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
-        recruit.setState(RecruitState.REJECT);
+        recruit.setRecruitState(RecruitState.REJECT);
         this.recruitRepository.save(recruit);
     }
 

@@ -112,7 +112,7 @@ public class ProfileService {
         ProjectMember projectMember = this.projectMemberRepository.findByProject_ProjectIdAndUser_UserId(projectId, userId)
                 .orElseThrow(() -> new YouAreNotMemberException(projectId));
         project.getProjectMembers().remove(projectMember);
-        projectMember.setHide(!visible);
+        projectMember.setVisible(visible);
         project.getProjectMembers().add(projectMember);
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
