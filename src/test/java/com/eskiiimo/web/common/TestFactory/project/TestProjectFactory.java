@@ -66,7 +66,7 @@ public class TestProjectFactory {
                 .role(ProjectRole.LEADER)
                 .introduction("프로젝트 팀장 입니다.")
                 .build();
-        project.getProjectMembers().add(projectMember);
+        project.addMember(projectMember);
 
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
@@ -127,9 +127,7 @@ public class TestProjectFactory {
     public ProjectApply generateApply(Project project, User user){
         ProjectApplyDto projectApplyDto = generateProjectApplyDto();
         ProjectApply projectApply =projectApplyDto.toEntity(user);
-        List<ProjectApply> applies  = project.getApplies();
-        applies.add(projectApply);
-        project.setApplies(applies);
+        project.addApply(projectApply);
 
         this.projectApplyRepository.save(projectApply);
         this.projectRepository.save(project);

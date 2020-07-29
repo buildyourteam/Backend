@@ -46,10 +46,9 @@ public class ProjectApplyService {
                 .project(project)
                 .hide(Boolean.FALSE)
                 .build();
-        project.getProjectMembers().add(projectMember);
+        projectMember.setProject(project);
 
         this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
     }
 
     @Transactional
@@ -60,10 +59,7 @@ public class ProjectApplyService {
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
 
         ProjectApply projectApply = apply.toEntity(user);
-        project.getApplies().add(projectApply);
-
-        this.projectApplyRepository.save(projectApply);
-        this.projectRepository.save(project);
+        project.addApply(projectApply);
     }
 
     @Transactional
@@ -71,19 +67,8 @@ public class ProjectApplyService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         ProjectApply projectApply = findApply(project, visitorId);
-
-        project.getApplies().remove(projectApply);
-        projectApply.setIntroduction(apply.getIntroduction());
-        projectApply.setRole(apply.getRole());
-
-        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        for (String answer : apply.getAnswers())
-            answers.add(ProjectApplyAnswer.builder().answer(answer).build());
-        projectApply.setAnswers(answers);
-        project.getApplies().add(projectApply);
-
-        this.projectApplyRepository.save(projectApply);
-        this.projectRepository.save(project);
+        projectApply.updateApply(apply.getIntroduction(), apply.getRole(), apply.getAnswers());
+        project.updateApplies(projectApply);
     }
 
     @Transactional(readOnly = true)
@@ -113,11 +98,7 @@ public class ProjectApplyService {
             project = getProjectForLeader(projectId, visitorId);
 
         ProjectApply projectApply = findApply(project, userId);
-        if (projectApply.getState() == ProjectApplyState.UNREAD)
-            projectApply.setState(ProjectApplyState.READ);
-
-        projectApplyRepository.save(projectApply);
-        projectRepository.save(project);
+        projectApply.markAsRead();
 
         return ProjectApplyDto.builder()
                 .userName(projectApply.getUser().getUsername())
@@ -134,30 +115,20 @@ public class ProjectApplyService {
         Project project = getProjectForLeader(projectId, visitorId);
 
         ProjectApply projectApply = findApply(project, userId);
-        project.getApplies().remove(projectApply);
-        projectApply.setState(ProjectApplyState.ACCEPT);
-        project.getApplies().add(projectApply);
+
+        projectApply.setApplyState(ProjectApplyState.ACCEPT);
+        project.updateApplies(projectApply);
 
         ProjectMember projectMember = ProjectMember.builder()
                 .role(projectApply.getRole())
                 .user(projectApply.getUser())
                 .project(project)
                 .hide(Boolean.FALSE)
+                .introduction(projectApply.getIntroduction())
                 .build();
-        project.getProjectMembers().add(projectMember);
+        project.addMember(projectMember);
 
-        if (projectMember.getRole() == ProjectRole.DEVELOPER)
-            project.getCurrentMember().setDeveloper(project.getCurrentMember().getDeveloper() + 1);
-        else if (projectMember.getRole() == ProjectRole.DESIGNER)
-            project.getCurrentMember().setDesigner(project.getCurrentMember().getDesigner() + 1);
-        else if (projectMember.getRole() == ProjectRole.PLANNER)
-            project.getCurrentMember().setPlanner(project.getCurrentMember().getPlanner() + 1);
-        else if (projectMember.getRole() == ProjectRole.ETC)
-            project.getCurrentMember().setEtc(project.getCurrentMember().getEtc() + 1);
-
-        this.projectApplyRepository.save(projectApply);
         this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
     }
 
     @Transactional
@@ -165,10 +136,7 @@ public class ProjectApplyService {
         Project project = getProjectForLeader(projectId, visitorId);
 
         ProjectApply projectApply = findApply(project, userId);
-        projectApply.setState(ProjectApplyState.REJECT);
-
-        this.projectApplyRepository.save(projectApply);
-        this.projectRepository.save(project);
+        projectApply.setApplyState(ProjectApplyState.REJECT);
     }
 
     public Boolean isLeader(Project project, String visitorId) {
@@ -191,7 +159,7 @@ public class ProjectApplyService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotLeaderException(visitorId);
-        if (project.getApplies().isEmpty())
+        if (project.getApplies() == null)
             throw new ApplicantNotFoundException(projectId);
         return project;
     }

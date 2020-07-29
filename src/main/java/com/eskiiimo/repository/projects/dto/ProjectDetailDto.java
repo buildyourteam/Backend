@@ -62,25 +62,22 @@ public class ProjectDetailDto {
         }
     }
 
-    public Project toEntity(Project project) {
+    public Project toProject(String leaderId) {
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
         for (String question : this.questions)
             questions.add(ProjectApplyQuestion.builder().question(question).build());
-        project.setProjectName(this.projectName);
-        project.setTeamName(this.teamName);
-        project.setEndDate(this.endDate);
-        project.setIntroduction(this.introduction);
-        if (this.state == null)
-            project.setState(State.RECRUTING);
-        else
-            project.setState(this.state);
-        project.setProjectField(this.projectField);
-        project.setApplyCanFile(this.applyCanFile);
-        project.setQuestions(questions);
-        if (this.currentMember == null)
-            project.setCurrentMember(new ProjectMemberSet(0, 0, 0, 0));
-        project.setNeedMember(this.needMember);
-
-        return project;
+        return Project.builder()
+                .projectName(this.projectName)
+                .teamName(this.teamName)
+                .endDate(this.endDate)
+                .introduction(this.introduction)
+                .state(this.state)
+                .projectField(this.projectField)
+                .currentMember(new ProjectMemberSet(0,0,0,0))
+                .needMember(this.needMember)
+                .leaderId(leaderId)
+                .applyCanFile(this.applyCanFile)
+                .questions(questions)
+                .build();
     }
 }
