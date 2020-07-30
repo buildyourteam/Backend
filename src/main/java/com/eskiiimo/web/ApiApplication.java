@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan("com.eskiiimo.repository")
 @EnableJpaRepositories("com.eskiiimo.repository")
 @EnableConfigurationProperties(FileUploadProperties.class)
+@EnableAspectJAutoProxy
 public class ApiApplication {
 
 	public static void main(String[] args) {
