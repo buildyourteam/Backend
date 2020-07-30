@@ -27,7 +27,7 @@
       - Project
 
 #### 2. getRecruits()
-  - 리더가 특정 사용자에게 프로젝트 영입을 제안
+  - 프로젝트 리더가 사용자에게 제안한 프로젝트 영입 리스트 조회
   - [프로젝트 영입 제안](https://egluuapi.codingnome.dev/docs/index.html#projectRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Recruit
@@ -50,3 +50,60 @@
   - 연관 엔터티
       - Project
       - ProjectMember
+
+## 2. Service
+### 정의
+프로젝트 생성/삭제/관리 서비스에 대한 비즈니스 로직을 수행
+
+### 공통 레퍼지토리
+  - ProjectRepository
+  
+### 기능 리스트
+1. [storeProject(ProjectDetailDto, user_id)](#1-storeproject) : 프로젝트 생성
+2. [deleteProject(project_id, visitor_id)](#2-deleteproject) : 프로젝트 삭제
+3. [updateProject(project_id, UpdateDto, visitor_id)](#3-updateproject) : 프로젝트 수정
+4. [getProject(project_id)](#4-getproject) : 기존 프로젝트 데이터 조회
+5. [getRecruits(visitor_id, project_id)](#5-getrecruits) : 프로젝트 영입 제안 리스트 조회
+
+### 기능 정의
+#### 1. storeProject()
+  - 인증된 사용자가 새로운 프로젝트를 생성
+
+  - 연관 예외 클래스
+    - UserNotFoundException(user_id)
+
+  - 연관 레퍼지토리
+    - ProjectMemberRepository
+
+#### 2. deleteProject()
+  - 프로젝트 리더가 프로젝트를 삭제
+
+  - 연관 예외 클래스
+    - ProjectNotFoundException(project_id)
+    - YouAreNotLeaderException(visitor_id)
+
+  - 연관 레퍼지토리
+    - ProjectMemberRepository
+  
+#### 3. updateProject()
+  - 프로젝트 리더가 특정 프로젝트 데이터를 수정
+
+  - 연관 예외 클래스
+    - ProjectNotFoundException(project_id)
+    - YouAreNotLeaderException(visitor_id)
+    
+#### 4. getProject()
+  - 사용자가 특정 프로젝트를 조회
+
+  - 연관 예외 클래스
+    - ProjectNotFoundException(projectId)
+
+#### 5. getRecruits()
+  - 프로젝트 리더가 사용자에게 제안한 프로젝트 영입 리스트 조회
+
+  - 연관 예외 클래스
+    - ProjectNotFoundException(project_id)
+    - YouAreNotLeaderException(visitor_id)
+
+  - 연관 레퍼지토리
+    - RecruitRepository
