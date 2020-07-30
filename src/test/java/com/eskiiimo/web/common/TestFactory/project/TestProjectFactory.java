@@ -66,7 +66,7 @@ public class TestProjectFactory {
                 .role(ProjectRole.LEADER)
                 .introduction("프로젝트 팀장 입니다.")
                 .build();
-        project.addMember(projectMember);
+        projectMember.joinProject(project);
 
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);
