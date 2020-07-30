@@ -1,8 +1,8 @@
 package com.eskiiimo.repository.projects.model;
 
+import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import com.eskiiimo.repository.user.model.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,13 +36,14 @@ public class ProjectMember {
     private Project project;
 
 
-    public void setProject(Project project) {
+    public void joinProject(Project project) {
         this.project = project;
-        if (this.project.getProjectMembers() == null || !this.project.getProjectMembers().contains(this))
+        if (this.project.getProjectMembers() == null
+                || !this.project.getProjectMembers().contains(this))
             this.project.addMember(this);
     }
 
-    public void setVisible(Boolean visible){
-        this.hide=!visible;
+    public void setVisible(Boolean visible) {
+        this.hide = !visible;
     }
 }

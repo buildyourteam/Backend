@@ -1,12 +1,11 @@
 package com.eskiiimo.web.files.service;
 
 
+import com.eskiiimo.repository.files.dto.FileUploadDto;
 import com.eskiiimo.repository.files.model.ProjectImage;
 import com.eskiiimo.repository.files.repository.ProjectImageRepository;
-import com.eskiiimo.repository.files.dto.FileUploadDto;
 import com.eskiiimo.web.configs.FileUploadProperties;
 import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
-import com.eskiiimo.web.files.exception.FileDownloadException;
 import com.eskiiimo.web.files.exception.ProjectImageNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -43,7 +42,8 @@ public class ProjectImageService {
         String fileName = fileService.storeFile(file, this.projectImageLocation, projectId.toString());
 
         ProjectImage projectImage = this.projectImageRepository.findByProjectId(projectId).orElse(new ProjectImage());
-        projectImage.updateProjectImage(projectId,this.projectImageLocation.resolve(fileName).toString());
+        String filePath = this.projectImageLocation.resolve(fileName).toString();
+        projectImage.updateProjectImage(projectId, filePath);
         projectImageRepository.save(projectImage);
         FileUploadDto fileUploadDto = FileUploadDto.builder()
                 .fileName(fileName)

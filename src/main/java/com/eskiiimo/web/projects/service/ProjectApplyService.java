@@ -3,16 +3,15 @@ package com.eskiiimo.web.projects.service;
 import com.eskiiimo.repository.projects.dto.ProjectApplicantDto;
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.repository.projects.model.Project;
+import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.repository.projects.model.ProjectMember;
+import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
-import com.eskiiimo.repository.projects.model.ProjectApply;
-import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
-import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
-import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.exception.ApplicantNotFoundException;
 import com.eskiiimo.web.projects.exception.ApplyNotFoundException;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
@@ -46,7 +45,7 @@ public class ProjectApplyService {
                 .project(project)
                 .hide(Boolean.FALSE)
                 .build();
-        projectMember.setProject(project);
+        projectMember.joinProject(project);
 
         this.projectMemberRepository.save(projectMember);
     }
@@ -126,7 +125,7 @@ public class ProjectApplyService {
                 .hide(Boolean.FALSE)
                 .introduction(projectApply.getIntroduction())
                 .build();
-        project.addMember(projectMember);
+        projectMember.joinProject(project);
 
         this.projectMemberRepository.save(projectMember);
     }
