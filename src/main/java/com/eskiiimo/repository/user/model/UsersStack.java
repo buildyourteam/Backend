@@ -10,7 +10,6 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of="stackId")
 @Entity
