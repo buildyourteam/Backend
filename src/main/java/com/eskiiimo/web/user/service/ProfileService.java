@@ -93,12 +93,13 @@ public class ProfileService {
         Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.TRUE, pageable);
         return page;
     }
-
+    
+    @Transactional
     public void reShowProject(String userId, String visitorId, Long projectId) {
         setProjectVisible(userId, visitorId, projectId, Boolean.TRUE);
     }
 
-
+    @Transactional
     public void hideProject(String userId, String visitorId, Long projectId) {
         setProjectVisible(userId, visitorId, projectId, Boolean.FALSE);
     }
