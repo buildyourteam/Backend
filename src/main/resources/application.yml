@@ -51,6 +51,7 @@ file:
 
 logging:
   level:
+    root: info
     org:
       hibernate:
         SQL: DEBUG
