@@ -34,3 +34,29 @@
 #### 3. canUseThisId()
   - 회원가입 시 생성할 ID의 중복 여부 확인
   - [ID 중복 확인](https://egluuapi.codingnome.dev/docs/index.html#SignUp "해당 API 문서로 이동")
+
+## 2. Service
+### 정의
+사용자 인증 관련 비즈니스 로직을 수행
+
+### 공통 레퍼지토리
+  - UserRepository
+  
+### 기능 리스트
+1. [storeProject(ProjectDetailDto, user_id)](#1-signupsignupdto-signupdto) : 회원가입
+2. [deleteProject(project_id, visitor_id)](#2-signinsignindto-signindto) : 로그인
+3. [updateProject(project_id, UpdateDto, visitor_id)](#3-idcheckstring-checkid) : ID 중복 확인
+
+### 기능 정의
+#### 1. signup(SignUpDto signupDto)
+  - 신규 사용자로 회원가입
+
+#### 2. signin(SignInDto signInDto)
+  - 특정 사용자로 로그인
+
+  - 연관 예외 클래스
+    - CUserNotFoundException()
+    - CSigninFailedException()
+  
+#### 3. idCheck(String checkId)
+  - 사용자 ID에 대한 중복 확인

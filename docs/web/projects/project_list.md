@@ -30,4 +30,18 @@
 
 ## 2. Service
 ### 정의
-쭉 하기
+프로젝트 리스트 조회 관련 비즈니스 로직을 수행
+
+### 공통 레퍼지토리
+  - ProjectRepository
+  
+### 기능 리스트
+1. [storeProject(ProjectDetailDto, user_id)](#1-getallbyfieldstring-occupation-projectfield-field-pageable-pageable) : 직무/분야 별 프로젝트 리스트 조회
+2. [deleteProject(project_id, visitor_id)](#2-findallbyddaylessthanorderbyddayascpageable-pageable) : 마감 임박 프로젝트 리스트 조회
+
+### 기능 정의
+#### 1. getAllByField(String occupation, ProjectField field, Pageable pageable)
+  - 특정 직군 또는 관련 분야로 필터링 된 프로젝트 리스트 조회
+
+#### 2. findAllByDdayLessThanOrderByDdayAsc(Pageable pageable)
+  - 마감 임박한 프로젝트 리스트를 오름차순으로 조회
