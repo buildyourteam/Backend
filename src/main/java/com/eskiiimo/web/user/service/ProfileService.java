@@ -8,14 +8,14 @@ import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
+import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.user.enumtype.UserActivate;
-import com.eskiiimo.web.user.exception.UserNotFoundException;
-import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.web.user.exception.NotYourProfileException;
+import com.eskiiimo.web.user.exception.UserNotFoundException;
 import com.eskiiimo.web.user.exception.YouAreNotMemberException;
+import com.eskiiimo.web.user.request.UpdateProfileRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,14 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProfileService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
 
-    @Autowired
-    ProjectMemberRepository projectMemberRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Transactional(readOnly = true)
     public ProfileDto getProfile(String userId) {
@@ -43,12 +40,12 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileDto updateProfile(String userId, String visitorId, ProfileDto updateData) {
+    public ProfileDto updateProfile(String userId, String visitorId, UpdateProfileRequest updateData) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);
-        User profile = userRepository.findByUserIdAndActivate(userId,UserActivate.REGULAR)
+        User profile = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        profile.updateProfile(updateData.getUserName(),updateData.getRole(),updateData.getStacks(),updateData.getContact(),updateData.getArea(),updateData.getIntroduction());
+        profile.updateProfile(updateData.getUserName(), updateData.getRole(), updateData.getStacks(), updateData.getContact(), updateData.getArea(), updateData.getIntroduction());
         return this.userRepository.save(profile).toProfileDto();
     }
 
@@ -93,7 +90,7 @@ public class ProfileService {
         Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.TRUE, pageable);
         return page;
     }
-    
+
     @Transactional
     public void reShowProject(String userId, String visitorId, Long projectId) {
         setProjectVisible(userId, visitorId, projectId, Boolean.TRUE);

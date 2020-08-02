@@ -1,10 +1,10 @@
 package com.eskiiimo.web.user.controller;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.State;
+import com.eskiiimo.web.user.request.UpdateProfileRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -105,11 +105,11 @@ class ProfileControllerTest extends BaseControllerTest {
     @WithMockUser(username = "user1")
     void updateProfile() throws Exception {
         testUserFactory.generateUser(1);
-        ProfileDto profileDto = testProjectFactory.generateProfileDto();
+        UpdateProfileRequest updateProfileRequest = testProjectFactory.generateUpdateProfileRequest();
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}", "user1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(profileDto)))
+                .content(this.objectMapper.writeValueAsString(updateProfileRequest)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("update-profile",
@@ -126,7 +126,6 @@ class ProfileControllerTest extends BaseControllerTest {
                                 fieldWithPath("stacks").description("기술스택"),
                                 fieldWithPath("contact").description("연락처"),
                                 fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("grade").description("레벨"),
                                 fieldWithPath("introduction").description("자기소개")
                         ),
                         responseFields(

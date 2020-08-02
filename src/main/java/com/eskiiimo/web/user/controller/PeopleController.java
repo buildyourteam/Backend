@@ -4,7 +4,6 @@ import com.eskiiimo.repository.user.dto.PeopleDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.user.service.PeopleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -18,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/people")
 public class PeopleController {
 
-    @Autowired
-    PeopleService peopleService;
-
+    private final PeopleService peopleService;
 
     @GetMapping
     public PagedModel<EntityModel<PeopleDto>> getJobSeekers(
