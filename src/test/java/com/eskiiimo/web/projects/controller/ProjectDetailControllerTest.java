@@ -237,7 +237,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     public void updateProject() throws Exception {
         // Given
         Project myProject = testProjectFactory.generateMyProject(0);
-        ProjectDetailRequest projectDetailRequest = testProjectFactory.generateProjectUpdateDto(myProject);
+        ProjectDetailRequest projectDetailRequest = testProjectFactory.generateProjectUpdateRequest(myProject);
         projectDetailRequest.setProjectName("Hi updated project....");
 
         // When & Then

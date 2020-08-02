@@ -206,7 +206,7 @@ public class TestProjectFactory {
         return updateProfileRequest;
     }
 
-    public ProjectDetailRequest generateProjectUpdateDto(Project project) {
+    public ProjectDetailRequest generateProjectUpdateRequest(Project project) {
         ProjectDetailRequest projectDetailRequest = ProjectDetailRequest.builder()
                 .projectName(project.getProjectName())
                 .teamName(project.getTeamName())
