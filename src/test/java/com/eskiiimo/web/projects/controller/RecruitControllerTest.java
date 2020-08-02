@@ -37,7 +37,7 @@ class RecruitControllerTest extends BaseControllerTest {
         RecruitDto recruitDto = testProjectFactory.generateRecruitDto(project.getProjectId(), user);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit/{projectId}",user.getUserId(), project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit",user.getUserId())
                 .content(objectMapper.writeValueAsString(recruitDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
@@ -45,8 +45,7 @@ class RecruitControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andDo(document("projectRecruit",
                         pathParameters(
-                                parameterWithName("userId").description("유저 아이디"),
-                                parameterWithName("projectId").description("프로젝트 아이디")
+                                parameterWithName("userId").description("유저 아이디")
                         ),
                         requestFields(
                                 fieldWithPath("userName").description("유저이름"),

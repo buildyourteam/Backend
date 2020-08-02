@@ -42,8 +42,8 @@ public class ProfileImageService {
         String fileName = fileService.storeFile(file, this.profileImageLocation, user_id);
 
         ProfileImage profileImage = this.profileImageRepository.findByUserId(user_id).orElse(new ProfileImage());
-        profileImage.setUserId(user_id);
-        profileImage.setFilePath(this.profileImageLocation.resolve(fileName).toString());
+        String filePath = this.profileImageLocation.resolve(fileName).toString();
+        profileImage.updateProfileImage(user_id, filePath);
         profileImageRepository.save(profileImage);
         FileUploadDto fileUploadDto = FileUploadDto.builder()
                 .fileName(fileName)

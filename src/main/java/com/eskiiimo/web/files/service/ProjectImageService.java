@@ -1,12 +1,11 @@
 package com.eskiiimo.web.files.service;
 
 
+import com.eskiiimo.repository.files.dto.FileUploadDto;
 import com.eskiiimo.repository.files.model.ProjectImage;
 import com.eskiiimo.repository.files.repository.ProjectImageRepository;
-import com.eskiiimo.repository.files.dto.FileUploadDto;
 import com.eskiiimo.web.configs.FileUploadProperties;
 import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
-import com.eskiiimo.web.files.exception.FileDownloadException;
 import com.eskiiimo.web.files.exception.ProjectImageNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -42,9 +41,9 @@ public class ProjectImageService {
     public FileUploadDto storeProjectImage(Long projectId, MultipartFile file) {
         String fileName = fileService.storeFile(file, this.projectImageLocation, projectId.toString());
 
-        ProjectImage projectImage = this.projectImageRepository.findByProjectid(projectId).orElse(new ProjectImage());
-        projectImage.setProjectid(projectId);
-        projectImage.setFilePath(this.projectImageLocation.resolve(fileName).toString());
+        ProjectImage projectImage = this.projectImageRepository.findByProjectId(projectId).orElse(new ProjectImage());
+        String filePath = this.projectImageLocation.resolve(fileName).toString();
+        projectImage.updateProjectImage(projectId, filePath);
         projectImageRepository.save(projectImage);
         FileUploadDto fileUploadDto = FileUploadDto.builder()
                 .fileName(fileName)
@@ -55,7 +54,7 @@ public class ProjectImageService {
     }
 
     public Resource getProjectImage(Long projectId) {
-        ProjectImage projectImage = this.projectImageRepository.findByProjectid(projectId)
+        ProjectImage projectImage = this.projectImageRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new ProjectImageNotFoundException(projectId));
 
         Path filePath = Paths.get(projectImage.getFilePath());

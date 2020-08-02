@@ -3,6 +3,7 @@ package com.eskiiimo.repository.user.model;
 import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.enumtype.UserState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -21,16 +22,15 @@ import java.util.stream.Collectors;
 
 
 @Entity
-@EqualsAndHashCode(of="accountId")
+@EqualsAndHashCode(of = "accountId")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 @Table(name = "T_USER")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
     @Column(nullable = false, unique = true, length = 30)
     private String userId;
@@ -48,17 +48,17 @@ public class User implements UserDetails {
     private ProjectRole role;
     @Enumerated(EnumType.STRING)
     private UserState state;
-    @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL,orphanRemoval=true)
-    @JoinColumn(name ="account_id")
-    private List<UsersStack> stacks = new ArrayList<UsersStack>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "account_id")
+    private List<UsersStack> stacks;
     private String contact;
     @Size(min = 0, max = 10000)
     private String introduction;
+    @Enumerated(EnumType.STRING)
+    private UserActivate activate;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
+    private List<String> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -95,13 +95,13 @@ public class User implements UserDetails {
         return true;
     }
 
-    public String getUserName(){
+    public String getUserName() {
         return this.userName;
     }
 
-    public ProfileDto toProfileDto(){
+    public ProfileDto toProfileDto() {
         List<TechnicalStack> stackList = new ArrayList<TechnicalStack>();
-        for(UsersStack stack : this.stacks){
+        for (UsersStack stack : this.stacks) {
             TechnicalStack technicalStack = stack.getStack();
             stackList.add(technicalStack);
         }
@@ -115,6 +115,38 @@ public class User implements UserDetails {
                 .introduction(this.introduction)
                 .build();
         return profileDto;
+    }
+
+    public void updateProfile(String userName, ProjectRole role, List<TechnicalStack> stacks, String contact, String area, String introduction) {
+        List<UsersStack> removeList = new ArrayList<UsersStack>();
+        //Compare Stack List and Remove User's Stacks
+        for (UsersStack usersStack : this.stacks) {
+            Boolean checkRemove = Boolean.TRUE;
+            for (TechnicalStack stack : stacks) {
+                if (usersStack.getStack().equals(stack)) {
+                    stacks.remove(stack);
+                    checkRemove = Boolean.FALSE;
+                    break;
+                }
+            }
+            if (checkRemove)
+                removeList.add(usersStack);
+        }
+        // Remove User's Stacks
+        for (UsersStack stack : removeList)
+            this.stacks.remove(stack);
+
+        // add User's Stacks
+
+        for (TechnicalStack stack : stacks) {
+            UsersStack usersStack = new UsersStack(stack);
+            this.stacks.add(usersStack);
+        }
+
+        this.role = role;
+        this.contact = contact;
+        this.area = area;
+        this.introduction = introduction;
     }
 
 }

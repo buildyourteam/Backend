@@ -33,9 +33,8 @@ public class ProjectDetailService {
 
     @Transactional
     public Project storeProject(ProjectDetailDto projectDetailDto, String user_id) {
-        Project project = new Project();
-        projectDetailDto.toEntity(project);
-        project.setLeaderId(user_id);
+        Project project = projectDetailDto.toProject(user_id);
+
         Project newProject = this.projectRepository.save(project);
         this.projectApplyService.addLeader(newProject, user_id);
         return newProject;
@@ -52,7 +51,17 @@ public class ProjectDetailService {
     @Transactional
     public ProjectDetailDto updateProject(Long projectId, UpdateDto updateDto, String visitorId) {
         Project project = getProjectForLeader(projectId, visitorId);
-        updateDto.toEntity(project);
+        project.updateProject(
+                updateDto.getProjectName(),
+                updateDto.getTeamName(),
+                updateDto.getEndDate(),
+                updateDto.getIntroduction(),
+                updateDto.getState(),
+                updateDto.getProjectField(),
+                updateDto.getNeedMember(),
+                updateDto.getApplyCanFile(),
+                updateDto.getQuestions()
+                );
         return this.projectToDto(this.projectRepository.save(project));
     }
 

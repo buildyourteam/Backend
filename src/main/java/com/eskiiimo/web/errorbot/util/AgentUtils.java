@@ -19,7 +19,8 @@ public class AgentUtils {
     public static UserAgent getUserAgent(HttpServletRequest request) {
         try {
             String userAgentString = getUserAgentString(request);
-            return UserAgent.parseUserAgentString(userAgentString);
+            if (!userAgentString.isEmpty())
+                return UserAgent.parseUserAgentString(userAgentString);
         } catch (Exception e) {
             // ignored
         }

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ProjectImageRepository extends JpaRepository<ProjectImage,Integer> {
-    Optional<ProjectImage> findByProjectid(Long projectid);
+    Optional<ProjectImage> findByProjectId(Long projectId);
 }

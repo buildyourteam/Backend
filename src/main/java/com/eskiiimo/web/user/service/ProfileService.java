@@ -9,6 +9,7 @@ import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.web.user.exception.NotYourProfileException;
@@ -35,7 +36,7 @@ public class ProfileService {
 
     @Transactional(readOnly = true)
     public ProfileDto getProfile(String userId) {
-        User profile = userRepository.findByUserId(userId)
+        User profile = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         ProfileDto profileDto = profile.toProfileDto();
         return profileDto;
@@ -45,9 +46,9 @@ public class ProfileService {
     public ProfileDto updateProfile(String userId, String visitorId, ProfileDto updateData) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);
-        User profile = userRepository.findByUserId(userId)
+        User profile = userRepository.findByUserIdAndActivate(userId,UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        updateData.updateProfile(profile);
+        profile.updateProfile(updateData.getUserName(),updateData.getRole(),updateData.getStacks(),updateData.getContact(),updateData.getArea(),updateData.getIntroduction());
         return this.userRepository.save(profile).toProfileDto();
     }
 
@@ -92,12 +93,13 @@ public class ProfileService {
         Page<ProjectListDto> page = this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.TRUE, pageable);
         return page;
     }
-
+    
+    @Transactional
     public void reShowProject(String userId, String visitorId, Long projectId) {
         setProjectVisible(userId, visitorId, projectId, Boolean.TRUE);
     }
 
-
+    @Transactional
     public void hideProject(String userId, String visitorId, Long projectId) {
         setProjectVisible(userId, visitorId, projectId, Boolean.FALSE);
     }
@@ -110,7 +112,7 @@ public class ProfileService {
         ProjectMember projectMember = this.projectMemberRepository.findByProject_ProjectIdAndUser_UserId(projectId, userId)
                 .orElseThrow(() -> new YouAreNotMemberException(projectId));
         project.getProjectMembers().remove(projectMember);
-        projectMember.setHide(!visible);
+        projectMember.setVisible(visible);
         project.getProjectMembers().add(projectMember);
         this.projectMemberRepository.save(projectMember);
         this.projectRepository.save(project);

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectListService {
@@ -66,7 +68,7 @@ public class ProjectListService {
 
     @Transactional(readOnly = true)
     public Page<ProjectListDto> findAllByDdayLessThanOrderByDdayAsc(Pageable pageable) {
-        Page<ProjectListDto> page = this.projectRepository.findAllByDdayLessThanOrderByDdayAsc(30, pageable);
+        Page<ProjectListDto> page = this.projectRepository.findAllByEndDateBetween(LocalDateTime.now(), LocalDateTime.now().plusDays(30), pageable);
         return page;
     }
 

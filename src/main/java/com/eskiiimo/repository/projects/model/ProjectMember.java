@@ -1,8 +1,8 @@
 package com.eskiiimo.repository.projects.model;
 
+import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import com.eskiiimo.repository.user.model.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,14 +11,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@EqualsAndHashCode(of="projectMemberId")
+@EqualsAndHashCode(of = "projectMemberId")
 @Entity
 @Table(name = "T_MEMBER")
 public class ProjectMember {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private  Long projectMemberId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long projectMemberId;
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
     @Enumerated(EnumType.STRING)
@@ -29,7 +28,7 @@ public class ProjectMember {
     Boolean hide;
 
     @ManyToOne
-    @JoinColumn(name="accountId")
+    @JoinColumn(name = "accountId")
     private User user;
 
     @ManyToOne
@@ -37,9 +36,14 @@ public class ProjectMember {
     private Project project;
 
 
-    public void setProject(Project project){
+    public void joinProject(Project project) {
         this.project = project;
-        if(!project.getProjectMembers().contains(this))
+        if (this.project.getProjectMembers() == null
+                || !this.project.getProjectMembers().contains(this))
             this.project.addMember(this);
+    }
+
+    public void setVisible(Boolean visible) {
+        this.hide = !visible;
     }
 }

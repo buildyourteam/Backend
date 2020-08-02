@@ -11,7 +11,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @EqualsAndHashCode(of="recruitId")
 @Entity
 @Table(name = "T_RECRUIT")
@@ -36,5 +35,15 @@ public class Recruit {
     @ManyToOne
     @JoinColumn(name="projectId")
     private Project project;
+
+    public void markAsRead(){
+        if(this.state==RecruitState.UNREAD)
+            this.state=RecruitState.READ;
+    }
+
+    public void setRecruitState(RecruitState state){
+        this.state = state;
+    }
+
 
 }

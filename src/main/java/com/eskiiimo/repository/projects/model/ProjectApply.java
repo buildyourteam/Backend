@@ -13,13 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@EqualsAndHashCode(of="applyId")
+@EqualsAndHashCode(of = "applyId")
 @Entity
 @Table(name = "T_APPLY")
 public class ProjectApply {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long applyId;
     @Enumerated(EnumType.STRING)
     private ProjectApplyState state;
@@ -27,11 +26,28 @@ public class ProjectApply {
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
 
-    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="applyId")
-    private List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
+    @JoinColumn(name = "applyId")
+    private List<ProjectApplyAnswer> answers;
     @ManyToOne
-    @JoinColumn(name="accountId")
+    @JoinColumn(name = "accountId")
     private User user;
+
+    public void updateApply(String introduction, ProjectRole role, List<String> answers) {
+        this.introduction = introduction;
+        this.role = role;
+        for (int i = 0; i < this.answers.size(); i++)
+            if (!this.answers.get(i).getAnswer().equals(answers.get(i)))
+                this.answers.get(i).updateAnswer(answers.get(i));
+    }
+
+    public void markAsRead(){
+        if(this.state== ProjectApplyState.UNREAD)
+            this.state = ProjectApplyState.READ;
+    }
+
+    public void setApplyState(ProjectApplyState state){
+        this.state = state;
+    }
+
 }
