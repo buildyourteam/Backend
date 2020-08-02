@@ -5,13 +5,13 @@ import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
-import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.TestFactory.user.TestUserFactory;
 import com.eskiiimo.web.projects.enumtype.*;
 import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import com.eskiiimo.web.projects.request.RecruitProjectRequest;
+import com.eskiiimo.web.user.request.UpdateProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -191,20 +191,19 @@ public class TestProjectFactory {
         return projectDetailRequest;
     }
 
-    public ProfileDto generateProfileDto() {
+    public UpdateProfileRequest generateUpdateProfileRequest() {
         List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
         stacks.add(TechnicalStack.DJANGO);
-        ProfileDto profileDto = ProfileDto.builder()
+        UpdateProfileRequest updateProfileRequest = UpdateProfileRequest.builder()
                 .area("서울시 구로구")
                 .contact("010-9876-5432")
                 .introduction("프로필 업데이트 하기")
                 .role(ProjectRole.LEADER)
                 .stacks(stacks)
                 .userName("회원 01")
-                .grade((long) 100)
                 .build();
 
-        return profileDto;
+        return updateProfileRequest;
     }
 
     public ProjectDetailRequest generateProjectUpdateDto(Project project) {

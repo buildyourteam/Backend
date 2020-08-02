@@ -2,11 +2,11 @@ package com.eskiiimo.web.configs;
 
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.repository.security.dto.SignUpDto;
-import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.*;
 import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import com.eskiiimo.web.projects.service.ProjectDetailService;
 import com.eskiiimo.web.security.service.AuthService;
+import com.eskiiimo.web.user.request.UpdateProfileRequest;
 import com.eskiiimo.web.user.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -58,10 +58,9 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         this.profileService.updateProfile(
                 "TestUser" + (index * 3 + 1),
                 "TestUser" + (index * 3 + 1),
-                ProfileDto.builder()
+                UpdateProfileRequest.builder()
                         .area("서울시")
                         .contact("010-1234-5678")
-                        .grade((long) 0)
                         .introduction("테스트 유저" + (index * 3 + 1) + " 입니다.")
                         .role(ProjectRole.DEVELOPER)
                         .stacks(stacks1)
@@ -74,10 +73,9 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         this.profileService.updateProfile(
                 "TestUser" + (index * 3 + 2),
                 "TestUser" + (index * 3 + 2),
-                ProfileDto.builder()
+                UpdateProfileRequest.builder()
                         .area("대구시")
                         .contact("010-1234-5678")
-                        .grade((long) 0)
                         .introduction("테스트 유저" + (index * 3 + 2) + " 입니다.")
                         .role(ProjectRole.DEVELOPER)
                         .stacks(stacks2)
@@ -91,10 +89,9 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         this.profileService.updateProfile(
                 "TestUser" + (index * 3 + 3),
                 "TestUser" + (index * 3 + 3),
-                ProfileDto.builder()
+                UpdateProfileRequest.builder()
                         .area("부산시")
                         .contact("010-1234-5678")
-                        .grade((long) 0)
                         .introduction("테스트 유저" + (index * 3 + 3) + " 입니다.")
                         .role(ProjectRole.DEVELOPER)
                         .stacks(stacks3)
