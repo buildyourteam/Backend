@@ -1,11 +1,10 @@
 package com.eskiiimo.web.configs;
 
-import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
-import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.repository.security.dto.SignUpDto;
 import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.*;
+import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import com.eskiiimo.web.projects.service.ProjectDetailService;
 import com.eskiiimo.web.security.service.AuthService;
 import com.eskiiimo.web.user.service.ProfileService;
@@ -37,10 +36,10 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         System.out.println("Init Test User");
         generateProjects();
         System.out.println("Init Test Projects");
-        setProject((long)1,"1", State.ENDED);
-        setProject((long)2,"1", State.ENDED);
-        setProject((long)3,"1", State.RUNNING);
-        setProject((long)4,"1", State.RUNNING);
+        setProject((long) 1, "1", State.ENDED);
+        setProject((long) 2, "1", State.ENDED);
+        setProject((long) 3, "1", State.RUNNING);
+        setProject((long) 4, "1", State.RUNNING);
     }
 
     private void generateUser(int index) {
@@ -118,7 +117,7 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         List<String> questions = new ArrayList<String>();
         List<ProjectApplyQuestion> questionList = new ArrayList<ProjectApplyQuestion>();
         questions.add("왜 하고싶어요?");
-        ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
+        ProjectDetailRequest projectDetailRequest = ProjectDetailRequest.builder()
                 .applyCanFile(Boolean.TRUE)
                 .endDate(LocalDateTime.now().plusDays(20))
                 .needMember(new ProjectMemberSet(2, 2, 2, 2))
@@ -127,13 +126,11 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
                 .questions(questionList)
                 .introduction("테스트입니다.")
                 .teamName("프로젝트 " + index)
-                .currentMember(null)
-                .memberList(null)
-                .state(null)
+                .state(State.RECRUTING)
                 .build();
-        projectDetailDto.setQuestions(questions);
+        projectDetailRequest.setQuestions(questions);
         this.projectDetailService.storeProject(
-                projectDetailDto,
+                projectDetailRequest,
                 "TestUser" + ((index - 1) / 5 + 1)
         );
     }
@@ -142,7 +139,7 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
         List<String> questions = new ArrayList<String>();
         List<ProjectApplyQuestion> questionList = new ArrayList<ProjectApplyQuestion>();
         questions.add("왜 하고싶어요?");
-        UpdateDto updateDto = UpdateDto.builder()
+        ProjectDetailRequest projectDetailRequest = ProjectDetailRequest.builder()
                 .projectName("TestProject" + projectId)
                 .teamName("프로젝트 " + projectId)
                 .endDate(LocalDateTime.now().plusDays(20))
@@ -153,11 +150,11 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
                 .questions(questionList)
                 .needMember(new ProjectMemberSet(2, 2, 2, 2))
                 .build();
-        updateDto.setQuestions(questions);
+        projectDetailRequest.setQuestions(questions);
         this.projectDetailService.updateProject(
                 projectId,
-                updateDto,
-                "TestUser"+visitorId
+                projectDetailRequest,
+                "TestUser" + visitorId
         );
     }
 }

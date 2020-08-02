@@ -2,26 +2,24 @@ package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
 import com.eskiiimo.repository.projects.dto.RecruitDto;
-import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.index.controller.DocsController;
-import com.eskiiimo.web.projects.controller.resource.ProjectDetailResource;
 import com.eskiiimo.web.projects.controller.resource.ProjectMemberResource;
-import com.eskiiimo.web.projects.controller.resource.RecruitResource;
-import com.eskiiimo.web.projects.controller.resource.RecruitsResource;
+import com.eskiiimo.web.projects.controller.resource.RecruitResponse;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import com.eskiiimo.web.projects.request.ProjectDetailRequest;
+import com.eskiiimo.web.projects.response.GetRecruitsResponse;
+import com.eskiiimo.web.projects.response.ProjectDetailResponse;
 import com.eskiiimo.web.projects.service.ProjectDetailService;
 import com.eskiiimo.web.projects.validator.ProjectValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,92 +28,98 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(value = "/projects", produces = MediaTypes.HAL_JSON_VALUE)
+@RequiredArgsConstructor
 public class ProjectDetailController {
 
-    @Autowired
-    ProjectDetailService projectDetailService;
+    private final ProjectDetailService projectDetailService;
 
-    @Autowired
-    ProjectValidator projectValidator;
+    private final ProjectValidator projectValidator;
 
     @GetMapping(value = "/{project_id}")
-    public ResponseEntity getProjectDetail(
+    @ResponseStatus(HttpStatus.OK)
+    public ProjectDetailResponse getProjectDetail(
             @PathVariable Long project_id
     ) {
         ProjectDetailDto projectDetailDto = projectDetailService.getProject(project_id);
-        ProjectDetailResource projectDetailResource = new ProjectDetailResource(projectDetailDto, project_id);
+        ProjectDetailResponse projectDetailResponse = new ProjectDetailResponse(projectDetailDto, project_id);
 
-        Boolean myProject = Boolean.TRUE;
+        boolean myProject = Boolean.TRUE;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null)
             myProject = isMyProject(projectDetailDto, authentication.getName());
 
         if (myProject) {
-            projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("updateProject"));
-            projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("deleteProject"));
-            projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id + "/apply").withRel("applicants"));
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("updateProject"));
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("deleteProject"));
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id + "/apply").withRel("applicants"));
         } else
-            projectDetailResource.add(linkTo(ProjectDetailController.class).slash(project_id + "/apply").withRel("apply"));
-        projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectGet").withRel("profile"));
-        return ResponseEntity.ok(projectDetailResource);
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id + "/apply").withRel("apply"));
+        projectDetailResponse.add(linkTo(DocsController.class).slash("#resourcesProjectGet").withRel("profile"));
+
+        return projectDetailResponse;
     }
 
     // 내가 보낸 영입제안 리스트
     @GetMapping(value = "/{project_id}/recruits")
-    public ResponseEntity getRecruits(
+    @ResponseStatus(HttpStatus.OK)
+    public GetRecruitsResponse getRecruits(
             @PathVariable Long project_id
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         List<RecruitDto> recruits = this.projectDetailService.getRecruits(visitorId, project_id);
-        List<RecruitResource> recruitResources = new ArrayList<RecruitResource>();
+        List<RecruitResponse> recruitResponses = new ArrayList<RecruitResponse>();
         for (RecruitDto recruitDto : recruits)
-            recruitResources.add(new RecruitResource(recruitDto, visitorId));
+            recruitResponses.add(new RecruitResponse(recruitDto, visitorId));
 
-        RecruitsResource recruitsResource = new RecruitsResource(recruitResources, project_id);
-        recruitsResource.add(linkTo(DocsController.class).slash("#getSendRecruits").withRel("profile"));
-        return ResponseEntity.ok(recruitsResource);
+        return new GetRecruitsResponse(recruitResponses, project_id);
     }
 
     @PostMapping
     public ResponseEntity createProject(
-            @RequestBody @Valid ProjectDetailDto projectDetailDto
+            @RequestBody @Valid ProjectDetailRequest projectDetailRequest
     ) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        this.projectValidator.validateDate(projectDetailDto);
-        Project newProject = this.projectDetailService.storeProject(projectDetailDto, userId);
+        this.projectValidator.validateDate(projectDetailRequest);
+        Project newProject = this.projectDetailService.storeProject(projectDetailRequest, userId);
 
-        RepresentationModel created = new RepresentationModel();
-        created.add(linkTo(ProjectDetailController.class).withSelfRel());
-        created.add(new Link("/projects/" + newProject.getProjectId()).withRel("createdProject"));
-        created.add(linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile"));
-        return ResponseEntity.created(linkTo(ProjectDetailController.class).slash(newProject.getProjectId()).toUri()).body(created);
+        RepresentationModel res = new RepresentationModel();
+        res.add(linkTo(ProjectDetailController.class).withSelfRel());
+        res.add(new Link("/projects/" + newProject.getProjectId()).withRel("createdProject"));
+        res.add(linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile"));
+
+        return ResponseEntity
+                .created(linkTo(ProjectDetailController.class).slash(newProject.getProjectId()).toUri())
+                .body(res);
     }
 
     @PutMapping("/{project_id}")
-    public ResponseEntity updateProject(
+    @ResponseStatus(HttpStatus.OK)
+    public ProjectDetailResponse updateProject(
             @PathVariable Long project_id,
-            @RequestBody UpdateDto updateDto
+            @RequestBody ProjectDetailRequest projectDetailRequest
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
-        ProjectDetailDto project = projectDetailService.updateProject(project_id, updateDto, visitorId);
-        ProjectDetailResource projectDetailResource = new ProjectDetailResource(project, project_id);
-        projectDetailResource.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
-        return ResponseEntity.ok(projectDetailResource);
+        ProjectDetailDto project = projectDetailService.updateProject(project_id, projectDetailRequest, visitorId);
+        ProjectDetailResponse projectDetailResponse = new ProjectDetailResponse(project, project_id);
+        projectDetailResponse.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
+
+        return projectDetailResponse;
     }
 
     @DeleteMapping("/{project_id}")
-    public ResponseEntity deleteProject(
+    @ResponseStatus(HttpStatus.OK)
+    public Object deleteProject(
             @PathVariable Long project_id
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         this.projectDetailService.deleteProject(project_id, visitorId);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return null;
     }
 
     public boolean isMyProject(ProjectDetailDto projectDetailDto, String userId) {

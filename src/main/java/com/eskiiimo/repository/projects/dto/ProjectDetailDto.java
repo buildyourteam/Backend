@@ -1,6 +1,5 @@
 package com.eskiiimo.repository.projects.dto;
 
-import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.web.projects.controller.resource.ProjectMemberResource;
@@ -60,24 +59,5 @@ public class ProjectDetailDto {
                 }
             this.memberList = projectMemberListResource;
         }
-    }
-
-    public Project toProject(String leaderId) {
-        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        for (String question : this.questions)
-            questions.add(ProjectApplyQuestion.builder().question(question).build());
-        return Project.builder()
-                .projectName(this.projectName)
-                .teamName(this.teamName)
-                .endDate(this.endDate)
-                .introduction(this.introduction)
-                .state(this.state)
-                .projectField(this.projectField)
-                .currentMember(new ProjectMemberSet(0,0,0,0))
-                .needMember(this.needMember)
-                .leaderId(leaderId)
-                .applyCanFile(this.applyCanFile)
-                .questions(questions)
-                .build();
     }
 }

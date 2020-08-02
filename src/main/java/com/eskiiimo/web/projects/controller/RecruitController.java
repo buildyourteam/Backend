@@ -2,14 +2,16 @@ package com.eskiiimo.web.projects.controller;
 
 import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.web.index.controller.DocsController;
-import com.eskiiimo.web.projects.controller.resource.RecruitListResource;
-import com.eskiiimo.web.projects.controller.resource.RecruitResource;
+import com.eskiiimo.web.projects.controller.resource.RecruitResponse;
+import com.eskiiimo.web.projects.request.RecruitProjectRequest;
+import com.eskiiimo.web.projects.response.GetRecruitsToMeResponse;
 import com.eskiiimo.web.projects.service.RecruitService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,75 +19,90 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @RequestMapping(value = "/profile/{userId}/recruit", produces = MediaTypes.HAL_JSON_VALUE)
 public class RecruitController {
-    @Autowired
-    RecruitService recruitService;
+
+    private final RecruitService recruitService;
 
     // 프로젝트에 영입하기
     @PostMapping
-    public ResponseEntity recruitProject(
+    public ResponseEntity<Link> recruitProject(
             @PathVariable String userId,
-            @RequestBody RecruitDto recruit
+            @RequestBody RecruitProjectRequest recruit
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // 프로젝트 영입제안
         this.recruitService.recruitProject(userId, recruit, visitorId);
-        return ResponseEntity.created(linkTo(RecruitController.class, userId).toUri()).body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
+
+        return ResponseEntity
+                .created(linkTo(RecruitController.class, userId).toUri())
+                .body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
     }
 
     // 나한테 온 영입제안 리스트
     @GetMapping
-    public ResponseEntity getRecruitList(
+    @ResponseStatus(HttpStatus.OK)
+    public GetRecruitsToMeResponse getRecruitsToMe(
             @PathVariable String userId
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         List<RecruitDto> recruitList = this.recruitService.getRecruitList(userId, visitorId);
-        List<RecruitResource> recruitResources = new ArrayList<RecruitResource>();
+        List<RecruitResponse> recruitResponses = new ArrayList<RecruitResponse>();
         for (RecruitDto recruitDto : recruitList)
-            recruitResources.add(new RecruitResource(recruitDto, userId));
+            recruitResponses.add(new RecruitResponse(recruitDto, userId));
 
-        RecruitListResource recruitListResource = new RecruitListResource(recruitResources, userId);
-        recruitListResource.add(linkTo(DocsController.class).slash("#getRecruits").withRel("profile"));
-        return ResponseEntity.ok(recruitListResource);
+        return new GetRecruitsToMeResponse(recruitResponses, userId);
     }
 
     // 나한테 온 영입제안 확인하기(열람시 읽음상태로 전환)
     @GetMapping("/{projectId}")
-    public ResponseEntity getRecruitProject(
+    @ResponseStatus(HttpStatus.OK)
+    public RecruitResponse getRecruitProject(
             @PathVariable String userId,
             @PathVariable Long projectId
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        RecruitResource recruitResource = new RecruitResource(
+        RecruitResponse recruitResponse = new RecruitResponse(
                 this.recruitService.getRecruit(userId, projectId, visitorId),
                 userId);
-        recruitResource.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("acceptRecruit"));
-        recruitResource.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("rejectRecruit"));
-        recruitResource.add(linkTo(DocsController.class).slash("#getRecruit").withRel("profile"));
-        return ResponseEntity.ok(recruitResource);
+        recruitResponse.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("acceptRecruit"));
+        recruitResponse.add(linkTo(RecruitController.class, userId).slash(projectId).withRel("rejectRecruit"));
+        recruitResponse.add(linkTo(DocsController.class).slash("#getRecruit").withRel("profile"));
+
+        return recruitResponse;
     }
 
     // 영입제안 승락하기
     @PutMapping("/{projectId}")
-    public ResponseEntity acceptRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
+    @ResponseStatus(HttpStatus.OK)
+    public Link acceptRecruitProject(
+            @PathVariable String userId,
+            @PathVariable Long projectId
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         this.recruitService.acceptRecruit(userId, projectId, visitorId);
-        return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#acceptRecruit").withRel("self"));
+
+        return linkTo(DocsController.class).slash("#acceptRecruit").withRel("self");
     }
 
     // 영입제안 거절하기
     @DeleteMapping("/{projectId}")
-    public ResponseEntity rejectRecruitProject(@PathVariable String userId, @PathVariable Long projectId) {
+    @ResponseStatus(HttpStatus.OK)
+    public Link rejectRecruitProject(
+            @PathVariable String userId,
+            @PathVariable Long projectId
+    ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         this.recruitService.rejectRecruit(userId, projectId, visitorId);
-        return ResponseEntity.ok().body(linkTo(DocsController.class).slash("#rejectRecruit").withRel("self"));
+
+        return linkTo(DocsController.class).slash("#rejectRecruit").withRel("self");
     }
 }

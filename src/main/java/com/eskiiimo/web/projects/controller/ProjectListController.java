@@ -3,8 +3,8 @@ package com.eskiiimo.web.projects.controller;
 import com.eskiiimo.repository.projects.dto.ProjectListDto;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.service.ProjectListService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @RequestMapping(value = "/projects", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectListController {
 
-    @Autowired
-    ProjectListService projectListService;
+    private final ProjectListService projectListService;
     /*
     직군별 검색기능 value="occupation"
     분야별 검색기능 value="field"
@@ -42,6 +42,5 @@ public class ProjectListController {
     ) {
         return assembler.toModel(projectListService.findAllByDdayLessThanOrderByDdayAsc(pageable));
     }
-
 
 }

@@ -1,7 +1,5 @@
 package com.eskiiimo.repository.projects.model;
 
-import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
-import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import com.eskiiimo.web.projects.enumtype.State;
@@ -89,7 +87,7 @@ public class Project {
         this.applies.set(this.applies.indexOf(apply), apply);
     }
 
-    public void updateProject(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet needMember,  Boolean applyCanFile, List<String> newQuestions) {
+    public void updateProject(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet needMember, Boolean applyCanFile, List<String> newQuestions) {
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;

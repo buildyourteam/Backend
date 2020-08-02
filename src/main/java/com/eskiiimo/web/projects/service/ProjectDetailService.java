@@ -2,17 +2,19 @@ package com.eskiiimo.web.projects.service;
 
 import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
 import com.eskiiimo.repository.projects.dto.RecruitDto;
-import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.Project;
+import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.repository.projects.model.Recruit;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
-import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
+import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
 import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -32,8 +34,24 @@ public class ProjectDetailService {
     private final ModelMapper modelMapper;
 
     @Transactional
-    public Project storeProject(ProjectDetailDto projectDetailDto, String user_id) {
-        Project project = projectDetailDto.toProject(user_id);
+    public Project storeProject(ProjectDetailRequest projectDetailRequest, String user_id) {
+        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+        for (String question : projectDetailRequest.getQuestions())
+            questions.add(ProjectApplyQuestion.builder().question(question).build());
+
+        Project project = Project.builder()
+                .projectName(projectDetailRequest.getProjectName())
+                .teamName(projectDetailRequest.getTeamName())
+                .endDate(projectDetailRequest.getEndDate())
+                .introduction(projectDetailRequest.getIntroduction())
+                .state(projectDetailRequest.getState())
+                .projectField(projectDetailRequest.getProjectField())
+                .currentMember(new ProjectMemberSet(0, 0, 0, 0))
+                .needMember(projectDetailRequest.getNeedMember())
+                .leaderId(user_id)
+                .applyCanFile(projectDetailRequest.getApplyCanFile())
+                .questions(questions)
+                .build();
 
         Project newProject = this.projectRepository.save(project);
         this.projectApplyService.addLeader(newProject, user_id);
@@ -49,19 +67,19 @@ public class ProjectDetailService {
     }
 
     @Transactional
-    public ProjectDetailDto updateProject(Long projectId, UpdateDto updateDto, String visitorId) {
+    public ProjectDetailDto updateProject(Long projectId, ProjectDetailRequest projectDetailRequest, String visitorId) {
         Project project = getProjectForLeader(projectId, visitorId);
         project.updateProject(
-                updateDto.getProjectName(),
-                updateDto.getTeamName(),
-                updateDto.getEndDate(),
-                updateDto.getIntroduction(),
-                updateDto.getState(),
-                updateDto.getProjectField(),
-                updateDto.getNeedMember(),
-                updateDto.getApplyCanFile(),
-                updateDto.getQuestions()
-                );
+                projectDetailRequest.getProjectName(),
+                projectDetailRequest.getTeamName(),
+                projectDetailRequest.getEndDate(),
+                projectDetailRequest.getIntroduction(),
+                projectDetailRequest.getState(),
+                projectDetailRequest.getProjectField(),
+                projectDetailRequest.getNeedMember(),
+                projectDetailRequest.getApplyCanFile(),
+                projectDetailRequest.getQuestions()
+        );
         return this.projectToDto(this.projectRepository.save(project));
     }
 

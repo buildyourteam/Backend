@@ -16,7 +16,7 @@ public class ProjectMemberDto {
 
 
     @Builder
-    public ProjectMemberDto(String userName, ProjectRole role, TechnicalStack stack, Long grade){
+    public ProjectMemberDto(String userName, ProjectRole role, TechnicalStack stack, Long grade) {
         this.userName = userName;
         this.role = role;
         this.stack = stack;

@@ -14,6 +14,7 @@ import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.exception.RecruitNotAuthException;
 import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
 import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class RecruitService {
     private final ModelMapper modelMapper;
 
     @Transactional
-    public void recruitProject(String userId, RecruitDto recruit, String visitorId) {
+    public void recruitProject(String userId, RecruitProjectRequest recruit, String visitorId) {
         Project project = projectRepository.findById(recruit.getProjectId())
                 .orElseThrow(() -> new ProjectNotFoundException(recruit.getProjectId()));
         if (!this.isLeader(project, visitorId))
@@ -41,7 +42,16 @@ public class RecruitService {
         User user = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        Recruit projectRecruit = recruit.toEntity(user, project);
+        Recruit projectRecruit = Recruit.builder()
+                .role(recruit.getRole())
+                .introduction(recruit.getIntroduction())
+                .user(user)
+                .project(project)
+                .state(RecruitState.UNREAD)
+                .projectId(project.getProjectId())
+                .projectName(project.getProjectName())
+                .build();
+
         this.recruitRepository.save(projectRecruit);
     }
 

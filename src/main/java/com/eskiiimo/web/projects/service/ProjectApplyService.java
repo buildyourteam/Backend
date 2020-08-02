@@ -4,6 +4,7 @@ import com.eskiiimo.repository.projects.dto.ProjectApplicantDto;
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectApply;
+import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
@@ -16,6 +17,7 @@ import com.eskiiimo.web.projects.exception.ApplicantNotFoundException;
 import com.eskiiimo.web.projects.exception.ApplyNotFoundException;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -51,18 +53,29 @@ public class ProjectApplyService {
     }
 
     @Transactional
-    public void applyProject(Long projectId, ProjectApplyDto apply, String visitorId) {
+    public void applyProject(Long projectId, ProjectApplyRequest apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
 
-        ProjectApply projectApply = apply.toEntity(user);
+        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
+        for (String answer : apply.getAnswers())
+            answers.add(ProjectApplyAnswer.builder().answer(answer).build());
+
+        ProjectApply projectApply = ProjectApply.builder()
+                .answers(answers)
+                .introduction(apply.getIntroduction())
+                .state(ProjectApplyState.UNREAD)
+                .user(user)
+                .role(apply.getRole())
+                .build();
+
         project.addApply(projectApply);
     }
 
     @Transactional
-    public void updateApply(Long projectId, ProjectApplyDto apply, String visitorId) {
+    public void updateApply(Long projectId, ProjectApplyRequest apply, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         ProjectApply projectApply = findApply(project, visitorId);
