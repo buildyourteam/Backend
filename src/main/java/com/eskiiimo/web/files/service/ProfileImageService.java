@@ -1,16 +1,19 @@
 package com.eskiiimo.web.files.service;
 
 
-import com.eskiiimo.repository.files.dto.FileUploadDto;
+import com.eskiiimo.web.files.response.FileUploadResponse;
 import com.eskiiimo.repository.files.model.ProfileImage;
 import com.eskiiimo.repository.files.repository.ProfileImageRepository;
 import com.eskiiimo.web.configs.FileUploadProperties;
 import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
 import com.eskiiimo.web.files.exception.ProfileImageNotFoundException;
+import com.eskiiimo.web.user.exception.NotYourProfileException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,20 +41,31 @@ public class ProfileImageService {
         }
     }
 
-    public FileUploadDto storeProfileImage(String user_id, MultipartFile file) {
+    public FileUploadResponse storeProfileImage(String user_id, MultipartFile file) {
+
+        if(!SecurityContextHolder.getContext().getAuthentication().getName().equals(user_id))
+            throw new NotYourProfileException(user_id);
+
         String fileName = fileService.storeFile(file, this.profileImageLocation, user_id);
 
         ProfileImage profileImage = this.profileImageRepository.findByUserId(user_id).orElse(new ProfileImage());
         String filePath = this.profileImageLocation.resolve(fileName).toString();
         profileImage.updateProfileImage(user_id, filePath);
         profileImageRepository.save(profileImage);
-        FileUploadDto fileUploadDto = FileUploadDto.builder()
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/profile/image/")
+                .path(user_id)
+                .toUriString();
+
+        FileUploadResponse fileUploadResponse = FileUploadResponse.builder()
                 .fileName(fileName)
+                .fileDownloadUri(fileDownloadUri)
                 .fileType(file.getContentType())
                 .size(file.getSize())
                 .build();
 
-        return fileUploadDto;
+        return fileUploadResponse;
     }
 
     public Resource getProfileImage(String userId) {

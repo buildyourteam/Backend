@@ -9,7 +9,6 @@ import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.enumtype.UserState;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PeopleService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public Page<PeopleDto> getPeople(Long grade, ProjectRole role, String area, Pageable pageable) {

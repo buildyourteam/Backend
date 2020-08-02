@@ -1,7 +1,7 @@
 package com.eskiiimo.web.files.service;
 
 
-import com.eskiiimo.repository.files.dto.FileUploadDto;
+import com.eskiiimo.web.files.response.FileUploadResponse;
 import com.eskiiimo.repository.files.model.ProjectImage;
 import com.eskiiimo.repository.files.repository.ProjectImageRepository;
 import com.eskiiimo.web.configs.FileUploadProperties;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,19 +39,26 @@ public class ProjectImageService {
         }
     }
 
-    public FileUploadDto storeProjectImage(Long projectId, MultipartFile file) {
+    public FileUploadResponse storeProjectImage(Long projectId, MultipartFile file) {
         String fileName = fileService.storeFile(file, this.projectImageLocation, projectId.toString());
 
         ProjectImage projectImage = this.projectImageRepository.findByProjectId(projectId).orElse(new ProjectImage());
         String filePath = this.projectImageLocation.resolve(fileName).toString();
         projectImage.updateProjectImage(projectId, filePath);
         projectImageRepository.save(projectImage);
-        FileUploadDto fileUploadDto = FileUploadDto.builder()
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/projects/image/")
+                .path(projectId.toString())
+                .toUriString();
+
+        FileUploadResponse fileUploadResponse = FileUploadResponse.builder()
                 .fileName(fileName)
+                .fileDownloadUri(fileDownloadUri)
                 .fileType(file.getContentType())
                 .size(file.getSize())
                 .build();
-        return fileUploadDto;
+        return fileUploadResponse;
     }
 
     public Resource getProjectImage(Long projectId) {

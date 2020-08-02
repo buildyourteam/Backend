@@ -1,59 +1,54 @@
 package com.eskiiimo.web.files.controller;
 
 
-import com.eskiiimo.repository.files.dto.FileUploadDto;
+import com.eskiiimo.web.files.response.FileUploadResponse;
 import com.eskiiimo.web.files.service.ProjectImageService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/projects/image/{projectid}")
+@RequiredArgsConstructor
+@RequestMapping("/projects/image/{projectId}")
 public class ProjectImageController {
     private static final Logger logger = LoggerFactory.getLogger(ProjectImageController.class);
 
-    @Autowired
-    private ProjectImageService projectImageService;
+    private final ProjectImageService projectImageService;
 
     /*
     Upload Image
      */
 
     @PostMapping
-    public ResponseEntity uploadProjectImage(@PathVariable Long projectid, @RequestParam("image") MultipartFile file) {
-        FileUploadDto fileUploadDto = projectImageService.storeProjectImage(projectid,file);
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/projects/image/")
-                .path(projectid.toString())
-                .toUriString();
-        fileUploadDto.setFileDownloadUri(fileDownloadUri);
-        return ResponseEntity.ok().body(fileUploadDto);
+    @ResponseStatus(HttpStatus.OK)
+    public FileUploadResponse uploadProjectImage(
+            @PathVariable Long projectId,
+            @RequestParam("image") MultipartFile file
+    ) {
+        return this.projectImageService.storeProjectImage(projectId, file);
     }
-
-
 
     /*
     Download Image
      */
 
-
     @GetMapping
-    public ResponseEntity<Resource> downloadProjectImage(@PathVariable Long projectid, HttpServletRequest request){
+    public ResponseEntity<Resource> downloadProjectImage(
+            @PathVariable Long projectId,
+            HttpServletRequest request) {
         // Load file as Resource
-        Resource resource = projectImageService.getProjectImage(projectid);
+        Resource resource = projectImageService.getProjectImage(projectId);
 
         String contentType = null;
         try {
@@ -63,7 +58,7 @@ public class ProjectImageController {
         }
 
         // Fallback to the default content type if type could not be determined
-        if(contentType == null) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
 

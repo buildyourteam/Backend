@@ -1,4 +1,4 @@
-package com.eskiiimo.repository.security.dto;
+package com.eskiiimo.web.security.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SignUpDto {
+public class SignInRequest {
     String userId;
-    String userEmail;
     String password;
-    String name;
 }

@@ -1,4 +1,4 @@
-package com.eskiiimo.repository.files.dto;
+package com.eskiiimo.web.files.response;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class FileUploadDto {
+public class FileUploadResponse {
     private String fileName;
     private String fileDownloadUri;
     private String fileType;
