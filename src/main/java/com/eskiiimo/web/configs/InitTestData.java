@@ -1,7 +1,7 @@
 package com.eskiiimo.web.configs;
 
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
-import com.eskiiimo.repository.security.dto.SignUpDto;
+import com.eskiiimo.web.security.request.SignUpRequest;
 import com.eskiiimo.web.projects.enumtype.*;
 import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import com.eskiiimo.web.projects.service.ProjectDetailService;
@@ -44,7 +44,7 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
 
     private void generateUser(int index) {
         this.authService.signup(
-                SignUpDto.builder()
+                SignUpRequest.builder()
                         .name("유저" + index)
                         .password("password")
                         .userEmail("TestUser" + index + "@egluu.com")

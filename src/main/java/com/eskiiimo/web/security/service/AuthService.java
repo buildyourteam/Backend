@@ -1,7 +1,7 @@
 package com.eskiiimo.web.security.service;
 
-import com.eskiiimo.repository.security.dto.SignInDto;
-import com.eskiiimo.repository.security.dto.SignUpDto;
+import com.eskiiimo.web.security.request.SignInRequest;
+import com.eskiiimo.web.security.request.SignUpRequest;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.security.exception.CSigninFailedException;
@@ -23,12 +23,12 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public boolean signup(SignUpDto signupDto) {
+    public boolean signup(SignUpRequest signupRequest) {
         userRepository.save(User.builder()
-                .userId(signupDto.getUserId())
-                .password(passwordEncoder.encode(signupDto.getPassword()))
-                .userName(signupDto.getName())
-                .userEmail(signupDto.getUserEmail())
+                .userId(signupRequest.getUserId())
+                .password(passwordEncoder.encode(signupRequest.getPassword()))
+                .userName(signupRequest.getName())
+                .userEmail(signupRequest.getUserEmail())
                 .activate(UserActivate.REGULAR)
                 .state(UserState.FREE)
                 .roles(Collections.singletonList("ROLE_USER"))
@@ -37,10 +37,10 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public User signin(SignInDto signInDto) {
-        User user = userRepository.findByUserIdAndActivate(signInDto.getUserId(),UserActivate.REGULAR)
+    public User signin(SignInRequest signInRequest) {
+        User user = userRepository.findByUserIdAndActivate(signInRequest.getUserId(),UserActivate.REGULAR)
                 .orElseThrow(() -> new CUserNotFoundException());
-        if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword()))
             throw new CSigninFailedException();
         return user;
     }

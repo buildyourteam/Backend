@@ -1,11 +1,9 @@
 package com.eskiiimo.web.security.controller;
 
 import com.eskiiimo.web.common.BaseControllerTest;
-import com.eskiiimo.repository.security.dto.SignInDto;
-import com.eskiiimo.repository.security.dto.SignUpDto;
-import com.eskiiimo.repository.user.model.User;
+import com.eskiiimo.web.security.request.SignInRequest;
+import com.eskiiimo.web.security.request.SignUpRequest;
 import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.web.user.enumtype.UserActivate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ class AuthControllerTest extends BaseControllerTest {
     @Transactional
     void signin() throws Exception {
 
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpRequest signUpRequest = SignUpRequest.builder()
                 .userId("user1")
                 .userEmail("tester@eskiiimo.com")
                 .name("testUser")
@@ -41,16 +39,16 @@ class AuthControllerTest extends BaseControllerTest {
                 .build();
         this.mockMvc.perform(post("/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(signUpDto)));
+                .content(this.objectMapper.writeValueAsString(signUpRequest)));
 //
-                SignInDto signInDto = SignInDto.builder()
+                SignInRequest signInRequest = SignInRequest.builder()
                 .userId("user1")
                 .password("testPassword")
                 .build();
 
         this.mockMvc.perform(post("/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(signInDto)))
+                .content(this.objectMapper.writeValueAsString(signInRequest)))
                 .andExpect(status().isOk())
                 .andExpect(header().exists("authToken"))
                 .andDo(print())
@@ -71,7 +69,7 @@ class AuthControllerTest extends BaseControllerTest {
     @DisplayName("로그아웃")
     @Transactional
     void Signup() throws Exception {
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpRequest signUpRequest = SignUpRequest.builder()
                 .userId("testid")
                 .userEmail("tester@eskiiimo.com")
                 .name("testUser")
@@ -80,7 +78,7 @@ class AuthControllerTest extends BaseControllerTest {
 
         this.mockMvc.perform(post("/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(signUpDto)))
+                .content(this.objectMapper.writeValueAsString(signUpRequest)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("signup",

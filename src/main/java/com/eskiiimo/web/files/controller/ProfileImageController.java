@@ -1,66 +1,54 @@
 package com.eskiiimo.web.files.controller;
 
 
-import com.eskiiimo.repository.files.dto.FileUploadDto;
+import com.eskiiimo.web.files.response.FileUploadResponse;
 import com.eskiiimo.web.files.service.ProfileImageService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @RequestMapping(value = "/profile/image/{user_id}")
 public class ProfileImageController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileImageController.class);
 
-    @Autowired
-    private ProfileImageService profileImageService;
+    private final ProfileImageService profileImageService;
 
     /*
     Upload Image
      */
 
     @PostMapping
-    public ResponseEntity uploadProfileImage(@PathVariable String user_id, @RequestParam("image") MultipartFile file) {
-
-        FileUploadDto fileUploadDto =  profileImageService.storeProfileImage(user_id,file);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String userId = authentication.getName();
-        if(!userId.equals(user_id))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/profile/image/")
-                .path(user_id)
-                .toUriString();
-
-        fileUploadDto.setFileDownloadUri(fileDownloadUri);
-
-        return ResponseEntity.ok().body(fileUploadDto);
+    @ResponseStatus(HttpStatus.OK)
+    public FileUploadResponse uploadProfileImage(
+            @PathVariable String user_id,
+            @RequestParam("image") MultipartFile file
+    ) {
+        return this.profileImageService.storeProfileImage(user_id, file);
     }
 
 
     @GetMapping
-    public ResponseEntity<Resource> downloadProfileImage(@PathVariable String user_id, HttpServletRequest request){
+    public ResponseEntity<Resource> downloadProfileImage(
+            @PathVariable String user_id,
+            HttpServletRequest request
+    ) {
         // Load file as Resource
         Resource resource = profileImageService.getProfileImage(user_id);
-        if(resource==null)
+        if (resource == null)
             return ResponseEntity.notFound().build();
         String contentType = null;
         try {
@@ -70,7 +58,7 @@ public class ProfileImageController {
         }
 
         // Fallback to the default content type if type could not be determined
-        if(contentType == null) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
 
