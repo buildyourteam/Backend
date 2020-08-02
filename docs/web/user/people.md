@@ -27,3 +27,15 @@
       - User
       - UsersStack
 
+## 2. Service
+### 정의
+프로젝트 리스트 조회 관련 비즈니스 로직을 수행
+
+### 기능 리스트
+1. [getPeople(grade, ProjectRole, area, Pageable)](#1-getpeoplelong-grade-projectrole-role-string-area-pageable-pageable) : 사용자 정보 조회
+
+### 기능 정의
+#### 1. getPeople(Long grade, ProjectRole role, String area, Pageable pageable)
+  - 레벨, 프로젝트 역할, 지역에 따른 사용자 정보를 리스트로 조회
+  - 연관 레퍼지토리
+    - UserRepository

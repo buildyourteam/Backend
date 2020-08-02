@@ -43,9 +43,9 @@
   - UserRepository
   
 ### 기능 리스트
-1. [storeProject(ProjectDetailDto, user_id)](#1-signupsignupdto-signupdto) : 회원가입
-2. [deleteProject(project_id, visitor_id)](#2-signinsignindto-signindto) : 로그인
-3. [updateProject(project_id, UpdateDto, visitor_id)](#3-idcheckstring-checkid) : ID 중복 확인
+1. [signup(SignUpDto)](#1-signupsignupdto-signupdto) : 회원가입
+2. [signin(SignInDto)](#2-signinsignindto-signindto) : 로그인
+3. [idCheck(checkId)](#3-idcheckstring-checkid) : ID 중복 확인
 
 ### 기능 정의
 #### 1. signup(SignUpDto signupDto)
