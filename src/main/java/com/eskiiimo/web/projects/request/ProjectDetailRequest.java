@@ -1,4 +1,4 @@
-package com.eskiiimo.repository.projects.dto;
+package com.eskiiimo.web.projects.request;
 
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-public class UpdateDto {
+public class ProjectDetailRequest {
     private String projectName;
     private String teamName;
     private LocalDateTime endDate;
@@ -27,7 +27,7 @@ public class UpdateDto {
 
 
     @Builder
-    public UpdateDto(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectMemberSet needMember, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions) {
+    public ProjectDetailRequest(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectMemberSet needMember, ProjectField projectField, Boolean applyCanFile, List<ProjectApplyQuestion> questions) {
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;

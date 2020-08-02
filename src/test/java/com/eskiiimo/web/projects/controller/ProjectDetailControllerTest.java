@@ -1,14 +1,13 @@
 package com.eskiiimo.web.projects.controller;
 
-import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
-import com.eskiiimo.repository.projects.dto.RecruitDto;
-import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
+import com.eskiiimo.web.projects.request.ProjectDetailRequest;
+import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
@@ -108,19 +107,19 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         Long projectId = project.getProjectId();
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
-        RecruitDto recruitDto1 = testProjectFactory.generateRecruitDto(projectId, user1);
-        RecruitDto recruitDto2 = testProjectFactory.generateRecruitDto(projectId, user2);
+        RecruitProjectRequest recruitProjectRequest1 = testProjectFactory.generateRecruitRequest(projectId, user1);
+        RecruitProjectRequest recruitProjectRequest2 = testProjectFactory.generateRecruitRequest(projectId, user2);
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", "user1", projectId)
-                .content(objectMapper.writeValueAsString(recruitDto1))
+                .content(objectMapper.writeValueAsString(recruitProjectRequest1))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", "user2", projectId)
-                .content(objectMapper.writeValueAsString(recruitDto2))
+                .content(objectMapper.writeValueAsString(recruitProjectRequest2))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
@@ -159,7 +158,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     public void createProject() throws Exception {
         // Given
         Project myProject = testProjectFactory.generateMyProject(0);
-        ProjectDetailDto project = testProjectFactory.generateProjectDetailDto(myProject);
+        ProjectDetailRequest project = testProjectFactory.generateProjectDetailRequest(myProject);
 
         // When & Then
         mockMvc.perform(post("/projects")
@@ -184,9 +183,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                                 fieldWithPath("endDate").description("마감일"),
                                 fieldWithPath("introduction").description("프로젝트에 대한 설명"),
                                 fieldWithPath("state").description("프로젝트 상태(모집중)"),
-                                fieldWithPath("memberList").description("프로젝트에 참가하는 멤버 리스트"),
                                 fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("currentMember").description("현재 개발자 수"),
                                 fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
                                 fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
                                 fieldWithPath("needMember.developer").description("필요한 개발자 수"),
@@ -213,7 +210,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
         questions.add(ProjectApplyQuestion.builder().question("question1").build());
         questions.add(ProjectApplyQuestion.builder().question("question2").build());
-        ProjectDetailDto project = ProjectDetailDto.builder()
+        ProjectDetailRequest project = ProjectDetailRequest.builder()
                 .projectName("project1")
 //                .teamName("Team1")
                 .endDate(LocalDateTime.of(2022, 05, 20, 11, 11))
@@ -240,13 +237,13 @@ class ProjectDetailControllerTest extends BaseControllerTest {
     public void updateProject() throws Exception {
         // Given
         Project myProject = testProjectFactory.generateMyProject(0);
-        UpdateDto updateDto = testProjectFactory.generateProjectUpdateDto(myProject);
-        updateDto.setProjectName("Hi updated project....");
+        ProjectDetailRequest projectDetailRequest = testProjectFactory.generateProjectUpdateDto(myProject);
+        projectDetailRequest.setProjectName("Hi updated project....");
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", myProject.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(this.objectMapper.writeValueAsString(updateDto)))
+                .content(this.objectMapper.writeValueAsString(projectDetailRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("update-project",
@@ -320,7 +317,7 @@ class ProjectDetailControllerTest extends BaseControllerTest {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andDo(document("delete-project",
                         pathParameters(
                                 parameterWithName("project_id").description("Project id")

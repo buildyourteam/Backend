@@ -1,9 +1,5 @@
 package com.eskiiimo.web.common.TestFactory.project;
 
-import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
-import com.eskiiimo.repository.projects.dto.ProjectDetailDto;
-import com.eskiiimo.repository.projects.dto.RecruitDto;
-import com.eskiiimo.repository.projects.dto.UpdateDto;
 import com.eskiiimo.repository.projects.model.*;
 import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
@@ -13,6 +9,9 @@ import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.TestFactory.user.TestUserFactory;
 import com.eskiiimo.web.projects.enumtype.*;
+import com.eskiiimo.web.projects.request.ProjectApplyRequest;
+import com.eskiiimo.web.projects.request.ProjectDetailRequest;
+import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -124,9 +123,20 @@ public class TestProjectFactory {
         return projectMember;
     }
 
-    public ProjectApply generateApply(Project project, User user){
-        ProjectApplyDto projectApplyDto = generateProjectApplyDto();
-        ProjectApply projectApply =projectApplyDto.toEntity(user);
+    public ProjectApply generateApply(Project project, User user) {
+        ProjectApplyRequest projectApplyRequest = generateProjectApplyRequest();
+
+        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
+        for (String answer : projectApplyRequest.getAnswers())
+            answers.add(ProjectApplyAnswer.builder().answer(answer).build());
+
+        ProjectApply projectApply = ProjectApply.builder()
+                .answers(answers)
+                .introduction(projectApplyRequest.getIntroduction())
+                .role(projectApplyRequest.getRole())
+                .state(ProjectApplyState.UNREAD)
+                .user(user)
+                .build();
         project.addApply(projectApply);
 
         this.projectApplyRepository.save(projectApply);
@@ -136,15 +146,23 @@ public class TestProjectFactory {
 
     public Project generateProjectApplies(int index) {
         Project project = generateMyProject(0);
-        IntStream.range(1, index+1).forEach(i -> {
+        IntStream.range(1, index + 1).forEach(i -> {
             generateApply(project, testUserFactory.generateUser(i));
         });
         return project;
     }
 
     public Recruit generateRecruit(User user01, Project project01) {
-        RecruitDto recruitDto = generateRecruitDto(project01.getProjectId(), user01);
-        Recruit recruit = recruitDto.toEntity(user01, project01);
+        RecruitProjectRequest recruitProjectRequest = generateRecruitRequest(project01.getProjectId(), user01);
+        Recruit recruit = Recruit.builder()
+                .role(recruitProjectRequest.getRole())
+                .introduction(recruitProjectRequest.getIntroduction())
+                .user(user01)
+                .project(project01)
+                .state(RecruitState.UNREAD)
+                .projectId(project01.getProjectId())
+                .projectName(project01.getProjectName())
+                .build();
         this.recruitRepository.save(recruit);
         return recruit;
     }
@@ -159,8 +177,8 @@ public class TestProjectFactory {
         return projects;
     }
 
-    public ProjectDetailDto generateProjectDetailDto(Project myProject) {
-        ProjectDetailDto projectDetailDto = ProjectDetailDto.builder()
+    public ProjectDetailRequest generateProjectDetailRequest(Project myProject) {
+        ProjectDetailRequest projectDetailRequest = ProjectDetailRequest.builder()
                 .projectName(myProject.getProjectName())
                 .teamName(myProject.getTeamName())
                 .endDate(myProject.getEndDate())
@@ -170,7 +188,7 @@ public class TestProjectFactory {
                 .applyCanFile(myProject.getApplyCanFile())
                 .questions(myProject.getQuestions())
                 .build();
-        return projectDetailDto;
+        return projectDetailRequest;
     }
 
     public ProfileDto generateProfileDto() {
@@ -189,8 +207,8 @@ public class TestProjectFactory {
         return profileDto;
     }
 
-    public UpdateDto generateProjectUpdateDto(Project project) {
-        UpdateDto updateDto = UpdateDto.builder()
+    public ProjectDetailRequest generateProjectUpdateDto(Project project) {
+        ProjectDetailRequest projectDetailRequest = ProjectDetailRequest.builder()
                 .projectName(project.getProjectName())
                 .teamName(project.getTeamName())
                 .endDate(project.getEndDate())
@@ -201,30 +219,29 @@ public class TestProjectFactory {
                 .applyCanFile(project.getApplyCanFile())
                 .projectField(project.getProjectField())
                 .build();
-        return updateDto;
+        return projectDetailRequest;
     }
 
-    public RecruitDto generateRecruitDto(Long projectId, User user) {
-        RecruitDto recruitDto = RecruitDto.builder()
+    public RecruitProjectRequest generateRecruitRequest(Long projectId, User user) {
+        RecruitProjectRequest recruitProjectRequest = RecruitProjectRequest.builder()
                 .projectId(projectId)
-                .userName(user.getUserName())
                 .introduction("플젝에 영입하고 싶어요")
                 .role(user.getRole())
                 .build();
-        return recruitDto;
+        return recruitProjectRequest;
     }
 
-    public ProjectApplyDto generateProjectApplyDto() {
-        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        answers.add(ProjectApplyAnswer.builder().answer("1번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("2번 응답").build());
-        answers.add(ProjectApplyAnswer.builder().answer("3번 응답").build());
-        ProjectApplyDto projectApplyDto = ProjectApplyDto.builder()
+    public ProjectApplyRequest generateProjectApplyRequest() {
+        List<String> answers = new ArrayList<String>();
+        answers.add("1번 응답");
+        answers.add("2번 응답");
+        answers.add("3번 응답");
+        ProjectApplyRequest projectApplyRequest = ProjectApplyRequest.builder()
                 .role(ProjectRole.DEVELOPER)
                 .introduction("안녕하세요? 저는 그냥 개발자입니다.")
                 .answers(answers)
                 .build();
-        return projectApplyDto;
+        return projectApplyRequest;
     }
 
 

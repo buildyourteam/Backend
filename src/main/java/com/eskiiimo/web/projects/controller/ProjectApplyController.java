@@ -4,16 +4,17 @@ import com.eskiiimo.repository.projects.dto.ProjectApplicantDto;
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.web.index.controller.DocsController;
 import com.eskiiimo.web.projects.controller.resource.ProjectApplicantResource;
-import com.eskiiimo.web.projects.controller.resource.ProjectApplicantsResource;
-import com.eskiiimo.web.projects.controller.resource.ProjectApplyResource;
+import com.eskiiimo.web.projects.request.ProjectApplyRequest;
+import com.eskiiimo.web.projects.response.GetApplicantsResponse;
+import com.eskiiimo.web.projects.response.ProjectApplyResponse;
 import com.eskiiimo.web.projects.service.ProjectApplyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,39 +22,45 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @RequestMapping(value = "/projects/{projectId}/apply", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProjectApplyController {
-    @Autowired
-    ProjectApplyService projectApplyService;
+
+    private final ProjectApplyService projectApplyService;
 
     @PostMapping
-    ResponseEntity applyProject(
+    public ResponseEntity<Link> applyProject(
             @PathVariable Long projectId,
-            @RequestBody ProjectApplyDto apply
+            @RequestBody ProjectApplyRequest apply
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 저장
         this.projectApplyService.applyProject(projectId, apply, visitorId);
-        return ResponseEntity.created(linkTo(ProjectApplyController.class, projectId).slash(visitorId).toUri()).body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
+        return ResponseEntity
+                .created(linkTo(ProjectApplyController.class, projectId).slash(visitorId).toUri())
+                .body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
     }
 
     @PutMapping
-    ResponseEntity updateApply(
+    @ResponseStatus(HttpStatus.OK)
+    public Link updateApply(
             @PathVariable Long projectId,
-            @RequestBody ProjectApplyDto apply
+            @RequestBody ProjectApplyRequest apply
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 수정
         this.projectApplyService.updateApply(projectId, apply, visitorId);
-        return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#updateApply").withRel("self"));
+
+        return linkTo(DocsController.class).slash("#updateApply").withRel("self");
     }
 
     @GetMapping
-    ResponseEntity getApplicants(
+    @ResponseStatus(HttpStatus.OK)
+    public GetApplicantsResponse getApplicants(
             @PathVariable Long projectId,
             PagedResourcesAssembler<ProjectApplicantDto> assembler
     ) {
@@ -64,18 +71,15 @@ public class ProjectApplyController {
 
         //Add Link
         List<ProjectApplicantResource> projectApplicantResources = new ArrayList<ProjectApplicantResource>();
-        for (ProjectApplicantDto projectApplicantDto : applicants) {
-            ProjectApplicantResource projectApplicantResource = new ProjectApplicantResource(projectApplicantDto, projectId);
-            projectApplicantResources.add(projectApplicantResource);
-        }
+        for (ProjectApplicantDto projectApplicantDto : applicants)
+            projectApplicantResources.add(new ProjectApplicantResource(projectApplicantDto, projectId));
 
-        ProjectApplicantsResource projectApplicantsResource = new ProjectApplicantsResource(projectApplicantResources, projectId);
-        projectApplicantsResource.add(linkTo(DocsController.class).slash("#getApplicants").withRel("profile"));
-        return ResponseEntity.ok(projectApplicantsResource);
+        return new GetApplicantsResponse(projectApplicantResources, projectId);
     }
 
     @GetMapping("/{userId}")
-    ResponseEntity getApply(
+    @ResponseStatus(HttpStatus.OK)
+    public ProjectApplyResponse getApply(
             @PathVariable Long projectId,
             @PathVariable String userId
     ) {
@@ -85,16 +89,16 @@ public class ProjectApplyController {
         ProjectApplyDto projectApplyDto = this.projectApplyService.getApply(projectId, userId, visitorId);
 
         //Add Link
-        ProjectApplyResource projectApplyResource = new ProjectApplyResource(projectApplyDto, projectId, userId);
-        projectApplyResource.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("acceptApply"));
-        projectApplyResource.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("rejectApply"));
-        projectApplyResource.add(linkTo(DocsController.class).slash("#getApply").withRel("profile"));
+        ProjectApplyResponse projectApplyResponse = new ProjectApplyResponse(projectApplyDto, projectId, userId);
+        projectApplyResponse.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("acceptApply"));
+        projectApplyResponse.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("rejectApply"));
 
-        return ResponseEntity.ok(projectApplyResource);
+        return projectApplyResponse;
     }
 
     @PutMapping("/{userId}")
-    ResponseEntity acceptMember(
+    @ResponseStatus(HttpStatus.OK)
+    public Link acceptMember(
             @PathVariable Long projectId,
             @PathVariable String userId
     ) {
@@ -102,11 +106,13 @@ public class ProjectApplyController {
 
         //지원서 쿼리
         this.projectApplyService.acceptApply(projectId, userId, visitorId);
-        return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#acceptApply").withRel("self"));
+
+        return linkTo(DocsController.class).slash("#acceptApply").withRel("self");
     }
 
     @DeleteMapping("/{userId}")
-    ResponseEntity rejectMember(
+    @ResponseStatus(HttpStatus.OK)
+    public Link rejectMember(
             @PathVariable Long projectId,
             @PathVariable String userId
     ) {
@@ -114,6 +120,7 @@ public class ProjectApplyController {
 
         //지원서 쿼리
         this.projectApplyService.rejectApply(projectId, userId, visitorId);
-        return ResponseEntity.status(HttpStatus.OK).body(linkTo(DocsController.class).slash("#rejecttApply").withRel("self"));
+
+        return linkTo(DocsController.class).slash("#rejecttApply").withRel("self");
     }
 }

@@ -1,9 +1,9 @@
 package com.eskiiimo.web.projects.controller;
 
-import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
+import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
@@ -31,15 +31,15 @@ class ProjectApplyControllerTest extends BaseControllerTest {
     @Transactional
     @DisplayName("프로젝트 지원하고 내 지원서 확인하기")
     @WithMockUser(username = "user1")
-    void applyProject() throws Exception{
+    void applyProject() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User me = testUserFactory.generateUser(1);
-        ProjectApplyDto projectApplyDto = testProjectFactory.generateProjectApplyDto();
+        ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/projects/{projectId}/apply",project.getProjectId())
-                .content(objectMapper.writeValueAsString(projectApplyDto))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/projects/{projectId}/apply", project.getProjectId())
+                .content(objectMapper.writeValueAsString(projectApplyRequest))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
@@ -49,16 +49,13 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("userName").description("유저이름(NULL)"),
-                                fieldWithPath("state").description("상태(NULL)"),
-                                fieldWithPath("questions").description("지원서 질문(NULL)"),
                                 fieldWithPath("answers").description("지원서 응답"),
                                 fieldWithPath("role").description("지원할 역할"),
                                 fieldWithPath("introduction").description("자기소개")
                         )
-                        ))
+                ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),me.getUserId()))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(), me.getUserId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("userName").value("user1"))
                 .andExpect(jsonPath("role").value("DEVELOPER"))
@@ -77,12 +74,12 @@ class ProjectApplyControllerTest extends BaseControllerTest {
     void updateApply() throws Exception {
         // Given
         Project project = testProjectFactory.generateProjectApplies(1);
-        ProjectApplyDto projectApplyDto = testProjectFactory.generateProjectApplyDto();
-        projectApplyDto.setIntroduction("지원서 수정 완료!");
+        ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
+        projectApplyRequest.setIntroduction("지원서 수정 완료!");
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply",project.getProjectId())
-                .content(objectMapper.writeValueAsString(projectApplyDto))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply", project.getProjectId())
+                .content(objectMapper.writeValueAsString(projectApplyRequest))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isOk())
@@ -92,16 +89,13 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("state").description("상태(NULL)"),
-                                fieldWithPath("questions").description("지원서 질문"),
                                 fieldWithPath("answers").description("지원서 응답"),
                                 fieldWithPath("role").description("지원할 역할"),
                                 fieldWithPath("introduction").description("자기소개")
                         )
                 ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("introduction").value("지원서 수정 완료!"))
         ;
@@ -179,7 +173,7 @@ class ProjectApplyControllerTest extends BaseControllerTest {
         Project project = testProjectFactory.generateProjectApplies(1);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("getApply",
@@ -219,7 +213,7 @@ class ProjectApplyControllerTest extends BaseControllerTest {
         Project project = testProjectFactory.generateProjectApplies(1);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("acceptApply",
@@ -229,7 +223,7 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                         )
                 ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("state").value("ACCEPT"))
         ;
@@ -249,7 +243,7 @@ class ProjectApplyControllerTest extends BaseControllerTest {
         Project project = testProjectFactory.generateProjectApplies(1);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isOk())
                 .andDo(document("rejectApply",
                         pathParameters(
@@ -258,7 +252,7 @@ class ProjectApplyControllerTest extends BaseControllerTest {
                         )
                 ))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(),"user1"))
+        this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("state").value("REJECT"))
         ;

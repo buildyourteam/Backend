@@ -1,7 +1,6 @@
-package com.eskiiimo.repository.projects.dto;
+package com.eskiiimo.web.projects.request;
 
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.RecruitState;
 import lombok.*;
 
 @Getter
@@ -10,11 +9,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecruitDto {
-    private String userName;
+public class RecruitProjectRequest {
     private String introduction;
     private ProjectRole role;
-    private RecruitState state;
     private Long projectId;
-    private String projectName;
 }

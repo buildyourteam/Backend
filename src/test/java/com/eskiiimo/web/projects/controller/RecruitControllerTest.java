@@ -1,9 +1,9 @@
 package com.eskiiimo.web.projects.controller;
 
-import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
+import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
@@ -11,7 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -34,11 +36,11 @@ class RecruitControllerTest extends BaseControllerTest {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User user = testUserFactory.generateUser(1);
-        RecruitDto recruitDto = testProjectFactory.generateRecruitDto(project.getProjectId(), user);
+        RecruitProjectRequest recruitProjectRequest = testProjectFactory.generateRecruitRequest(project.getProjectId(), user);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit",user.getUserId())
-                .content(objectMapper.writeValueAsString(recruitDto))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", user.getUserId())
+                .content(objectMapper.writeValueAsString(recruitProjectRequest))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
@@ -48,10 +50,7 @@ class RecruitControllerTest extends BaseControllerTest {
                                 parameterWithName("userId").description("유저 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("state").description("상태"),
                                 fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
-                                fieldWithPath("projectName").description("영입 제안 프로젝트 이름"),
                                 fieldWithPath("role").description("지원할 역할"),
                                 fieldWithPath("introduction").description("자기소개")
                         )
@@ -62,7 +61,7 @@ class RecruitControllerTest extends BaseControllerTest {
     @Transactional
     @WithMockUser(username = "user0")
     @DisplayName("나한테 온 프로젝트 영입 제안리스트")
-    void getRecruitList() throws Exception{
+    void getRecruitList() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();
@@ -95,12 +94,11 @@ class RecruitControllerTest extends BaseControllerTest {
     }
 
 
-
     @Test
     @Transactional
     @WithMockUser(username = "user0")
     @DisplayName("나한테 온 영입제안 확인하기(열람시 읽음상태로 전환)")
-    void getRecruitProject() throws Exception{
+    void getRecruitProject() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();
@@ -144,7 +142,7 @@ class RecruitControllerTest extends BaseControllerTest {
     @Transactional
     @WithMockUser(username = "user0")
     @DisplayName("영입제안 승락하기")
-    void acceptRecruitProject() throws Exception{
+    void acceptRecruitProject() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();
@@ -171,7 +169,7 @@ class RecruitControllerTest extends BaseControllerTest {
     @Transactional
     @WithMockUser(username = "user0")
     @DisplayName("영입제안 거절하기")
-    void rejectRecruitProject() throws Exception{
+    void rejectRecruitProject() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();
