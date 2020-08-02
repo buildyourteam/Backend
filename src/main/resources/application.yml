@@ -13,7 +13,6 @@ spring:
         show-sql: false
         format_sql: true
     hibernate:
-      format_sql: true
       ddl-auto: create
 
   jackson:
@@ -61,4 +60,4 @@ logging:
         type:
           descriptor:
             sql:
-              BasicBinder: TRACE
+              BasicBinder: DEBUG
