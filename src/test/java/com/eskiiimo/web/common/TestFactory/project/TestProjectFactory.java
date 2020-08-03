@@ -14,6 +14,7 @@ import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import com.eskiiimo.web.user.request.UpdateProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class TestProjectFactory {
         Project project = Project.builder()
                 .projectName("project" + index)
                 .teamName("project team" + index * 2)
-                .endDate(LocalDateTime.now().plusDays(1))
+                .endDate(LocalDateTime.now().plusDays((long) (Math.random() * 10)))
                 .introduction("need yes 입니다.")
                 .currentMember(new ProjectMemberSet(2, 1, 1, 2))
                 .needMember(needMember)
@@ -97,6 +98,17 @@ public class TestProjectFactory {
 
         this.projectRepository.save(project);
         return project;
+    }
+
+    @Transactional
+    public void generateProjects() {
+        generateProject(0, ProjectField.AI, false);
+        generateProject(1, ProjectField.APP, true);
+        generateProject(2, ProjectField.WEB, true);
+        generateProject(3, ProjectField.WEB, true);
+        generateProject(4, ProjectField.WEB, true);
+        generateProject(5, ProjectField.WEB, true);
+
     }
 
     public Project generateMyProject(int index) {
