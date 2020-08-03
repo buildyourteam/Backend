@@ -168,11 +168,6 @@ class ProjectDetailControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andDo(document("create-project",
-                        links(
-                                linkWithRel("self").description("self 링크"),
-                                linkWithRel("createdProject").description("생성된 프로젝트 링크"),
-                                linkWithRel("profile").description("API 명세서")
-                        ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")

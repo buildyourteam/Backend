@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,17 +32,19 @@ public class ProjectApplyController {
     private final ProjectApplyService projectApplyService;
 
     @PostMapping
-    public ResponseEntity<Link> applyProject(
+    @ResponseStatus(HttpStatus.CREATED)
+    public Link applyProject(
             @PathVariable Long projectId,
-            @RequestBody ProjectApplyRequest apply
+            @RequestBody ProjectApplyRequest apply,
+            HttpServletResponse response
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //지원서 저장
         this.projectApplyService.applyProject(projectId, apply, visitorId);
-        return ResponseEntity
-                .created(linkTo(ProjectApplyController.class, projectId).slash(visitorId).toUri())
-                .body(linkTo(DocsController.class).slash("#projectApply").withRel("self"));
+
+        response.setHeader("Location",linkTo(ProjectApplyController.class, projectId).slash(visitorId).toUri().toString());
+        return linkTo(DocsController.class).slash("#projectApply").withRel("self");
     }
 
     @PutMapping

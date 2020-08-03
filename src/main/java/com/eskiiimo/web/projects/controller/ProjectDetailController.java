@@ -17,11 +17,11 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,22 +79,18 @@ public class ProjectDetailController {
     }
 
     @PostMapping
-    public ResponseEntity createProject(
-            @RequestBody @Valid ProjectDetailRequest projectDetailRequest
+    @ResponseStatus(HttpStatus.CREATED)
+    public Link createProject(
+            @RequestBody @Valid ProjectDetailRequest projectDetailRequest,
+            HttpServletResponse response
     ) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         this.projectValidator.validateDate(projectDetailRequest);
         Project newProject = this.projectDetailService.storeProject(projectDetailRequest, userId);
 
-        RepresentationModel res = new RepresentationModel();
-        res.add(linkTo(ProjectDetailController.class).withSelfRel());
-        res.add(new Link("/projects/" + newProject.getProjectId()).withRel("createdProject"));
-        res.add(linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile"));
-
-        return ResponseEntity
-                .created(linkTo(ProjectDetailController.class).slash(newProject.getProjectId()).toUri())
-                .body(res);
+        response.setHeader("Location", linkTo(ProjectDetailController.class).slash(newProject.getProjectId()).toUri().toString());
+        return linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile");
     }
 
     @PutMapping("/{project_id}")
@@ -113,13 +109,12 @@ public class ProjectDetailController {
 
     @DeleteMapping("/{project_id}")
     @ResponseStatus(HttpStatus.OK)
-    public Object deleteProject(
+    public void deleteProject(
             @PathVariable Long project_id
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         this.projectDetailService.deleteProject(project_id, visitorId);
-        return null;
     }
 
     public boolean isMyProject(ProjectDetailDto projectDetailDto, String userId) {
