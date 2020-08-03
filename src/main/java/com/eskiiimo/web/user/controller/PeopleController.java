@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,6 +21,7 @@ public class PeopleController {
     private final PeopleService peopleService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public PagedModel<EntityModel<PeopleDto>> getJobSeekers(
             Pageable pageable,
             PagedResourcesAssembler<PeopleDto> assembler,

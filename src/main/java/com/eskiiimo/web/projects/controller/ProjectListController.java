@@ -10,6 +10,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +27,7 @@ public class ProjectListController {
      */
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public PagedModel<EntityModel<ProjectListDto>> getProjectsList(
             Pageable pageable,
             PagedResourcesAssembler<ProjectListDto> assembler,
@@ -36,6 +38,7 @@ public class ProjectListController {
     }
 
     @GetMapping("/deadline")
+    @ResponseStatus(HttpStatus.OK)
     public PagedModel<EntityModel<ProjectListDto>> getProjectsDeadline(
             Pageable pageable,
             PagedResourcesAssembler<ProjectListDto> assembler

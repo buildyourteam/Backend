@@ -130,24 +130,22 @@ public class ProfileController {
     // 숨긴 프로젝트 살리기
     @PutMapping("/{user_id}/projects/{projectId}")
     @ResponseStatus(HttpStatus.OK)
-    public Object reShowProject(
+    public void reShowProject(
             @PathVariable(value = "user_id") String user_id,
             @PathVariable(value = "projectId") Long projectId
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
         this.profileService.reShowProject(user_id, visitorId, projectId);
-        return null;
     }
 
     // 프로젝트 숨기기
     @DeleteMapping("/{user_id}/projects/{projectId}")
     @ResponseStatus(HttpStatus.OK)
-    public Object hideProject(
+    public void hideProject(
             @PathVariable(value = "user_id") String user_id,
             @PathVariable(value = "projectId") Long projectId
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
         this.profileService.hideProject(user_id, visitorId, projectId);
-        return null;
     }
 }

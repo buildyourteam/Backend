@@ -143,6 +143,7 @@ public class User implements UserDetails {
             this.stacks.add(usersStack);
         }
 
+        this.userName = userName;
         this.role = role;
         this.contact = contact;
         this.area = area;

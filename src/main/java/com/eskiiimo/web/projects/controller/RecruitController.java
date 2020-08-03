@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,18 +30,19 @@ public class RecruitController {
 
     // 프로젝트에 영입하기
     @PostMapping
-    public ResponseEntity<Link> recruitProject(
+    @ResponseStatus(HttpStatus.CREATED)
+    public Link recruitProject(
             @PathVariable String userId,
-            @RequestBody RecruitProjectRequest recruit
+            @RequestBody RecruitProjectRequest recruit,
+            HttpServletResponse response
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // 프로젝트 영입제안
         this.recruitService.recruitProject(userId, recruit, visitorId);
 
-        return ResponseEntity
-                .created(linkTo(RecruitController.class, userId).toUri())
-                .body(linkTo(DocsController.class).slash("#projectRecruit").withRel("self"));
+        response.setHeader("Location",linkTo(RecruitController.class, userId).toUri().toString());
+        return linkTo(DocsController.class).slash("#projectRecruit").withRel("self");
     }
 
     // 나한테 온 영입제안 리스트
