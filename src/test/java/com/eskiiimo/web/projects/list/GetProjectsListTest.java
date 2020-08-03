@@ -1,4 +1,4 @@
-package com.eskiiimo.web.projects.controller;
+package com.eskiiimo.web.projects.list;
 
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
@@ -21,15 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("프로젝트 리스트")
-class ProjectListControllerTests extends BaseControllerTest {
-
+public class GetProjectsListTest extends BaseControllerTest {
     @Test
     @Transactional
     @DisplayName("검색기능사용 없이 전체리스트 조회")
     void queryProjectsTotal() throws Exception {
         // Given
-        generateProjects();
+        testProjectFactory.generateProjects();
 
         // When & Then
         this.mockMvc.perform(get("/projects")
@@ -45,13 +43,32 @@ class ProjectListControllerTests extends BaseControllerTest {
 
     }
 
+    @Test
+    @Transactional
+    @DisplayName("검색기능사용 없이 전체리스트 조회_프로젝트 리스트가 없을 때")
+    void queryProjectsTotal_notExist() throws Exception {
+        // Given
+
+        // When & Then
+        this.mockMvc.perform(get("/projects")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "projectName,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_links.self").exists())
+        ;
+
+    }
 
     @Test
     @Transactional
     @DisplayName("직군별 and 분야별 프로젝트 리스트 조회하기")
     void queryProjectsOccupationAndField() throws Exception {
         // Given
-        generateProjects();
+        testProjectFactory.generateProjects();
 
         // When & Then
         this.mockMvc.perform(get("/projects")
@@ -114,7 +131,7 @@ class ProjectListControllerTests extends BaseControllerTest {
     @DisplayName("only 직군별 프로젝트 리스트 조회하기")
     void queryProjectsOccupation() throws Exception {
         // Given
-        generateProjects();
+        testProjectFactory.generateProjects();
 
         // When & Then
         this.mockMvc.perform(get("/projects")
@@ -136,7 +153,7 @@ class ProjectListControllerTests extends BaseControllerTest {
     @DisplayName("only 분야별로만 프로젝트 리스트 조회하기")
     void queryProjectsField() throws Exception {
         // Given
-        generateProjects();
+        testProjectFactory.generateProjects();
 
         // When & Then
         this.mockMvc.perform(get("/projects")
@@ -152,15 +169,5 @@ class ProjectListControllerTests extends BaseControllerTest {
         ;
 
     }
-
-    @Transactional
-    void generateProjects() {
-        this.testProjectFactory.generateProject(0, ProjectField.AI, false);
-        this.testProjectFactory.generateProject(1, ProjectField.APP, true);
-        this.testProjectFactory.generateProject(2, ProjectField.WEB, true);
-        this.testProjectFactory.generateProject(3, ProjectField.WEB, true);
-
-    }
-
 
 }
