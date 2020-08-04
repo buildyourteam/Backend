@@ -61,7 +61,7 @@
 프로젝트 구인 관련 서비스에 대한 비즈니스 로직을 수행
 
 ### 공통 레퍼지토리
-  - ProjectRepository
+  - RecruitRepository
   
 ### 기능 리스트
 1. [recruitProject(user_id, RecruitDto, visitor_id)](#1-recruitprojectstring-user_id-recruitdto-recruit-string-visitor_id) : 영입 제안
@@ -82,7 +82,6 @@
   - 연관 레퍼지토리
     - ProjectRepository
     - UserRepository
-    - RecruitRepository
     
 #### 2. getRecruitList(String user_id, String visitor_id)
   - 사용자가 받은 영입 제안에 대한 리스트를 조회
@@ -90,9 +89,6 @@
   - 연관 예외 클래스
     - RecruitNotAuthException()
 
-  - 연관 레퍼지토리
-    - RecruitRepository
-  
 #### 3. getRecruit(String user_id, Long project_id, String visitor_id)
   - 나에게 온 영입 제안서 조회
   - 사용자가 최초 조회 시 제안서 상태를 '읽음'으로 변경
@@ -101,9 +97,6 @@
     - RecruitNotAuthException()
     - RecruitNotFoundException()
  
-  - 연관 레퍼지토리
-    - RecruitRepository
-
 #### 4. acceptRecruit(String user_id, Long project_id, String visitor_id)
   - 사용자가 받은 영입 제안을 수락
 
@@ -111,16 +104,9 @@
     - RecruitNotAuthException()
     - RecruitNotFoundException()
  
-  - 연관 레퍼지토리
-    - RecruitRepository
-
 #### 5. rejectRecruit(String user_id, Long project_id, String visitor_id)
   - 사용자가 받은 영입 제안을 거절
 
   - 연관 예외 클래스
     - RecruitNotAuthException()
     - RecruitNotFoundException()
- 
-  - 연관 레퍼지토리
-    - RecruitRepository
-    
