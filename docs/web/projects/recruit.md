@@ -55,3 +55,72 @@
   - [프로젝트 영입 거절](https://egluuapi.codingnome.dev/docs/index.html#rejectRecruit "해당 API 문서로 이동")
   - 연관 엔터티
       - Recruit
+
+## 2. Service
+### 정의
+프로젝트 구인 관련 서비스에 대한 비즈니스 로직을 수행
+
+### 공통 레퍼지토리
+  - ProjectRepository
+  
+### 기능 리스트
+1. [recruitProject(user_id, RecruitDto, visitor_id)](#1-recruitprojectstring-user_id-recruitdto-recruit-string-visitor_id) : 영입 제안
+2. [getRecruitList(user_id, visitor_id)](#2-getrecruitliststring-user_id-string-visitor_id) : 받은 영입 제안 리스트 조회
+3. [getRecruit(user_id, project_id, visitor_id)](#3-getrecruitstring-user_id-long-project_id-string-visitor_id) : 받은 영입 제안서 조회
+4. [acceptRecruit(user_id, project_id, visitor_id)](#4-acceptrecruitstring-user_id-long-project_id-string-visitor_id) : 영입 제안 수락
+5. [rejectRecruit(user_id, project_id, visitor_id)](#5-rejectrecruitstring-user_id-long-project_id-string-visitor_id) : 영입 제안 거절
+
+### 기능 정의
+#### 1. recruitProject(String user_id, RecruitDto recruit, String visitor_id)
+  - 특정 사용자에게 영입 제안
+
+  - 연관 예외 클래스
+    - ProjectNotFoundException(recruit.getProjectId())
+    - YouAreNotLeaderException(visitor_id)
+    - UserNotFoundException(user_id)
+    
+  - 연관 레퍼지토리
+    - ProjectRepository
+    - UserRepository
+    - RecruitRepository
+    
+#### 2. getRecruitList(String user_id, String visitor_id)
+  - 사용자가 받은 영입 제안에 대한 리스트를 조회
+
+  - 연관 예외 클래스
+    - RecruitNotAuthException()
+
+  - 연관 레퍼지토리
+    - RecruitRepository
+  
+#### 3. getRecruit(String user_id, Long project_id, String visitor_id)
+  - 나에게 온 영입 제안서 조회
+  - 사용자가 최초 조회 시 제안서 상태를 '읽음'으로 변경
+  
+  - 연관 예외 클래스
+    - RecruitNotAuthException()
+    - RecruitNotFoundException()
+ 
+  - 연관 레퍼지토리
+    - RecruitRepository
+
+#### 4. acceptRecruit(String user_id, Long project_id, String visitor_id)
+  - 사용자가 받은 영입 제안을 수락
+
+  - 연관 예외 클래스
+    - RecruitNotAuthException()
+    - RecruitNotFoundException()
+ 
+  - 연관 레퍼지토리
+    - RecruitRepository
+
+#### 5. rejectRecruit(String user_id, Long project_id, String visitor_id)
+  - 사용자가 받은 영입 제안을 거절
+
+  - 연관 예외 클래스
+    - RecruitNotAuthException()
+    - RecruitNotFoundException()
+ 
+  - 연관 레퍼지토리
+    - RecruitRepository
+    
