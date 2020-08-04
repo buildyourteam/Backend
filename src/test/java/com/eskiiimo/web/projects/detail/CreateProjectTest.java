@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -28,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("프로젝트 생성하기")
 public class CreateProjectTest extends BaseControllerTest {
 
     @Test

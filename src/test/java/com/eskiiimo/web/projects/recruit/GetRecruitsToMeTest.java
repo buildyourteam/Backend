@@ -18,6 +18,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("나한테 온 프로젝트 영입 제안리스트")
 public class GetRecruitsToMeTest extends BaseControllerTest {
 
     @Test

@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("나한테 온 영입제안 확인하기")
 public class GetRecruitProjectTest extends BaseControllerTest {
     @Test
     @Transactional

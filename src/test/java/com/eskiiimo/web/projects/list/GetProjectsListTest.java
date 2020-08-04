@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("프로젝트 리스트 조회")
 public class GetProjectsListTest extends BaseControllerTest {
     @Test
     @Transactional

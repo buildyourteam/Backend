@@ -18,6 +18,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("프로젝트 삭제하기")
 public class DeleteProjectTest extends BaseControllerTest {
 
     @Test
@@ -67,7 +68,7 @@ public class DeleteProjectTest extends BaseControllerTest {
         // Given
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", (long)1)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", (long) 1)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isNotFound())

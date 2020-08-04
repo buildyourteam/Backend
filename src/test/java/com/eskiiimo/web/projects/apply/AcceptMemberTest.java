@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("프로젝트 지원자 수락하기")
 public class AcceptMemberTest extends BaseControllerTest {
     @Test
     @Transactional

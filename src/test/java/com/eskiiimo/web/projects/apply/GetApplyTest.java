@@ -1,7 +1,6 @@
 package com.eskiiimo.web.projects.apply;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -118,7 +117,7 @@ public class GetApplyTest extends BaseControllerTest {
         testUserFactory.generateUser(2);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", (long)1, "user2"))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", (long) 1, "user2"))
                 .andExpect(status().isNotFound())
                 .andDo(print())
         ;
