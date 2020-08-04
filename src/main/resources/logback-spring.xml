@@ -28,7 +28,7 @@
             <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./files/error_logs/error_log-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <fileNamePattern>./files/error_log/error_log-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
