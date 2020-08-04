@@ -1,10 +1,8 @@
-package com.eskiiimo.web.user.controller;
+package com.eskiiimo.web.user.people;
 
-import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
@@ -21,12 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @DisplayName("피플")
-class PeopleControllerTest extends BaseControllerTest {
-
-    @Autowired
-    UserRepository userRepository;
-
-
+public class GetJobSeekersTest extends BaseControllerTest {
     @Test
     @DisplayName("팀을 구하는 사람들")
     @Transactional
@@ -40,6 +33,7 @@ class PeopleControllerTest extends BaseControllerTest {
         )
                 .andDo(print());
     }
+
     @Test
     @DisplayName("팀을 구하는 사람들_레벨")
     @Transactional
@@ -50,12 +44,13 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade","1")
+                .param("grade", "1")
         )
                 .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andDo(print())
-;
+        ;
     }
+
     @Test
     @DisplayName("팀을 구하는 사람들_역할")
     @Transactional
@@ -66,10 +61,11 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("role","DEVELOPER")
+                .param("role", "DEVELOPER")
         )
                 .andDo(print());
     }
+
     @Test
     @DisplayName("팀을 구하는 사람들_지역")
     @Transactional
@@ -80,11 +76,12 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("area","Seoul")
+                .param("area", "Seoul")
         )
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());
     }
+
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_역할")
     @Transactional
@@ -95,12 +92,13 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade","1")
-                .param("role","DEVELOPER")
+                .param("grade", "1")
+                .param("role", "DEVELOPER")
         )
                 .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andDo(print());
     }
+
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_지역")
     @Transactional
@@ -111,13 +109,14 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade","1")
-                .param("area","Seoul")
+                .param("grade", "1")
+                .param("area", "Seoul")
         )
                 .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());
     }
+
     @Test
     @DisplayName("팀을 구하는 사람들_역할_지역")
     @Transactional
@@ -128,26 +127,27 @@ class PeopleControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("role","DEVELOPER")
-                .param("area","Seoul")
+                .param("role", "DEVELOPER")
+                .param("area", "Seoul")
         )
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());
     }
+
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_역할_지역")
     @Transactional
     void getJobSeekers_LevelAndRoleAndArea() throws Exception {
-        IntStream.range(0,4).forEach(testUserFactory::generateLeader);
+        IntStream.range(0, 4).forEach(testUserFactory::generateLeader);
         testUserFactory.generatePeople();
 
         // When & Then
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "3")
-                .param("grade","1")
-                .param("role","LEADER")
-                .param("area","Seoul")
+                .param("grade", "1")
+                .param("role", "LEADER")
+                .param("area", "Seoul")
         )
                 .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
