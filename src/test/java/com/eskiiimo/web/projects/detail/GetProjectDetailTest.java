@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("프로젝트 상세 페이지 확인하기")
 public class GetProjectDetailTest extends BaseControllerTest {
 
     @Test
@@ -90,9 +91,9 @@ public class GetProjectDetailTest extends BaseControllerTest {
         // Given
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}", (long)1))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}", (long) 1))
                 .andExpect(status().isNotFound())
-                        .andDo(print())
+                .andDo(print())
         ;
     }
 }

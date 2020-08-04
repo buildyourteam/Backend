@@ -22,6 +22,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("내가 보낸 영입제안 리스트 확인하기")
 public class GetRecruitsTest extends BaseControllerTest {
     @Test
     @Transactional

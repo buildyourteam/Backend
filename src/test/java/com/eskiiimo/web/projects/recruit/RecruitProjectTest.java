@@ -20,6 +20,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("프로젝트 영입하기")
 public class RecruitProjectTest extends BaseControllerTest {
     @Test
     @Transactional
