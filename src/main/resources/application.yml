@@ -60,4 +60,4 @@ logging:
         type:
           descriptor:
             sql:
-              BasicBinder: DEBUG
+              BasicBinder: TRACE
