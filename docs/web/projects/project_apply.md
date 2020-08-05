@@ -42,9 +42,10 @@
   - [프로젝트 지원서 수정](https://egluuapi.codingnome.dev/docs/index.html#getApplicants "해당 API 문서로 이동")
                 
 #### 4. getApply(Long project_id, String user_id)
-  - 프로젝트 리더가 특정 유저가 작성한 프로젝트 지원서를 조회
+  - 특정 유저가 작성한 프로젝트 지원서를 조회
+  - `일반 유저`도 지원서 조회 가능
   - [지원서 조회](https://egluuapi.codingnome.dev/docs/index.html#getApply "해당 API 문서로 이동")
-        
+
 #### 5. acceptMember(Long project_id, String user_id)
   - 프로젝트 리더가 프로젝트 지원자 중 합류할 인원을 accept
   - [프로젝트 지원자 승인](https://egluuapi.codingnome.dev/docs/index.html#acceptApply "해당 API 문서로 이동")
