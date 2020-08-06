@@ -6,7 +6,7 @@ spring:
         show-sql: false
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
   jackson:
     deserialization:
       fail-on-unknown-properties : true
