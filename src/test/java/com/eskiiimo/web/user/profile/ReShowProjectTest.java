@@ -4,6 +4,7 @@ import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.State;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("숨긴 프로젝트 취소하기")
+@Disabled
 public class ReShowProjectTest extends BaseControllerTest {
 
     @Test
