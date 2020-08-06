@@ -59,7 +59,7 @@ public class GetRecruitsToMeTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user1")
     @DisplayName("나한테 온 프로젝트 영입 제안리스트_권한 없는 사용자")
-    void getRecruitListToMeFailBecause_noAuthUser() throws Exception {
+    void getRecruitListToMeFailBecause_noPermittedUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();

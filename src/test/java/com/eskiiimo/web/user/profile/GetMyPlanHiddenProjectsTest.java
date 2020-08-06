@@ -98,7 +98,7 @@ public class GetMyPlanHiddenProjectsTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user2")
     @DisplayName("사용자가 기획한 숨겨진 프로젝트 리스트 가져오기_권한 없는 사용자")
-    public void getPlannedHiddenProjectListFailBecause_noAuthUser() throws Exception {
+    public void getPlannedHiddenProjectListFailBecause_noPermittedUser() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);

@@ -50,7 +50,7 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "authX")
     @DisplayName("영입제안 승락하기_권한 없는 사용자")
-    void acceptRecruitProjectFailBecause_noAuthUser() throws Exception {
+    void acceptRecruitProjectFailBecause_noPermittedUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();

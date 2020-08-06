@@ -49,7 +49,7 @@ public class HideProjectTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user2")
     @DisplayName("프로젝트 숨기기_권한없는 사용자")
-    public void hideProjectFailBecause_noAuthUser() throws Exception {
+    public void hideProjectFailBecause_noPermittedUser() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         Project project4 = testProjectFactory.generateProject(4, user1, State.RUNNING);

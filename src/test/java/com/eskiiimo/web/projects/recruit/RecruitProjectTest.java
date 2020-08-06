@@ -53,7 +53,7 @@ public class RecruitProjectTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user1")
     @DisplayName("프로젝트 영입하기_권한없는 사용자")
-    void recruitProjectFailBecause_noAuthUser() throws Exception {
+    void recruitProjectFailBecause_noPermittedUser() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User user = testUserFactory.generateUser(1);

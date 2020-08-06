@@ -50,7 +50,7 @@ public class RejectRecruitProjectTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user1")
     @DisplayName("영입제안 거절하기_권한 없는 사용자")
-    void rejectRecruitProjectFailBecause__noAuthUser() throws Exception {
+    void rejectRecruitProjectFailBecause__noPermittedUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();

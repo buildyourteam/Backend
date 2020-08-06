@@ -92,7 +92,7 @@ public class GetEndedHiddenProjectsTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user0")
     @DisplayName("사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기_권한없는 사용자")
-    public void getEndedHiddenProjectListFailBecause_noAuthUser() throws Exception {
+    public void getEndedHiddenProjectListFailBecause_noPermittedUser() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);

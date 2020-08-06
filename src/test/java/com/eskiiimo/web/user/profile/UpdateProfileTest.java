@@ -69,7 +69,7 @@ public class UpdateProfileTest extends BaseControllerTest {
     @Test
     @DisplayName("프로필 수정_권한 없는 사용자")
     @WithMockUser(username = "user2")
-    void updateProfileFailBecause_noAuthUser() throws Exception {
+    void updateProfileFailBecause_noPermittedUser() throws Exception {
         testUserFactory.generateUser(1);
         UpdateProfileRequest updateProfileRequest = testProjectFactory.generateUpdateProfileRequest();
 
