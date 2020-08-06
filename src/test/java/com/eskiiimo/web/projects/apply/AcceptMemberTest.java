@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -19,10 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("프로젝트 지원자 수락하기")
 public class AcceptMemberTest extends BaseControllerTest {
     @Test
-    @Transactional
     @DisplayName("프로젝트 지원자 수락하기_팀장일 때")
     @WithMockUser(username = "user0")
-    void acceptMember_leader() throws Exception {
+    void acceptMemberSuccess() throws Exception {
         // Given
         Project project = testProjectFactory.generateProjectApplies(1);
 
@@ -41,33 +39,40 @@ public class AcceptMemberTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("state").value("ACCEPT"))
         ;
-        this.mockMvc.perform(get("/projects/{projectId}", project.getProjectId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("memberList[1].userName").value("UserName4"))
-                .andExpect(jsonPath("memberList[1].role").value("DEVELOPER"))
-        ;
     }
 
     @Test
-    @Transactional
     @DisplayName("프로젝트 지원자 수락하기_팀장이 아닐 때")
     @WithMockUser(username = "user1")
-    void acceptMember_notLeader() throws Exception {
+    void acceptMemberFailBecause_notLeader() throws Exception {
         // Given
         Project project = testProjectFactory.generateProjectApplies(1);
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isForbidden())
-
+                .andExpect(jsonPath("error").value(107))
+                .andDo(print())
         ;
     }
 
     @Test
-    @Transactional
+    @DisplayName("프로젝트 지원자 수락하기_로그인하지 않은 사용자")
+    void acceptMemberFailBecause_notLoginUser() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateProjectApplies(1);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
+                .andExpect(status().isForbidden())
+                .andDo(print())
+        ;
+    }
+
+    @Test
     @DisplayName("프로젝트 지원자 수락하기_지원자가 없을 때")
     @WithMockUser(username = "user0")
-    void acceptMember_notExistApply() throws Exception {
+    void acceptMemberFailBecause_notExistApply() throws Exception {
         // Given
         testUserFactory.generateUser(2);
         Project project = testProjectFactory.generateProjectApplies(1);
@@ -75,7 +80,8 @@ public class AcceptMemberTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user2"))
                 .andExpect(status().isNotFound())
-
+                .andExpect(jsonPath("error").value(102))
+                .andDo(print())
         ;
     }
 }

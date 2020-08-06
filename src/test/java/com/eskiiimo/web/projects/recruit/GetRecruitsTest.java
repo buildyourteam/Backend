@@ -1,16 +1,11 @@
 package com.eskiiimo.web.projects.recruit;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
-import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -20,39 +15,21 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("내가 보낸 영입제안 리스트 확인하기")
 public class GetRecruitsTest extends BaseControllerTest {
     @Test
-    @Transactional
     @DisplayName("내가 보낸 영입제안 리스트 확인하기")
     @WithMockUser(username = "user0")
-    public void getRecruits() throws Exception {
+    public void getRecruitsSuccess() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
-        Long projectId = project.getProjectId();
-        User user1 = testUserFactory.generateUser(1);
-        User user2 = testUserFactory.generateUser(2);
-        RecruitProjectRequest recruitProjectRequest1 = testProjectFactory.generateRecruitRequest(projectId, user1);
-        RecruitProjectRequest recruitProjectRequest2 = testProjectFactory.generateRecruitRequest(projectId, user2);
+        testProjectFactory.generateRecruit(testUserFactory.generateUser(1), project);
+        testProjectFactory.generateRecruit(testUserFactory.generateUser(2), project);
 
-        // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", "user1", projectId)
-                .content(objectMapper.writeValueAsString(recruitProjectRequest1))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaTypes.HAL_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
-
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", "user2", projectId)
-                .content(objectMapper.writeValueAsString(recruitProjectRequest2))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaTypes.HAL_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
-
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", projectId))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", project.getProjectId()))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("getSendRecruits",
@@ -79,10 +56,25 @@ public class GetRecruitsTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("내가 보낸 영입제안 리스트 확인하기_권한 없는 사용자")
     @WithMockUser(username = "user1")
-    public void getRecruits_authX() throws Exception {
+    public void getRecruitsFailBecause_noAuthUser() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
+        testProjectFactory.generateRecruit(testUserFactory.generateUser(1), project);
+        testProjectFactory.generateRecruit(testUserFactory.generateUser(2), project);
+
+
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", project.getProjectId()))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value(107))
+                .andDo(print())
+        ;
+    }
+
+    @Test
+    @DisplayName("내가 보낸 영입제안 리스트 확인하기_로그인하지 않은 사용자")
+    public void getRecruitsFailBecause_notLoginUser() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         testProjectFactory.generateRecruit(testUserFactory.generateUser(1), project);
@@ -96,16 +88,16 @@ public class GetRecruitsTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("내가 보낸 영입제안 리스트 확인하기_영입제안이 없을 때")
     @WithMockUser(username = "user0")
-    public void getRecruits_notExist() throws Exception {
+    public void getRecruitsFailBecause_notExistRecruit() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
 
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", project.getProjectId()))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error").value(105))
                 .andDo(print())
         ;
     }

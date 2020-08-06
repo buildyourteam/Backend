@@ -6,7 +6,6 @@ import com.eskiiimo.web.projects.enumtype.State;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -25,9 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GetMyPlanProjectsTest extends BaseControllerTest {
 
     @Test
-    @Transactional
     @DisplayName("사용자가 기획한 프로젝트 리스트 가져오기")
-    public void getPlannedProjectList() throws Exception {
+    public void getPlannedProjectListSuccess() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         testProjectFactory.generateProject(1, user1, State.RUNNING);
@@ -84,9 +82,8 @@ public class GetMyPlanProjectsTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("사용자가 기획한 프로젝트 리스트 가져오기_기획한 프로젝트가 없을 때")
-    public void getPlannedProjectList_notExist() throws Exception {
+    public void getPlannedProjectList_NotExistSuccess() throws Exception {
         // Given
         testUserFactory.generateUser(1);
 

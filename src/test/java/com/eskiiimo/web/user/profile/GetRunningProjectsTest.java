@@ -7,7 +7,6 @@ import com.eskiiimo.web.projects.enumtype.State;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -26,9 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GetRunningProjectsTest extends BaseControllerTest {
 
     @Test
-    @Transactional
     @DisplayName("사용자가 참여중인 프로젝트 리스트 가져오기")
-    public void getRunningProjectList() throws Exception {
+    public void getRunningProjectListSuccess() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
@@ -88,13 +86,10 @@ public class GetRunningProjectsTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("사용자가 참여중인 프로젝트 리스트 가져오기_참여중인 프로젝트가 없을 때")
-    public void getRunningProjectList_notExist() throws Exception {
+    public void getRunningProjectList_NotExistSuccess() throws Exception {
         // Given
-        User user1 = testUserFactory.generateUser(1);
-        testProjectFactory.generateProject(1, user1, State.ENDED);
-        testProjectFactory.generateProject(4, user1, State.ENDED);
+        testUserFactory.generateUser(1);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/running")

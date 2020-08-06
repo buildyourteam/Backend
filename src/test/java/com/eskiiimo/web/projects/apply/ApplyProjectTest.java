@@ -4,13 +4,13 @@ import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.request.ProjectApplyRequest;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -26,10 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ApplyProjectTest extends BaseControllerTest {
 
     @Test
-    @Transactional
     @DisplayName("프로젝트 지원하고 내 지원서 확인하기")
     @WithMockUser(username = "user1")
-    void applyProject() throws Exception {
+    void applyProjectSuccess() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User me = testUserFactory.generateUser(1);
@@ -38,7 +37,7 @@ public class ApplyProjectTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/projects/{projectId}/apply", project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyRequest))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print())
@@ -66,10 +65,8 @@ public class ApplyProjectTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
-    @DisplayName("프로젝트 지원하기_비회원 일 때")
-    @WithMockUser(username = "user1")
-    void applyProject_notUser() throws Exception {
+    @DisplayName("프로젝트 지원하기_로그인하지 않은 사용자")
+    void acceptMemberFailBecause_notLoginUser() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
@@ -77,9 +74,30 @@ public class ApplyProjectTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/projects/{projectId}/apply", project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyRequest))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(print())
+        ;
+
+    }
+
+    @Test
+    @DisplayName("프로젝트 지원하기_탈퇴했거나 제재당한 회원")
+    @WithMockUser(username = "user1")
+    void applyProjectFailBecause_cannotAccessUser() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
+        User user1=testUserFactory.generateUser(1, UserActivate.BLOCKED);
+        ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/projects/{projectId}/apply", project.getProjectId())
+                .content(objectMapper.writeValueAsString(projectApplyRequest))
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error").value(202))
                 .andDo(print())
         ;
 

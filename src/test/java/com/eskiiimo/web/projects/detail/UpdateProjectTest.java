@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -19,6 +18,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("프로젝트 수정하기")
@@ -27,8 +27,7 @@ public class UpdateProjectTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user0")
     @DisplayName("프로젝트 수정하기_팀장일 때")
-    @Transactional
-    public void updateProject_leader() throws Exception {
+    public void updateProjectForLeaderSuccess() throws Exception {
         // Given
         Project myProject = testProjectFactory.generateMyProject(0);
         ProjectDetailRequest projectDetailRequest = testProjectFactory.generateProjectUpdateRequest(myProject);
@@ -36,7 +35,7 @@ public class UpdateProjectTest extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", myProject.getProjectId())
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(projectDetailRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -102,8 +101,7 @@ public class UpdateProjectTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user1")
     @DisplayName("프로젝트 수정하기_팀장이 아닐 때")
-    @Transactional
-    public void updateProject_notLeader() throws Exception {
+    public void updateProjectFailBecause_notLeader() throws Exception {
         // Given
         Project myProject = testProjectFactory.generateMyProject(0);
         ProjectDetailRequest projectDetailRequest = testProjectFactory.generateProjectUpdateRequest(myProject);
@@ -111,7 +109,25 @@ public class UpdateProjectTest extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", myProject.getProjectId())
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.objectMapper.writeValueAsString(projectDetailRequest)))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value(107))
+        ;
+    }
+
+    @Test
+    @DisplayName("프로젝트 수정하기_로그인하지 않은 사용지")
+    public void updateProjectFailBecause_notLoginUser() throws Exception {
+        // Given
+        Project myProject = testProjectFactory.generateMyProject(0);
+        ProjectDetailRequest projectDetailRequest = testProjectFactory.generateProjectUpdateRequest(myProject);
+        projectDetailRequest.setProjectName("Hi updated project....");
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{project_id}", myProject.getProjectId())
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(projectDetailRequest)))
                 .andDo(print())
                 .andExpect(status().isForbidden())

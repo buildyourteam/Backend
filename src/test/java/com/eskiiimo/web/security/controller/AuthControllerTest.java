@@ -28,8 +28,7 @@ class AuthControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("로그인")
-    @Transactional
-    void signin() throws Exception {
+    void signinSuccess() throws Exception {
 
         SignUpRequest signUpRequest = SignUpRequest.builder()
                 .userId("user1")
@@ -67,8 +66,7 @@ class AuthControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("로그아웃")
-    @Transactional
-    void Signup() throws Exception {
+    void SignupSuccess() throws Exception {
         SignUpRequest signUpRequest = SignUpRequest.builder()
                 .userId("testid")
                 .userEmail("tester@eskiiimo.com")
@@ -93,10 +91,9 @@ class AuthControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("아이디 중복체크_중복일때")
     @WithMockUser(username = "tester")
-    void icCheckNo() throws Exception {
+    void icCheckFailBecause_duplicatedID() throws Exception {
         testUserFactory.generateUser(1);
 
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","user1"))
@@ -109,7 +106,7 @@ class AuthControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("아이디 중복체크_사용가능")
     @WithMockUser(username = "tester")
-    void icCheckOk() throws Exception {
+    void icCheckSuccess() throws Exception {
         testUserFactory.generateUser(1);
 
         this.mockMvc.perform(post("/auth/idcheck/{checkId}","test"))
