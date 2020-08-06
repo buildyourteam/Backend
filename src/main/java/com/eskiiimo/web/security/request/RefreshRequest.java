@@ -6,22 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 인증토큰 발급 요청
+ * 인증토큰 갱신 요청
  *
  * @author always0ne
  * @version 1.0
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class SignInRequest {
+public class RefreshRequest {
     /**
-     * 사용자 ID
+     * accessToken
      */
-    private String userId;
-    /**
-     * 사용자 비밀번호
-     */
-    private String password;
+    private String refreshToken;
 }

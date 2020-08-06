@@ -1,4 +1,4 @@
-package com.eskiiimo.web.security.request;
+package com.eskiiimo.web.security.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,22 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 인증토큰 발급 요청
+ * 인증토큰 발급 응답
  *
  * @author always0ne
  * @version 1.0
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class SignInRequest {
+public class SignInResponse {
     /**
-     * 사용자 ID
+     * accessToken
      */
-    private String userId;
+    private String accessToken;
     /**
-     * 사용자 비밀번호
+     * accessToken
      */
-    private String password;
+    private String refreshToken;
 }

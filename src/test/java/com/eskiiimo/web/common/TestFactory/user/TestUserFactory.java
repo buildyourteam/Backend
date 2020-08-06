@@ -5,12 +5,14 @@ import com.eskiiimo.repository.user.model.UsersStack;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
+import com.eskiiimo.web.security.provider.JwtTokenProvider;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.enumtype.UserState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -19,6 +21,8 @@ public class TestUserFactory {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     public User generateUser(int index) {
         List<UsersStack> stacks1 = new ArrayList<UsersStack>();
@@ -35,6 +39,7 @@ public class TestUserFactory {
                 .introduction("테스트용 가계정" + index)
                 .state(UserState.FREE)
                 .activate(UserActivate.REGULAR)
+                .refreshToken(jwtTokenProvider.createRefreshToken("user" + index, Collections.singletonList("ROLE_USER")))
                 .build();
         return this.userRepository.save(user);
     }
