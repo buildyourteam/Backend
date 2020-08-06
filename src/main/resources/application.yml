@@ -32,7 +32,7 @@ spring:
       force: true
 
 jwt:
-  secretKey: govlepel@$&amp;
+  secretKey: EGLUU Secret Key V1 This Data Must Be hide
 
 
 log:
