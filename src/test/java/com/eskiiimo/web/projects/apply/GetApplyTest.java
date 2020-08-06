@@ -100,7 +100,6 @@ public class GetApplyTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("error").value(107))
                 .andDo(print())
         ;
     }
