@@ -45,7 +45,7 @@ public class ReShowProjectTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user2")
     @DisplayName("숨긴 프로젝트 취소하기_권한 없는 사용자")
-    public void reShowProjectFailBecause_noAuthUser() throws Exception {
+    public void reShowProjectFailBecause_noPermittedUser() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);

@@ -58,7 +58,7 @@ public class GetRecruitsTest extends BaseControllerTest {
     @Test
     @DisplayName("내가 보낸 영입제안 리스트 확인하기_권한 없는 사용자")
     @WithMockUser(username = "user1")
-    public void getRecruitsFailBecause_noAuthUser() throws Exception {
+    public void getRecruitsFailBecause_noPermittedUser() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         testProjectFactory.generateRecruit(testUserFactory.generateUser(1), project);

@@ -58,7 +58,7 @@ public class GetApplicantsTest extends BaseControllerTest {
     @Test
     @DisplayName("프로젝트 지원자 확인하기_권한없는 사용자")
     @WithMockUser(username = "authX")
-    void getApplicantsFailBecause_noAuthUser() throws Exception {
+    void getApplicantsFailBecause_noPermittedUser() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
 

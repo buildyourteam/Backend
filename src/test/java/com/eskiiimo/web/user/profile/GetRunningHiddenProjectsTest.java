@@ -103,7 +103,7 @@ public class GetRunningHiddenProjectsTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user2")
     @DisplayName("사용자가 참여중인 숨겨진 프로젝트 리스트 가져오기_권한 없는 사용자")
-    public void getRunningHiddenProjectListFailBecause_noAuthUser() throws Exception {
+    public void getRunningHiddenProjectListFailBecause_noPermittedUser() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);

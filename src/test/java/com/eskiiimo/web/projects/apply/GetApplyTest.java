@@ -77,7 +77,7 @@ public class GetApplyTest extends BaseControllerTest {
     @Test
     @DisplayName("프로젝트 지원서 한개 확인하기_권한이 없는 사용자")
     @WithMockUser(username = "user4")
-    void getApplyFailBecause_noAuthMember() throws Exception {
+    void getApplyFailBecause_noPermittedMember() throws Exception {
         // Given
         testUserFactory.generateUser(4);
         Project project = testProjectFactory.generateProjectApplies(1);
