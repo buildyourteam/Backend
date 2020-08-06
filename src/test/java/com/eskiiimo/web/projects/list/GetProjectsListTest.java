@@ -5,7 +5,6 @@ import com.eskiiimo.web.projects.enumtype.ProjectField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -24,9 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("프로젝트 리스트 조회")
 public class GetProjectsListTest extends BaseControllerTest {
     @Test
-    @Transactional
     @DisplayName("검색기능사용 없이 전체리스트 조회")
-    void queryProjectsTotal() throws Exception {
+    void queryProjectsTotalSuccess() throws Exception {
         // Given
         testProjectFactory.generateProjects();
 
@@ -45,9 +43,8 @@ public class GetProjectsListTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("검색기능사용 없이 전체리스트 조회_프로젝트 리스트가 없을 때")
-    void queryProjectsTotal_notExist() throws Exception {
+    void queryProjectsTotal_notExistSuccess() throws Exception {
         // Given
 
         // When & Then
@@ -65,9 +62,8 @@ public class GetProjectsListTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("직군별 and 분야별 프로젝트 리스트 조회하기")
-    void queryProjectsOccupationAndField() throws Exception {
+    void queryProjectsOccupationAndFieldSuccess() throws Exception {
         // Given
         testProjectFactory.generateProjects();
 
@@ -128,9 +124,8 @@ public class GetProjectsListTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("only 직군별 프로젝트 리스트 조회하기")
-    void queryProjectsOccupation() throws Exception {
+    void queryProjectsOccupationSuccess() throws Exception {
         // Given
         testProjectFactory.generateProjects();
 
@@ -150,9 +145,8 @@ public class GetProjectsListTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("only 분야별로만 프로젝트 리스트 조회하기")
-    void queryProjectsField() throws Exception {
+    void queryProjectsFieldSuccess() throws Exception {
         // Given
         testProjectFactory.generateProjects();
 

@@ -12,7 +12,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,10 +32,9 @@ class ProfileImageControllerTest extends BaseControllerTest {
     @Autowired
     protected ProfileImageRepository profileImageRepository;
     @Test
-    @Transactional
     @DisplayName("프로필 이미지 업로드")
     @WithMockUser(username="testuser")
-    void uploadProfileImage() throws Exception {
+    void uploadProfileImageSuccess() throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/web/files/testfiles/testimg.jpg");
         MockMultipartFile image = new MockMultipartFile(
                 "image", targetFile.getName(), "image/jpeg", new FileInputStream(targetFile));
@@ -74,9 +72,8 @@ class ProfileImageControllerTest extends BaseControllerTest {
 
 
     @Test
-    @Transactional
     @DisplayName("프로필 이미지 다운로드")
-    void downloadProfileImage() throws Exception {
+    void downloadProfileImageSuccess() throws Exception {
         File targetFile = new File("./src/test/java/com/eskiiimo/web/files/testfiles/testimg.jpg");
 
         ProfileImage profileImage = ProfileImage.builder()

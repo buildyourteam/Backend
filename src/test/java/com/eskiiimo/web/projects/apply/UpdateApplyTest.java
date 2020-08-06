@@ -9,7 +9,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -25,10 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UpdateApplyTest extends BaseControllerTest {
 
     @Test
-    @Transactional
     @DisplayName("내가 작성한 프로젝트 지원서 수정하기")
     @WithMockUser(username = "user1")
-    void updateApply() throws Exception {
+    void updateApplySuccess() throws Exception {
         // Given
         Project project = testProjectFactory.generateProjectApplies(1);
         ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
@@ -37,7 +35,7 @@ public class UpdateApplyTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply", project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyRequest))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -59,10 +57,27 @@ public class UpdateApplyTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
+    @DisplayName("내가 작성한 프로젝트 지원서 수정하기_로그인하지 않은 사용자")
+    void updateApplySuccess_notLoginUser() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateProjectApplies(1);
+        ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
+        projectApplyRequest.setIntroduction("지원서 수정 완료!");
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply", project.getProjectId())
+                .content(objectMapper.writeValueAsString(projectApplyRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(print())
+        ;
+    }
+
+    @Test
     @DisplayName("프로젝트 지원서 수정하기_지원하지 않은 사용자")
     @WithMockUser(username = "user4")
-    void updateApply_notApply() throws Exception {
+    void updateApplyFailBecause_notApply() throws Exception {
         // Given
         testUserFactory.generateUser(4);
         Project project = testProjectFactory.generateProjectApplies(1);
@@ -72,9 +87,10 @@ public class UpdateApplyTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/projects/{projectId}/apply", project.getProjectId())
                 .content(objectMapper.writeValueAsString(projectApplyRequest))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error").value(102))
                 .andDo(print())
         ;
     }

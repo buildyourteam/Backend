@@ -3,7 +3,6 @@ package com.eskiiimo.web.index.controller;
 import com.eskiiimo.web.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -17,8 +16,7 @@ class IndexControllerTest  extends BaseControllerTest {
 
     @Test
     @DisplayName("프로젝트 상세 페이지 인덱스")
-    @Transactional
-    void projectDetailIndex() throws Exception {
+    void projectDetailIndexSuccess() throws Exception {
         this.mockMvc.perform(get("/index/projects/1"))
                 .andExpect(jsonPath("_links.projectDetail.href").exists())
                 .andDo(document("index-projects-detail",
@@ -31,8 +29,7 @@ class IndexControllerTest  extends BaseControllerTest {
 
     @Test
     @DisplayName("프로필 페이지 인덱스")
-    @Transactional
-    void profileIndex() throws Exception {
+    void profileIndexSuccess() throws Exception {
         this.mockMvc.perform(get("/index/profile/testUser"))
                 .andExpect(jsonPath("_links.profileDetail.href").exists())
                 .andDo(document("index-profile",

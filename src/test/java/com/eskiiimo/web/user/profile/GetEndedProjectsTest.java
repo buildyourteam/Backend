@@ -7,7 +7,6 @@ import com.eskiiimo.web.projects.enumtype.State;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -27,9 +26,8 @@ public class GetEndedProjectsTest extends BaseControllerTest {
 
 
     @Test
-    @Transactional
     @DisplayName("사용자가 참여했던 프로젝트 리스트 가져오기")
-    public void getEndedProjectList() throws Exception {
+    public void getEndedProjectListSuccess() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
@@ -90,16 +88,10 @@ public class GetEndedProjectsTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("사용자가 참여했던 프로젝트 리스트 가져오기_참여했던 프로젝트가 없을 때")
-    public void getEndedProjectList_notExist() throws Exception {
+    public void getEndedProjectList_NotExistSuccess() throws Exception {
         // Given
-        User user1 = testUserFactory.generateUser(1);
-        User user2 = testUserFactory.generateUser(2);
-        Project project1 = testProjectFactory.generateProject(1, user2, State.RUNNING);
-        Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
-        testProjectFactory.generateProjectMember(user1, project4, Boolean.TRUE);
-        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
+        testUserFactory.generateUser(1);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/ended")

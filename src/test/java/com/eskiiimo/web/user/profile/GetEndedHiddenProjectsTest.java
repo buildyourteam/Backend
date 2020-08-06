@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -21,16 +20,16 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("참여했던 숨겨진 프로젝트")
 public class GetEndedHiddenProjectsTest extends BaseControllerTest {
 
     @Test
-    @Transactional
     @WithMockUser(username = "user1")
     @DisplayName("사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기")
-    public void getEndedHiddenProjectList() throws Exception {
+    public void getEndedHiddenProjectListSuccess() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
@@ -91,10 +90,32 @@ public class GetEndedHiddenProjectsTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @WithMockUser(username = "user0")
     @DisplayName("사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기_권한없는 사용자")
-    public void getEndedHiddenProjectList_AuthX() throws Exception {
+    public void getEndedHiddenProjectListFailBecause_noAuthUser() throws Exception {
+        // Given
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
+        Project project1 = testProjectFactory.generateProject(1, user2, State.ENDED);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.ENDED);
+        testProjectFactory.generateProjectMember(user1, project4, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
+
+        // When & Then
+        this.mockMvc.perform(get("/profile/user1/ended/hidden")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "projectName,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value(201))
+        ;
+    }
+
+    @Test
+    @DisplayName("사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기_로그인하지 않은 사용자")
+    public void getEndedHiddenProjectListFailBecause_notLoginUser() throws Exception {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
@@ -115,18 +136,9 @@ public class GetEndedHiddenProjectsTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @WithMockUser(username = "user1")
     @DisplayName("사용자가 참여했던 숨겨진 프로젝트 리스트 가져오기_프로젝트가 없을 때")
-    public void getEndedHiddenProjectList_notExist() throws Exception {
-        // Given
-        User user1 = testUserFactory.generateUser(1);
-        User user2 = testUserFactory.generateUser(2);
-        Project project1 = testProjectFactory.generateProject(1, user2, State.ENDED);
-        Project project4 = testProjectFactory.generateProject(4, user2, State.ENDED);
-        testProjectFactory.generateProjectMember(user1, project4, Boolean.FALSE);
-        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
-
+    public void getEndedHiddenProjectList_NotExistSuccess() throws Exception {
         // When & Then
         this.mockMvc.perform(get("/profile/user1/ended/hidden")
                 .param("page", "0")

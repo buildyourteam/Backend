@@ -10,7 +10,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -18,15 +17,15 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("프로젝트 영입하기")
 public class RecruitProjectTest extends BaseControllerTest {
     @Test
-    @Transactional
     @WithMockUser(username = "user0")
     @DisplayName("프로젝트 영입하기")
-    void recruitProject() throws Exception {
+    void recruitProjectSuccess() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User user = testUserFactory.generateUser(1);
@@ -35,7 +34,7 @@ public class RecruitProjectTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", user.getUserId())
                 .content(objectMapper.writeValueAsString(recruitProjectRequest))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print())
@@ -52,10 +51,9 @@ public class RecruitProjectTest extends BaseControllerTest {
     }
 
     @Test
-    @Transactional
     @WithMockUser(username = "user1")
     @DisplayName("프로젝트 영입하기_권한없는 사용자")
-    void recruitProject_authX() throws Exception {
+    void recruitProjectFailBecause_noAuthUser() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User user = testUserFactory.generateUser(1);
@@ -64,7 +62,26 @@ public class RecruitProjectTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", user.getUserId())
                 .content(objectMapper.writeValueAsString(recruitProjectRequest))
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value(107))
+                .andDo(print())
+        ;
+    }
+
+    @Test
+    @DisplayName("프로젝트 영입하기_로그인하지 않은 사용자")
+    void recruitProjectFailBecause_notLoginUser() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
+        User user = testUserFactory.generateUser(1);
+        RecruitProjectRequest recruitProjectRequest = testProjectFactory.generateRecruitRequest(project.getProjectId(), user);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", user.getUserId())
+                .content(objectMapper.writeValueAsString(recruitProjectRequest))
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isForbidden())
                 .andDo(print())

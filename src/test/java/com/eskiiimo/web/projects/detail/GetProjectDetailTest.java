@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -27,8 +26,7 @@ public class GetProjectDetailTest extends BaseControllerTest {
 
     @Test
     @DisplayName("프로젝트 상세 페이지 확인하기")
-    @Transactional
-    void getProjectDetail() throws Exception {
+    void getProjectDetailSuccess() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User user2 = testUserFactory.generateUser(1);
@@ -86,13 +84,11 @@ public class GetProjectDetailTest extends BaseControllerTest {
 
     @Test
     @DisplayName("프로젝트 상세 페이지 확인하기_없는 프로젝트일 때")
-    @Transactional
-    void getProjectDetail_notExist() throws Exception {
-        // Given
-
+    void getProjectDetailFailBecause_notExistProject() throws Exception {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}", (long) 1))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error").value(103))
                 .andDo(print())
         ;
     }

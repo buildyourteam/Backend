@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,10 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AcceptRecruitProjectTest extends BaseControllerTest {
 
     @Test
-    @Transactional
     @WithMockUser(username = "user0")
     @DisplayName("영입제안 승락하기")
-    void acceptRecruitProject() throws Exception {
+    void acceptRecruitProjectSuccess() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();
@@ -49,28 +47,10 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
         ;
     }
 
-
     @Test
-    @Transactional
-    @WithMockUser(username = "user0")
-    @DisplayName("영입제안 승락하기_존재하지 않는 제안서")
-    void acceptRecruitProject_notExist() throws Exception {
-        // Given
-        Project project = testProjectFactory.generateMyProject(0);
-        String userId = project.getLeaderId();
-
-        // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, project.getProjectId()))
-                .andExpect(status().isNotFound())
-                .andDo(print())
-        ;
-    }
-
-    @Test
-    @Transactional
     @WithMockUser(username = "authX")
     @DisplayName("영입제안 승락하기_권한 없는 사용자")
-    void acceptRecruitProject_authX() throws Exception {
+    void acceptRecruitProjectFailBecause_noAuthUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();
@@ -79,22 +59,42 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
                 .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value(104))
+                .andDo(print())
         ;
     }
 
     @Test
-    @Transactional
-    @WithMockUser(username = "user0")
-    @DisplayName("영입제안 승락하기_권한 없는 사용자2")
-    void acceptRecruitProject_authX2() throws Exception {
+    @DisplayName("영입제안 승락하기_로그인하지 않은 사용자")
+    void acceptRecruitProjectFailBecause_notLoginUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
         String userId = me.getUserId();
         List<Project> projects = testProjectFactory.generateProjectRecruits(2, me);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", "authX", projects.get(0).getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
                 .andExpect(status().isForbidden())
+                .andDo(print())
         ;
     }
+
+
+    @Test
+    @WithMockUser(username = "user0")
+    @DisplayName("영입제안 승락하기_존재하지 않는 제안서")
+    void acceptRecruitProjectFailBecause_notExistRecruit() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
+        String userId = project.getLeaderId();
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, project.getProjectId()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error").value(105))
+                .andDo(print())
+        ;
+    }
+
+
 }

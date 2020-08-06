@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -21,10 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("프로필 조회")
 public class GetProfileTest extends BaseControllerTest {
     @Test
-    @Transactional
     @DisplayName("본인의 프로필 조회")
     @WithMockUser(username = "user1")
-    void getMyProfile() throws Exception {
+    void getMyProfileSuccess() throws Exception {
         testUserFactory.generateUser(1);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}", "user1"))
@@ -61,9 +59,8 @@ public class GetProfileTest extends BaseControllerTest {
 
 
     @Test
-    @Transactional
     @DisplayName("프로필 조회")
-    void getProfile() throws Exception {
+    void getProfileSuccess() throws Exception {
         testUserFactory.generateUser(1);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}", "user1"))

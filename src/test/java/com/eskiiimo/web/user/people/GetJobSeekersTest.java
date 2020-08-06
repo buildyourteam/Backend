@@ -3,7 +3,6 @@ package com.eskiiimo.web.user.people;
 import com.eskiiimo.web.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
 
@@ -22,8 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GetJobSeekersTest extends BaseControllerTest {
     @Test
     @DisplayName("팀을 구하는 사람들")
-    @Transactional
-    void getJobSeekers() throws Exception {
+    void getJobSeekersSuccess() throws Exception {
         testUserFactory.generatePeople();
 
         // When & Then
@@ -36,8 +34,7 @@ public class GetJobSeekersTest extends BaseControllerTest {
 
     @Test
     @DisplayName("팀을 구하는 사람들_레벨")
-    @Transactional
-    void getJobSeekers_grade() throws Exception {
+    void getJobSeekers_gradeSuccess() throws Exception {
         testUserFactory.generatePeople();
 
         // When & Then
@@ -53,8 +50,7 @@ public class GetJobSeekersTest extends BaseControllerTest {
 
     @Test
     @DisplayName("팀을 구하는 사람들_역할")
-    @Transactional
-    void getJobSeekers_role() throws Exception {
+    void getJobSeekers_roleSuccess() throws Exception {
         testUserFactory.generatePeople();
 
         // When & Then
@@ -68,8 +64,7 @@ public class GetJobSeekersTest extends BaseControllerTest {
 
     @Test
     @DisplayName("팀을 구하는 사람들_지역")
-    @Transactional
-    void getJobSeekers_area() throws Exception {
+    void getJobSeekers_areaSuccess() throws Exception {
         testUserFactory.generatePeople();
 
         // When & Then
@@ -84,8 +79,7 @@ public class GetJobSeekersTest extends BaseControllerTest {
 
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_역할")
-    @Transactional
-    void getJobSeekers_gradeAndRole() throws Exception {
+    void getJobSeekers_gradeAndRoleSuccess() throws Exception {
         testUserFactory.generatePeople();
 
         // When & Then
@@ -101,8 +95,7 @@ public class GetJobSeekersTest extends BaseControllerTest {
 
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_지역")
-    @Transactional
-    void getJobSeekers_gradeAndArea() throws Exception {
+    void getJobSeekers_gradeAndAreaSuccess() throws Exception {
         testUserFactory.generatePeople();
 
         // When & Then
@@ -119,8 +112,7 @@ public class GetJobSeekersTest extends BaseControllerTest {
 
     @Test
     @DisplayName("팀을 구하는 사람들_역할_지역")
-    @Transactional
-    void getJobSeekers_RoleAndArea() throws Exception {
+    void getJobSeekers_RoleAndAreaSuccess() throws Exception {
         testUserFactory.generatePeople();
 
         // When & Then
@@ -136,8 +128,7 @@ public class GetJobSeekersTest extends BaseControllerTest {
 
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_역할_지역")
-    @Transactional
-    void getJobSeekers_LevelAndRoleAndArea() throws Exception {
+    void getJobSeekers_LevelAndRoleAndAreaSuccess() throws Exception {
         IntStream.range(0, 4).forEach(testUserFactory::generateLeader);
         testUserFactory.generatePeople();
 
