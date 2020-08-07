@@ -6,7 +6,6 @@ import com.eskiiimo.web.security.exception.CUserNotFoundException;
 import com.eskiiimo.web.security.exception.IdAlreadyExistsException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -23,13 +22,13 @@ public class AuthExceptionHandleController {
     @ExceptionHandler(CUserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ErrorResponse userNotFound(CUserNotFoundException exception) {
-        return new ErrorResponse(001, exception.getMessage());
+        return new ErrorResponse("001", exception.getMessage());
     }
 
     @ExceptionHandler(CSigninFailedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     protected ErrorResponse signinFailed(CSigninFailedException exception) {
-        return new ErrorResponse(002, exception.getMessage());
+        return new ErrorResponse("002", exception.getMessage());
     }
 
     /**
@@ -42,7 +41,7 @@ public class AuthExceptionHandleController {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
     public ErrorResponse handleIdExists(IdAlreadyExistsException exception) {
-        return new ErrorResponse(003, exception.getMessage());
+        return new ErrorResponse("003", exception.getMessage());
     }
 
     /**
@@ -55,7 +54,7 @@ public class AuthExceptionHandleController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleSignature(SignatureException exception) {
-        return new ErrorResponse(004, "유효하지 않은 토큰입니다.");
+        return new ErrorResponse("004", "유효하지 않은 토큰입니다.");
     }
 
     /**
@@ -68,7 +67,7 @@ public class AuthExceptionHandleController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleMalformedJwt(MalformedJwtException exception) {
-        return new ErrorResponse(005, "손상된 토큰입니다.");
+        return new ErrorResponse("005", "손상된 토큰입니다.");
     }
 
     /**
@@ -81,6 +80,6 @@ public class AuthExceptionHandleController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleTokenExpired(ExpiredJwtException exception) {
-        return new ErrorResponse(007, "만료된 토큰입니다.");
+        return new ErrorResponse("007", "만료된 토큰입니다.");
     }
 }

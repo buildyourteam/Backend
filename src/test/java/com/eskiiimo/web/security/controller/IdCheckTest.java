@@ -23,7 +23,7 @@ class IdCheckTest extends BaseControllerTest {
         this.mockMvc.perform(post("/auth/idcheck/{checkId}", "test"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("idCheckOk"))
+                .andDo(document("idCheck"))
         ;
     }
 
@@ -37,7 +37,6 @@ class IdCheckTest extends BaseControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("error").value(3))
                 .andDo(print())
-                .andDo(document("idCheck"))
         ;
     }
 }

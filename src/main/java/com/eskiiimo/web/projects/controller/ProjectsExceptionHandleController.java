@@ -17,48 +17,48 @@ public class ProjectsExceptionHandleController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleNotFoundApplicants(ApplicantNotFoundException exception) {
-        return new ErrorResponse(101, exception.getMessage());
+        return new ErrorResponse("101", exception.getMessage());
     }
 
     @ExceptionHandler(ApplyNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleNotFoundApply(ApplyNotFoundException exception) {
-        return new ErrorResponse(102, exception.getMessage());
+        return new ErrorResponse("102", exception.getMessage());
     }
 
     @ExceptionHandler(ProjectNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleNotFoundProject(ProjectNotFoundException exception) {
-        return new ErrorResponse(103, exception.getMessage());
+        return new ErrorResponse("103", exception.getMessage());
     }
 
     @ExceptionHandler(RecruitNotAuthException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleRecruitNotAuth(RecruitNotAuthException exception) {
-        return new ErrorResponse(104, exception.getMessage());
+        return new ErrorResponse("104", exception.getMessage());
     }
 
     @ExceptionHandler(RecruitNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleNotFoundRecruit(RecruitNotFoundException exception) {
-        return new ErrorResponse(105, exception.getMessage());
+        return new ErrorResponse("105", exception.getMessage());
     }
 
     @ExceptionHandler(WrongDateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse handleWrongDate(WrongDateException exception) {
-        return new ErrorResponse(106, exception.getMessage());
+        return new ErrorResponse("106", exception.getMessage());
     }
 
     @ExceptionHandler(YouAreNotLeaderException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleYouAreNotReader(YouAreNotLeaderException exception) {
-        return new ErrorResponse(107, exception.getMessage());
+        return new ErrorResponse("107", exception.getMessage());
     }
 }
