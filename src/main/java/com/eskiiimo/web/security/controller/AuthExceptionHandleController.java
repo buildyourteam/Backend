@@ -4,6 +4,7 @@ import com.eskiiimo.web.common.response.ErrorResponse;
 import com.eskiiimo.web.security.exception.CSigninFailedException;
 import com.eskiiimo.web.security.exception.CUserNotFoundException;
 import com.eskiiimo.web.security.exception.IdAlreadyExistsException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.SignatureException;
@@ -43,6 +44,7 @@ public class AuthExceptionHandleController {
     public ErrorResponse handleIdExists(IdAlreadyExistsException exception) {
         return new ErrorResponse(003, exception.getMessage());
     }
+
     /**
      * 서명이 유효하지 않은 예외 발생
      *
@@ -67,5 +69,18 @@ public class AuthExceptionHandleController {
     @ResponseBody
     public ErrorResponse handleMalformedJwt(MalformedJwtException exception) {
         return new ErrorResponse(005, "손상된 토큰입니다.");
+    }
+
+    /**
+     * 토큰 만료 예외 발생
+     *
+     * @param exception 토큰 만료시간이 지남
+     * @return FORBIDDEN
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse handleTokenExpired(ExpiredJwtException exception) {
+        return new ErrorResponse(007, "만료된 토큰입니다.");
     }
 }
