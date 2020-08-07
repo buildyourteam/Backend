@@ -13,10 +13,7 @@ import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.exception.ApplicantNotFoundException;
-import com.eskiiimo.web.projects.exception.ApplyNotFoundException;
-import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.exception.*;
 import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
@@ -58,6 +55,19 @@ public class ProjectApplyService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
+
+        // 프로젝트 리더가 지원한 경우 "중복 지원" 에러 발생
+        if(isLeader(project, visitorId)) {
+            throw new DuplicateApplicantException(visitorId);
+        }
+
+        // 프로젝트에 이미 지원한 사용자인 경우 "중복 지원" 에러 발생
+        for(ProjectApply projectApply : project.getApplies()) {
+            if(projectApply.getUser().getAccountId() == user.getAccountId()) {
+
+                throw new DuplicateApplicantException(visitorId);
+            }
+        }
 
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         for (String answer : apply.getAnswers())
