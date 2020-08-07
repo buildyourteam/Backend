@@ -2,7 +2,6 @@ package com.eskiiimo.web.user.profile;
 
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.user.request.UpdateProfileRequest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -19,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Disabled
 @DisplayName("프로필 수정")
 public class UpdateProfileTest extends BaseControllerTest {
 
