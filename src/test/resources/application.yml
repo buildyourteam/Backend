@@ -23,7 +23,7 @@ spring:
       enabled: true
       force: true
 jwt:
-    secretKey: EGLUU Secret Key V1 This Data Must Be hide
+  secretKey: EGLUUSecretKeyV1ThisDataMustBeHide
 log:
   slack:
     enabled: true

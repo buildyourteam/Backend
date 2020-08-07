@@ -9,6 +9,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -31,7 +32,9 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     /**
      * JWT 토큰 검증
@@ -50,13 +53,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthentication(claims));
             filterChain.doFilter(request, response);
         } catch (SignatureException e) {
-            sendErrorMessage((HttpServletResponse) response, 0004, "유효하지 않은 토큰입니다.");
+            sendErrorMessage((HttpServletResponse) response, "004", "유효하지 않은 토큰입니다.");
         } catch (MalformedJwtException e) {
-            sendErrorMessage((HttpServletResponse) response, 0005, "손상된 토큰입니다.");
+            sendErrorMessage((HttpServletResponse) response, "005", "손상된 토큰입니다.");
         } catch (DecodingException e) {
-            sendErrorMessage((HttpServletResponse) response, 0006, "잘못된 인증입니다.");
+            sendErrorMessage((HttpServletResponse) response, "006", "잘못된 인증입니다.");
         } catch (ExpiredJwtException e) {
-            sendErrorMessage((HttpServletResponse) response, 0007, "만료된 토큰입니다.");
+            sendErrorMessage((HttpServletResponse) response, "007", "만료된 토큰입니다.");
         }
     }
 
@@ -68,7 +71,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
      * @param error   오류 번호
      * @param message 메시지
      */
-    private void sendErrorMessage(HttpServletResponse res, int error, String message) throws IOException {
+    private void sendErrorMessage(HttpServletResponse res, String error, String message) throws IOException {
         res.setStatus(HttpServletResponse.SC_FORBIDDEN);
         res.setContentType(MediaType.APPLICATION_JSON.toString());
         res.getWriter().write(this.objectMapper.writeValueAsString(new ErrorResponse(error, message)));
