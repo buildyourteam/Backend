@@ -9,6 +9,7 @@ import com.eskiiimo.web.security.provider.JwtTokenProvider;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.enumtype.UserState;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,13 +24,16 @@ public class TestUserFactory {
     UserRepository userRepository;
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     public User generateUser(int index) {
         List<UsersStack> stacks1 = new ArrayList<UsersStack>();
         stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
         User user = User.builder()
                 .userId("user" + index)
-                .password("testpassword")
+                .password(passwordEncoder.encode("testpassword"))
                 .grade((long) 1)
                 .stacks(stacks1)
                 .area("Seoul")
@@ -49,7 +53,7 @@ public class TestUserFactory {
         stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
         User user = User.builder()
                 .userId("user" + index)
-                .password("testpassword")
+                .password(passwordEncoder.encode("testpassword"))
                 .grade((long) 1)
                 .stacks(stacks1)
                 .area("Seoul")
@@ -68,7 +72,7 @@ public class TestUserFactory {
         stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
         User user = User.builder()
                 .userId("testLeader" + (3 * index + 1))
-                .password("testpassword")
+                .password(passwordEncoder.encode("testpassword"))
                 .grade((long) 1)
                 .stacks(stacks1)
                 .area("Seoul")
