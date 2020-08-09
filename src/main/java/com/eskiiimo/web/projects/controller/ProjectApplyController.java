@@ -93,8 +93,12 @@ public class ProjectApplyController {
 
         //Add Link
         ProjectApplyResponse projectApplyResponse = new ProjectApplyResponse(projectApplyDto, projectId, userId);
-        projectApplyResponse.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("acceptApply"));
-        projectApplyResponse.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("rejectApply"));
+        if(visitorId.equals(userId))
+            projectApplyResponse.add(linkTo(ProjectApplyController.class, projectId).withRel("updateApply"));
+        else{
+            projectApplyResponse.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("acceptApply"));
+            projectApplyResponse.add(linkTo(ProjectApplyController.class, projectId).slash(userId).withRel("rejectApply"));
+        }
 
         return projectApplyResponse;
     }

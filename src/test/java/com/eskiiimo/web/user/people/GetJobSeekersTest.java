@@ -144,36 +144,12 @@ public class GetJobSeekersTest extends BaseControllerTest {
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print())
                 .andDo(document("get-people",
-                        links(
-                                linkWithRel("self").description("Self 링크"),
-                                linkWithRel("next").description("다음 리스트"),
-                                linkWithRel("last").description("이전 리스트"),
-                                linkWithRel("first").description("리스트 첫번째 페이지")
-                        ),
                         requestParameters(
                                 parameterWithName("page").description("페이지 번호"),
                                 parameterWithName("size").description("페이지당 데이터 수"),
                                 parameterWithName("grade").description("유저 레벨 필터"),
                                 parameterWithName("role").description("유저 역할 필터"),
                                 parameterWithName("area").description("유저 활동지역 필터")
-                        ),
-                        responseFields(
-
-                                fieldWithPath("_embedded.peopleList[].userId").description("유저의 아이디"),
-                                fieldWithPath("_embedded.peopleList[].userName").description("유저의 이름"),
-                                fieldWithPath("_embedded.peopleList[].stacks").description("유저의 기술 스택"),
-                                fieldWithPath("_embedded.peopleList[].area").description("유저의 활동지역"),
-                                fieldWithPath("_embedded.peopleList[].grade").description("유저의 레벨"),
-                                fieldWithPath("_embedded.peopleList[].role").description("유저가 관심 있는 분야"),
-                                fieldWithPath("_links.self.href").description("Self 링크"),
-                                fieldWithPath("_links.first.href").description("리스트 첫번째 페이지"),
-                                fieldWithPath("_links.next.href").description("다음 리스트"),
-                                fieldWithPath("_links.last.href").description("이전 리스트"),
-                                fieldWithPath("page.size").description("페이지당 데이터 수"),
-                                fieldWithPath("page.totalElements").description("총 데이터 수"),
-                                fieldWithPath("page.totalPages").description("총 페이지 수"),
-                                fieldWithPath("page.number").description("현재 페이지")
-
                         )
                 ));
     }

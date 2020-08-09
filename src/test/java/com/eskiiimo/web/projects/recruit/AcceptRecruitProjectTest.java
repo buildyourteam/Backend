@@ -61,6 +61,7 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(104))
                 .andDo(print())
+                .andDo(document("104"))
         ;
     }
 
@@ -93,6 +94,7 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error").value(105))
                 .andDo(print())
+                .andDo(document("105"))
         ;
     }
 

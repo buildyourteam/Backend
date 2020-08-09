@@ -9,7 +9,6 @@ import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -17,10 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,29 +41,7 @@ public class CreateProjectTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(project)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andDo(document("create-project",
-                        requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                        ),
-                        requestFields(
-                                fieldWithPath("projectName").description("프로젝트 이름"),
-                                fieldWithPath("teamName").description("팀명"),
-                                fieldWithPath("endDate").description("마감일"),
-                                fieldWithPath("introduction").description("프로젝트에 대한 설명"),
-                                fieldWithPath("state").description("프로젝트 상태(모집중)"),
-                                fieldWithPath("projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("applyCanFile").description("지원서에 파일업로드 가능여부"),
-                                fieldWithPath("questions[]").description("프로젝트 지원서용 질문"),
-                                fieldWithPath("needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("needMember.etc").description("그 외 필요한 인원수")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-                        )
-                ))
+                .andDo(document("create-project"))
         ;
         mockMvc.perform(get("/projects/", myProject.getProjectId()))
                 .andDo(print());
