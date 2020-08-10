@@ -78,6 +78,7 @@ public class ApplyProjectTest extends BaseControllerTest {
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(108))
+                .andDo(document("108"))
                 .andDo(print())
         ;
     }

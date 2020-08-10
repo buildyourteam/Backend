@@ -65,35 +65,42 @@ Eskiiimo;
 == 오류
 
 에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있다.
+[[ProjectApiError]]
+=== Project Api Error
 [[E101]]
-=== Error101
+==== Error101
 operation::101[snippets='response-body']
 [[E102]]
-=== Error102
+==== Error102
 operation::102[snippets='response-body']
 [[E103]]
-=== Error103
+==== Error103
 operation::103[snippets='response-body']
 [[E104]]
-=== Error104
+==== Error104
 operation::104[snippets='response-body']
 [[E105]]
-=== Error105
+==== Error105
 operation::105[snippets='response-body']
 [[E106]]
-=== Error106
+==== Error106
 operation::106[snippets='response-body']
 [[E107]]
-=== Error107
+==== Error107
 operation::107[snippets='response-body']
+[[E108]]
+==== Error108
+operation::108[snippets='response-body']
+[[UserApiError]]
+=== User Api Error
 [[E201]]
-=== Error201
+==== Error201
 operation::201[snippets='response-body']
 [[E202]]
-=== Error202
+==== Error202
 operation::202[snippets='response-body']
 [[E203]]
-=== Error203
+==== Error203
 operation::203[snippets='response-body']
 
 [[overview-hypermedia]]
