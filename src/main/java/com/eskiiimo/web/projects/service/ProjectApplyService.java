@@ -56,20 +56,8 @@ public class ProjectApplyService {
         User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
 
-        // 프로젝트 리더가 지원한 경우 "중복 지원" 에러 발생
-        if(isLeader(project, visitorId)) {
+        if(isDuplicate(project, user, visitorId)) {
             throw new DuplicateApplicantException(visitorId);
-        }
-
-        // 프로젝트 지원자가 없는 경우에 대한 예외 처리
-        if(project.getApplies() != null) {
-            // 프로젝트에 이미 지원한 사용자인 경우 "중복 지원" 에러 발생
-            for (ProjectApply projectApply : project.getApplies()) {
-                if (projectApply.getUser().getAccountId() == user.getAccountId()) {
-
-                    throw new DuplicateApplicantException(visitorId);
-                }
-            }
         }
 
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
@@ -188,4 +176,35 @@ public class ProjectApplyService {
             throw new ApplicantNotFoundException(projectId);
         return project;
     }
+
+    // 프로젝트 중복 지원 여부 검사
+    private boolean isDuplicate(Project project, User user, String visitorId) {
+
+        // 프로젝트에서 리더인 경우
+        if(isLeader(project, visitorId)) {
+            return true;
+        }
+
+        // 프로젝트에 이미 등록된 사용자인 경우
+        for(ProjectMember projectMember : project.getProjectMembers()) {
+            if(projectMember.getUser().getUserId().equals(visitorId)) {
+                return true;
+            }
+        }
+
+        // 프로젝트 지원자가 없는 경우에 대한 예외 처리
+        if(project.getApplies() != null) {
+
+            // 프로젝트에 이미 지원한 사용자인 경우
+            for (ProjectApply projectApply : project.getApplies()) {
+                if (projectApply.getUser().getAccountId() == user.getAccountId()) {
+                    return true;
+                }
+            }
+        }
+
+        // 최초 프로젝트 지원자인 경우
+        return false;
+    }
+
 }
