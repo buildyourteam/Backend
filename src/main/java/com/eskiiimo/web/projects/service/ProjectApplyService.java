@@ -61,11 +61,14 @@ public class ProjectApplyService {
             throw new DuplicateApplicantException(visitorId);
         }
 
-        // 프로젝트에 이미 지원한 사용자인 경우 "중복 지원" 에러 발생
-        for(ProjectApply projectApply : project.getApplies()) {
-            if(projectApply.getUser().getAccountId() == user.getAccountId()) {
+        // 프로젝트 지원자가 없는 경우에 대한 예외 처리
+        if(project.getApplies() != null) {
+            // 프로젝트에 이미 지원한 사용자인 경우 "중복 지원" 에러 발생
+            for (ProjectApply projectApply : project.getApplies()) {
+                if (projectApply.getUser().getAccountId() == user.getAccountId()) {
 
-                throw new DuplicateApplicantException(visitorId);
+                    throw new DuplicateApplicantException(visitorId);
+                }
             }
         }
 
