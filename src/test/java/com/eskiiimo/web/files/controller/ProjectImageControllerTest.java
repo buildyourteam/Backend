@@ -87,4 +87,14 @@ class ProjectImageControllerTest extends BaseControllerTest {
         ;
 
     }
+
+    @Test
+    @DisplayName("프로젝트 이미지 다운로드_디폴트 이미지")
+    void downloadProjectDefaultImageSuccess () throws Exception {
+        this.mockMvc.perform(get("/projects/image/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+        ;
+
+    }
 }

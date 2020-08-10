@@ -87,4 +87,15 @@ class ProfileImageControllerTest extends BaseControllerTest {
                 .andDo(print())
         ;
     }
+
+
+    @Test
+    @DisplayName("프로필 이미지 다운로드_디폴트 이미지")
+    void downloadProfileDefaultImageSuccess() throws Exception {
+
+        this.mockMvc.perform(get("/profile/image/testuser"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+        ;
+    }
 }

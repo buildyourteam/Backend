@@ -1,12 +1,11 @@
 package com.eskiiimo.web.files.service;
 
 
-import com.eskiiimo.web.files.response.FileUploadResponse;
 import com.eskiiimo.repository.files.model.ProjectImage;
 import com.eskiiimo.repository.files.repository.ProjectImageRepository;
 import com.eskiiimo.web.configs.FileUploadProperties;
 import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
-import com.eskiiimo.web.files.exception.ProjectImageNotFoundException;
+import com.eskiiimo.web.files.response.FileUploadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -63,7 +62,9 @@ public class ProjectImageService {
 
     public Resource getProjectImage(Long projectId) {
         ProjectImage projectImage = this.projectImageRepository.findByProjectId(projectId)
-                .orElseThrow(() -> new ProjectImageNotFoundException(projectId));
+                .orElse(ProjectImage.builder()
+                        .filePath("./files/default.png")
+                        .build());
 
         Path filePath = Paths.get(projectImage.getFilePath());
         return fileService.loadFileAsResource(filePath);

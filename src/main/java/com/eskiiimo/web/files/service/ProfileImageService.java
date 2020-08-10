@@ -1,12 +1,11 @@
 package com.eskiiimo.web.files.service;
 
 
-import com.eskiiimo.web.files.response.FileUploadResponse;
 import com.eskiiimo.repository.files.model.ProfileImage;
 import com.eskiiimo.repository.files.repository.ProfileImageRepository;
 import com.eskiiimo.web.configs.FileUploadProperties;
 import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
-import com.eskiiimo.web.files.exception.ProfileImageNotFoundException;
+import com.eskiiimo.web.files.response.FileUploadResponse;
 import com.eskiiimo.web.user.exception.NotYourProfileException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -69,8 +68,9 @@ public class ProfileImageService {
     }
 
     public Resource getProfileImage(String userId) {
-        ProfileImage profileImage = this.profileImageRepository.findByUserId(userId)
-                .orElseThrow(() -> new ProfileImageNotFoundException(userId));
+        ProfileImage profileImage = this.profileImageRepository.findByUserId(userId).orElse(ProfileImage.builder()
+                .filePath("./files/default.png")
+                .build());
 
         Path filePath = Paths.get(profileImage.getFilePath());
         return fileService.loadFileAsResource(filePath);
