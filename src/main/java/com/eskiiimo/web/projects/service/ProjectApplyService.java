@@ -13,10 +13,7 @@ import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.exception.ApplicantNotFoundException;
-import com.eskiiimo.web.projects.exception.ApplyNotFoundException;
-import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.exception.*;
 import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
@@ -58,6 +55,8 @@ public class ProjectApplyService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
+
+        isDuplicateApply(project, user, visitorId);
 
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         for (String answer : apply.getAnswers())
@@ -175,4 +174,32 @@ public class ProjectApplyService {
             throw new ApplicantNotFoundException(projectId);
         return project;
     }
+
+    // 프로젝트 중복 지원 여부 검사
+    private void isDuplicateApply(Project project, User user, String visitorId) {
+
+        // 프로젝트에서 리더인 경우
+        if(isLeader(project, visitorId)) {
+            throw new DuplicateApplicantException(visitorId);
+        }
+
+        // 프로젝트에 이미 등록된 사용자인 경우
+        for(ProjectMember projectMember : project.getProjectMembers()) {
+            if(projectMember.getUser().getUserId().equals(visitorId)) {
+                throw new DuplicateApplicantException(visitorId);
+            }
+        }
+
+        // 프로젝트 지원자가 없는 경우에 대한 예외 처리
+        if(project.getApplies() != null) {
+
+            // 프로젝트에 이미 지원한 사용자인 경우
+            for (ProjectApply projectApply : project.getApplies()) {
+                if (projectApply.getUser().getAccountId() == user.getAccountId()) {
+                    throw new DuplicateApplicantException(visitorId);
+                }
+            }
+        }
+    }
+
 }

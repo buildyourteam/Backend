@@ -61,4 +61,12 @@ public class ProjectsExceptionHandleController {
     public ErrorResponse handleYouAreNotReader(YouAreNotLeaderException exception) {
         return new ErrorResponse(107, exception.getMessage());
     }
+
+    @ExceptionHandler(DuplicateApplicantException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse handleDuplicateApplicant(DuplicateApplicantException exception) {
+        return new ErrorResponse(108, exception.getMessage());
+    }
+
 }
