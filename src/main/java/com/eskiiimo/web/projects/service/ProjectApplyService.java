@@ -102,11 +102,12 @@ public class ProjectApplyService {
     @Transactional
     public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
         Project project;
-        if (userId.equals(visitorId))
+
+        if (visitorId.equals(userId))
             project = projectRepository.findById(projectId)
                     .orElseThrow(() -> new ProjectNotFoundException(projectId));
         else
-            project = getProjectForLeader(projectId, visitorId);
+            project = getProject(projectId);
 
         ProjectApply projectApply = findApply(project, userId);
         projectApply.markAsRead();
@@ -163,6 +164,13 @@ public class ProjectApplyService {
             if (projectApply.getUser().getUserId().equals(userId))
                 return projectApply;
         throw new ApplyNotFoundException(userId);
+    }
+
+    private Project getProject(long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        return project;
     }
 
     private Project getProjectForLeader(Long projectId, String visitorId) {
