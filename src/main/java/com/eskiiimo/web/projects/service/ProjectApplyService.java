@@ -56,7 +56,7 @@ public class ProjectApplyService {
         User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
 
-        if(isDuplicate(project, user, visitorId)) {
+        if(isDuplicateApply(project, user, visitorId)) {
             throw new DuplicateApplicantException(visitorId);
         }
 
@@ -178,7 +178,7 @@ public class ProjectApplyService {
     }
 
     // 프로젝트 중복 지원 여부 검사
-    private boolean isDuplicate(Project project, User user, String visitorId) {
+    private boolean isDuplicateApply(Project project, User user, String visitorId) {
 
         // 프로젝트에서 리더인 경우
         if(isLeader(project, visitorId)) {
