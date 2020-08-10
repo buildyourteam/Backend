@@ -56,9 +56,7 @@ public class ProjectApplyService {
         User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
 
-        if(isDuplicateApply(project, user, visitorId)) {
-            throw new DuplicateApplicantException(visitorId);
-        }
+        isDuplicateApply(project, user, visitorId);
 
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         for (String answer : apply.getAnswers())
@@ -178,17 +176,17 @@ public class ProjectApplyService {
     }
 
     // 프로젝트 중복 지원 여부 검사
-    private boolean isDuplicateApply(Project project, User user, String visitorId) {
+    private void isDuplicateApply(Project project, User user, String visitorId) {
 
         // 프로젝트에서 리더인 경우
         if(isLeader(project, visitorId)) {
-            return true;
+            throw new DuplicateApplicantException(visitorId);
         }
 
         // 프로젝트에 이미 등록된 사용자인 경우
         for(ProjectMember projectMember : project.getProjectMembers()) {
             if(projectMember.getUser().getUserId().equals(visitorId)) {
-                return true;
+                throw new DuplicateApplicantException(visitorId);
             }
         }
 
@@ -198,13 +196,10 @@ public class ProjectApplyService {
             // 프로젝트에 이미 지원한 사용자인 경우
             for (ProjectApply projectApply : project.getApplies()) {
                 if (projectApply.getUser().getAccountId() == user.getAccountId()) {
-                    return true;
+                    throw new DuplicateApplicantException(visitorId);
                 }
             }
         }
-
-        // 최초 프로젝트 지원자인 경우
-        return false;
     }
 
 }
