@@ -84,18 +84,22 @@ public class ProjectApplyService {
 
     @Transactional(readOnly = true)
     public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId) {
-        Project project = getProjectForLeader(projectId, visitorId);
+        Project project = getProjectForLeaderWithEmptyApplicants(projectId, visitorId);
 
         List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
-        for (ProjectApply projectApply : project.getApplies()) {
-            ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
-                    .state(projectApply.getState())
-                    .userId(projectApply.getUser().getUserId())
-                    .userName(projectApply.getUser().getUserName())
-                    .role(projectApply.getRole())
-                    .build();
-            applicants.add(projectApplicantDto);
+
+        if(project.getApplies() != null) {
+            for (ProjectApply projectApply : project.getApplies()) {
+                ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
+                        .state(projectApply.getState())
+                        .userId(projectApply.getUser().getUserId())
+                        .userName(projectApply.getUser().getUserName())
+                        .role(projectApply.getRole())
+                        .build();
+                applicants.add(projectApplicantDto);
+            }
         }
+
         return applicants;
     }
 
@@ -170,6 +174,14 @@ public class ProjectApplyService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
+        return project;
+    }
+
+    private Project getProjectForLeaderWithEmptyApplicants(Long projectId, String visitorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        if (!this.isLeader(project, visitorId))
+            throw new YouAreNotLeaderException(visitorId);
         return project;
     }
 
