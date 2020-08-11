@@ -66,7 +66,7 @@ public class ProjectsExceptionHandleController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ErrorResponse handleDuplicateApplicant(DuplicateApplicantException exception) {
-        return new ErrorResponse(108, exception.getMessage());
+        return new ErrorResponse("108", exception.getMessage());
     }
 
 }
