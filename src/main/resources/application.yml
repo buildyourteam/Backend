@@ -17,7 +17,7 @@ spring:
 
   jackson:
     deserialization:
-      fail-on-unknown-properties : true
+      fail-on-unknown-properties: true
 
   servlet:
     multipart:
@@ -30,7 +30,19 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+  boot:
+    admin:
+      client:
+        url: http://egluubootadmin.herokuapp.com/
+        instance:
+          service-url: https://egluuapi.codingnome.dev/
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        
 jwt:
   secretKey: EGLUUSecretKeyV1ThisDataMustBeHide
 
