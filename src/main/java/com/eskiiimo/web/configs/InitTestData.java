@@ -43,7 +43,7 @@ public class InitTestData implements ApplicationListener<ApplicationStartedEvent
     }
 
     private void generateUser(int index) {
-        this.authService.signup(
+        this.authService.signUp(
                 SignUpRequest.builder()
                         .name("유저" + index)
                         .password("password")
