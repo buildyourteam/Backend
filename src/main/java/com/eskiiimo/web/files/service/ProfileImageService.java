@@ -27,12 +27,15 @@ public class ProfileImageService {
 
     private final ProfileImageRepository profileImageRepository;
 
+    private String defaultProfileImage;
+
     @Autowired
     public ProfileImageService(FileUploadProperties prop, ProfileImageRepository profileImageRepository, FileService fileService) {
         this.profileImageRepository = profileImageRepository;
         this.fileService = fileService;
-        this.profileImageLocation = Paths.get(prop.getProfileimageDir())
+        this.profileImageLocation = Paths.get(prop.getProfile().getDir())
                 .toAbsolutePath().normalize();
+        this.defaultProfileImage = prop.getProfile().getDefaultImg();
         try {
             Files.createDirectories(this.profileImageLocation);
         } catch (Exception e) {
@@ -42,7 +45,7 @@ public class ProfileImageService {
 
     public FileUploadResponse storeProfileImage(String user_id, MultipartFile file) {
 
-        if(!SecurityContextHolder.getContext().getAuthentication().getName().equals(user_id))
+        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals(user_id))
             throw new NotYourProfileException(user_id);
 
         String fileName = fileService.storeFile(file, this.profileImageLocation, user_id);
@@ -69,7 +72,7 @@ public class ProfileImageService {
 
     public Resource getProfileImage(String userId) {
         ProfileImage profileImage = this.profileImageRepository.findByUserId(userId).orElse(ProfileImage.builder()
-                .filePath("./files/default.png")
+                .filePath(this.defaultProfileImage)
                 .build());
 
         Path filePath = Paths.get(profileImage.getFilePath());

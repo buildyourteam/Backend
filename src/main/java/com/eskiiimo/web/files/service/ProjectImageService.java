@@ -25,12 +25,15 @@ public class ProjectImageService {
 
     private final ProjectImageRepository projectImageRepository;
 
+    private String defaultProjectImage;
+
     @Autowired
     public ProjectImageService(FileUploadProperties prop, ProjectImageRepository projectImageRepository, FileService fileService) {
         this.projectImageRepository = projectImageRepository;
         this.fileService = fileService;
-        this.projectImageLocation = Paths.get(prop.getProjectimageDir())
+        this.projectImageLocation = Paths.get(prop.getProject().getDir())
                 .toAbsolutePath().normalize();
+        this.defaultProjectImage = prop.getProject().getDefaultImg();
         try {
             Files.createDirectories(this.projectImageLocation);
         } catch (Exception e) {
@@ -63,7 +66,7 @@ public class ProjectImageService {
     public Resource getProjectImage(Long projectId) {
         ProjectImage projectImage = this.projectImageRepository.findByProjectId(projectId)
                 .orElse(ProjectImage.builder()
-                        .filePath("./files/default.png")
+                        .filePath(this.defaultProjectImage)
                         .build());
 
         Path filePath = Paths.get(projectImage.getFilePath());

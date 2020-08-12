@@ -47,8 +47,12 @@ log:
 
 file:
   upload-dir: ./files
-  projectimage-dir: ./files/projectimg
-  profileimage-dir: ./files/profileimg
+  project:
+    dir: ./files/projectimg
+    defaultImg: ./files/projectimg/defaultImage.png
+  profile:
+    dir: ./files/profileimg
+    defaultImg: ./files/profileimg/defaultImage.png
 
 
 logging:
