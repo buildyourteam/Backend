@@ -23,7 +23,7 @@ spring:
       enabled: true
       force: true
 jwt:
-    secretKey: govlepel@$&amp;
+  secretKey: EGLUUSecretKeyV1ThisDataMustBeHide
 log:
   slack:
     enabled: true

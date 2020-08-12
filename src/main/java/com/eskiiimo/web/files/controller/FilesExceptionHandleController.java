@@ -19,14 +19,27 @@ public class FilesExceptionHandleController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleNotFoundFile(FileDownloadException exception) {
-        return new ErrorResponse(302, exception.getMessage());
+        return new ErrorResponse("302", exception.getMessage());
     }
 
     @ExceptionHandler(FileNameException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse handleCantUploadFile(FileNameException exception) {
-        return new ErrorResponse(303, exception.getMessage());
+        return new ErrorResponse("303", exception.getMessage());
     }
 
+    @ExceptionHandler(ProfileImageNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleProfileImageNotFound(ProfileImageNotFoundException exception) {
+        return new ErrorResponse("305", exception.getMessage());
+    }
+
+    @ExceptionHandler(ProjectImageNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleProjectImageNotFound(ProjectImageNotFoundException exception) {
+        return new ErrorResponse("306", exception.getMessage());
+    }
 }

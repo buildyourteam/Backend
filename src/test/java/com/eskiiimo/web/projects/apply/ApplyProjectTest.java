@@ -56,7 +56,7 @@ public class ApplyProjectTest extends BaseControllerTest {
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(), me.getUserId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("userName").value("user1"))
+                .andExpect(jsonPath("userName").value(me.getUserName()))
                 .andExpect(jsonPath("role").value("DEVELOPER"))
                 .andExpect(jsonPath("introduction").value("안녕하세요? 저는 그냥 개발자입니다."))
                 .andExpect(jsonPath("answers[0]").value("1번 응답"))
