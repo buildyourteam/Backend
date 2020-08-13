@@ -44,11 +44,4 @@ public class AppConfig {
         registrationBean.setOrder(2);
         return registrationBean;
     }
-
-    //security
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
 }

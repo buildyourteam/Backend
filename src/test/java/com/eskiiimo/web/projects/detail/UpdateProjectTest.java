@@ -10,6 +10,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +34,10 @@ public class UpdateProjectTest extends BaseControllerTest {
                 .content(this.objectMapper.writeValueAsString(projectDetailRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("update-project"))
+                .andDo(document("update-project",
+                        pathParameters(
+                                parameterWithName("projectId").description("프로젝트 아이디")
+                        )))
         ;
     }
 

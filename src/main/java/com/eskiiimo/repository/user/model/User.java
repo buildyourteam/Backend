@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 @Table(name = "T_USER")
-public class User implements UserDetails {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
@@ -60,43 +60,10 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-    }
+    private String refreshToken;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public String getUsername() {
-        return this.userId;
-    }
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public String getUserName() {
-        return this.userName;
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public ProfileDto toProfileDto() {

@@ -73,8 +73,8 @@ public class CreateProjectTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(project)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("error").value(400))
-                .andDo(document("400"))
+                .andExpect(jsonPath("error").value(403))
+                .andDo(document("403"))
         ;
     }
 
