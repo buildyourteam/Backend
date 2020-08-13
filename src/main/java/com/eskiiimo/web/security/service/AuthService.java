@@ -2,8 +2,8 @@ package com.eskiiimo.web.security.service;
 
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.web.security.exception.CSigninFailedException;
-import com.eskiiimo.web.security.exception.CUserNotFoundException;
+import com.eskiiimo.web.security.exception.SigninFailedException;
+import com.eskiiimo.web.security.exception.NotRegularUserException;
 import com.eskiiimo.web.security.exception.IdAlreadyExistsException;
 import com.eskiiimo.web.security.provider.JwtTokenProvider;
 import com.eskiiimo.web.security.request.RefreshRequest;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.Optional;
 
 /**
  * 회원 인증 컨트롤러
@@ -67,14 +66,14 @@ public class AuthService {
      *
      * @param signInRequest 토큰발급 요청
      * @return accessToken
-     * @throws CSigninFailedException 회원가입이 되어있지 않거나 잠긴 계정입니다.
+     * @throws SigninFailedException 회원가입이 되어있지 않거나 잠긴 계정입니다.
      */
     @Transactional
     public SignInResponse signIn(SignInRequest signInRequest) {
         User user = userRepository.findByUserIdAndActivate(signInRequest.getUserId(), UserActivate.REGULAR)
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(SigninFailedException::new);
         if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword()))
-            throw new CSigninFailedException();
+            throw new SigninFailedException();
 
         user.updateRefreshToken(jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRoles()));
 
@@ -106,7 +105,7 @@ public class AuthService {
     public RefreshResponse refreshAccessToken(RefreshRequest refreshRequest) {
         String refreshId = jwtTokenProvider.getUserId(jwtTokenProvider.getClaimsFromToken(refreshRequest.getRefreshToken()));
         User user = userRepository.findByUserIdAndActivateAndRefreshToken(refreshId, UserActivate.REGULAR, refreshRequest.getRefreshToken())
-                .orElseThrow(CUserNotFoundException::new);
+                .orElseThrow(NotRegularUserException::new);
 
         return RefreshResponse.builder()
                 .accessToken(jwtTokenProvider.createAccessToken(user.getUserId(), user.getRoles()))

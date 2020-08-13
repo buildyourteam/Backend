@@ -1,4 +1,4 @@
-package com.eskiiimo.web.security.controller;
+package com.eskiiimo.web.security;
 
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.security.request.SignUpRequest;

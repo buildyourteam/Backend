@@ -1,4 +1,4 @@
-package com.eskiiimo.web.security.controller;
+package com.eskiiimo.web.security;
 
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.security.provider.JwtTokenProvider;
@@ -31,7 +31,7 @@ class JwtFilterTest extends BaseControllerTest {
                 .header("Authorization", token))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value("006"))
-                .andDo(document("0005"))
+                .andDo(document("006"))
                 .andDo(print())
         ;
     }
@@ -46,7 +46,7 @@ class JwtFilterTest extends BaseControllerTest {
                 .header("Authorization", "Bearer "+token))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value("007"))
-                .andDo(document("0006"))
+                .andDo(document("007"))
                 .andDo(print())
         ;
     }

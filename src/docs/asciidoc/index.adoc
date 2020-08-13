@@ -65,6 +65,29 @@ Eskiiimo;
 == 오류
 
 에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있다.
+[[AuthApiError]]
+=== Auth Api Error
+[[E001]]
+==== Error001
+operation::001[snippets='response-body']
+[[E002]]
+==== Error002
+operation::002[snippets='response-body']
+[[E003]]
+==== Error003
+operation::003[snippets='response-body']
+[[E004]]
+==== Error004
+operation::004[snippets='response-body']
+[[E005]]
+==== Error005
+operation::005[snippets='response-body']
+[[E006]]
+==== Error006
+operation::006[snippets='response-body']
+[[E007]]
+==== Error007
+operation::007[snippets='response-body']
 [[ProjectApiError]]
 === Project Api Error
 [[E101]]

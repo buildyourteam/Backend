@@ -1,8 +1,9 @@
-package com.eskiiimo.web.security.controller;
+package com.eskiiimo.web.security;
 
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.security.request.RefreshRequest;
+import com.eskiiimo.web.user.enumtype.UserActivate;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,11 +36,10 @@ class RefreshTokenTest extends BaseControllerTest {
     }
 
     @Test
-    @Disabled       // Admin Api 개발 이후 활성화 필요
     @Transactional
-    @DisplayName("토큰 재발급 받기_제제당한 계정")
-    void refreshTokenFailBecauseDifferentUserToken() throws Exception {
-        User user = testUserFactory.generateUser(1);
+    @DisplayName("토큰 재발급 받기_제제당하거나 없는 계정")
+    void refreshTokenFailBecauseNotActive() throws Exception {
+        User user = testUserFactory.generateUser(1, UserActivate.BLOCKED);
         // 계정 제제 로직 필요
         RefreshRequest refreshRequest = RefreshRequest.builder()
                 .refreshToken(user.getRefreshToken())
@@ -49,6 +49,8 @@ class RefreshTokenTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(refreshRequest)))
                 .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value(1))
+                .andDo(document("001"))
                 .andDo(print());
     }
 
@@ -66,6 +68,7 @@ class RefreshTokenTest extends BaseControllerTest {
                 .content(this.objectMapper.writeValueAsString(refreshRequest)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(4))
+                .andDo(document("004"))
                 .andDo(print());
     }
 
@@ -83,6 +86,7 @@ class RefreshTokenTest extends BaseControllerTest {
                 .content(this.objectMapper.writeValueAsString(refreshRequest)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(5))
+                .andDo(document("005"))
                 .andDo(print());
     }
 
