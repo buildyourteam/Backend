@@ -29,16 +29,13 @@ public class DeleteProjectTest extends BaseControllerTest {
         Project project = testProjectFactory.generateMyProject(0);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("delete-project",
                         pathParameters(
-                                parameterWithName("project_id").description("Project id")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                                parameterWithName("projectId").description("프로젝트 아이디")
                         )
                 ));
     }
@@ -51,7 +48,7 @@ public class DeleteProjectTest extends BaseControllerTest {
         Project project = testProjectFactory.generateMyProject(0);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isForbidden())
@@ -66,7 +63,7 @@ public class DeleteProjectTest extends BaseControllerTest {
         Project project = testProjectFactory.generateMyProject(0);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", project.getProjectId())
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}", project.getProjectId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isForbidden())
@@ -80,7 +77,7 @@ public class DeleteProjectTest extends BaseControllerTest {
         // Given
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{project_id}", (long) 1)
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/projects/{projectId}", (long) 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())

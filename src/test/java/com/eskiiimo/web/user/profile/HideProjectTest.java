@@ -40,7 +40,6 @@ public class HideProjectTest extends BaseControllerTest {
                                 parameterWithName("userId").description("사용자 아이디"),
                                 parameterWithName("projectId").description("프로젝트 아이디")
                         )))
-
         ;
 
     }
@@ -59,6 +58,24 @@ public class HideProjectTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(201))
+        ;
+    }
+
+    @Test
+    @WithMockUser(username = "user1")
+    @DisplayName("프로젝트 숨기기_프로젝트 멤버가 아닐 때")
+    public void hideProjectFailBecause_NotMember() throws Exception {
+        // Given
+        User user1 = testUserFactory.generateUser(1);
+        User user2 = testUserFactory.generateUser(2);
+        Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/projects/{projectId}", user1.getUserId(), project4.getProjectId()))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("error").value(203))
+                .andDo(document("203"))
         ;
     }
 

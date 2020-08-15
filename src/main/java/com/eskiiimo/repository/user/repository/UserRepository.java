@@ -15,6 +15,10 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserIdAndActivate(String userId, UserActivate activate);
 
+    Optional<User> findByUserIdAndActivateIsNot(String userId, UserActivate activate);
+
+    Optional<User> findByUserIdAndActivateAndRefreshToken(String userId, UserActivate activate, String refreshToken);
+
     Page<User> findAllByActivateAndState(UserActivate activate, UserState state, Pageable pageable);
 
     Page<User> findAllByGradeAndActivateAndState(Long grade, UserActivate activate, UserState state, Pageable pageable);
