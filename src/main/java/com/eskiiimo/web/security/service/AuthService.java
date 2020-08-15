@@ -2,9 +2,9 @@ package com.eskiiimo.web.security.service;
 
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
-import com.eskiiimo.web.security.exception.SigninFailedException;
-import com.eskiiimo.web.security.exception.NotRegularUserException;
 import com.eskiiimo.web.security.exception.IdAlreadyExistsException;
+import com.eskiiimo.web.security.exception.NotRegularUserException;
+import com.eskiiimo.web.security.exception.SigninFailedException;
 import com.eskiiimo.web.security.provider.JwtTokenProvider;
 import com.eskiiimo.web.security.request.RefreshRequest;
 import com.eskiiimo.web.security.request.SignInRequest;
@@ -13,6 +13,7 @@ import com.eskiiimo.web.security.response.RefreshResponse;
 import com.eskiiimo.web.security.response.SignInResponse;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.enumtype.UserState;
+import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,7 @@ public class AuthService {
                 .userEmail(signUpRequest.getUserEmail())
                 .activate(UserActivate.REGULAR)
                 .state(UserState.FREE)
+                .grade((long) 0)
                 .roles(Collections.singletonList("ROLE_USER"))
                 .refreshToken(jwtTokenProvider.createRefreshToken(signUpRequest.getUserId(), Collections.singletonList("ROLE_USER")))
                 .build());
@@ -110,5 +112,18 @@ public class AuthService {
         return RefreshResponse.builder()
                 .accessToken(jwtTokenProvider.createAccessToken(user.getUserId(), user.getRoles()))
                 .build();
+    }
+
+    /**
+     * 계정 제한하기
+     * Admin Api로 옮겨갈 예정
+     *
+     * @param userId 사용자 ID
+     */
+    @Transactional
+    public void blockUser(String userId) {
+        User user = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        user.blockUser();
     }
 }

@@ -27,7 +27,7 @@ class SignInTest extends BaseControllerTest {
 
         SignInRequest signInRequest = SignInRequest.builder()
                 .userId(user.getUserId())
-                .password("testpassword")
+                .password("password")
                 .build();
 
         this.mockMvc.perform(post("/auth/signin")

@@ -46,7 +46,7 @@ public class ProfileService {
         User profile = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         profile.updateProfile(updateData.getUserName(), updateData.getRole(), updateData.getStacks(), updateData.getContact(), updateData.getArea(), updateData.getIntroduction());
-        return this.userRepository.save(profile).toProfileDto();
+        return profile.toProfileDto();
     }
 
     @Transactional(readOnly = true)

@@ -87,8 +87,10 @@ public class User{
     public void updateProfile(String userName, ProjectRole role, List<TechnicalStack> stacks, String contact, String area, String introduction) {
         List<UsersStack> removeList = new ArrayList<UsersStack>();
         //Compare Stack List and Remove User's Stacks
+        if(this.stacks== null)
+            this.stacks = new ArrayList<UsersStack>();
         for (UsersStack usersStack : this.stacks) {
-            Boolean checkRemove = Boolean.TRUE;
+            boolean checkRemove = Boolean.TRUE;
             for (TechnicalStack stack : stacks) {
                 if (usersStack.getStack().equals(stack)) {
                     stacks.remove(stack);
@@ -117,4 +119,7 @@ public class User{
         this.introduction = introduction;
     }
 
+    public void blockUser(){
+        this.activate = UserActivate.BLOCKED;
+    }
 }

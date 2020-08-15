@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,9 +37,9 @@ public class GetJobSeekersTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade", "1")
+                .param("grade", "0")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(0))
                 .andDo(print())
         ;
     }
@@ -86,10 +82,10 @@ public class GetJobSeekersTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade", "1")
+                .param("grade", "0")
                 .param("role", "DEVELOPER")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(0))
                 .andDo(print());
     }
 
@@ -102,10 +98,10 @@ public class GetJobSeekersTest extends BaseControllerTest {
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "10")
-                .param("grade", "1")
+                .param("grade", "0")
                 .param("area", "Seoul")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(0))
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print());
     }
@@ -129,18 +125,18 @@ public class GetJobSeekersTest extends BaseControllerTest {
     @Test
     @DisplayName("팀을 구하는 사람들_레벨_역할_지역")
     void getJobSeekers_LevelAndRoleAndAreaSuccess() throws Exception {
-        IntStream.range(0, 4).forEach(testUserFactory::generateLeader);
         testUserFactory.generatePeople();
+        IntStream.range(5, 8).forEach(testUserFactory::generateLeader);
 
         // When & Then
         this.mockMvc.perform(get("/people")
                 .param("page", "0")
                 .param("size", "3")
-                .param("grade", "1")
+                .param("grade", "0")
                 .param("role", "LEADER")
                 .param("area", "Seoul")
         )
-                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(1))
+                .andExpect(jsonPath("_embedded.peopleList[0].grade").value(0))
                 .andExpect(jsonPath("_embedded.peopleList[0].area").value("Seoul"))
                 .andDo(print())
                 .andDo(document("get-people",
