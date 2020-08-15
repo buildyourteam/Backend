@@ -1,4 +1,4 @@
-package com.eskiiimo.web.security.controller;
+package com.eskiiimo.web.security;
 
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
@@ -59,9 +59,30 @@ class SignInTest extends BaseControllerTest {
         this.mockMvc.perform(post("/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(signInRequest)))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value("002"))
                 .andDo(print())
         ;
+    }
 
+    @Test
+    @DisplayName("로그인_정보가 잘못되었을 때")
+    void signInFailBecauseWrongIDorPW() throws Exception {
+
+        User user = this.testUserFactory.generateUser(1);
+
+        SignInRequest signInRequest = SignInRequest.builder()
+                .userId("user1")
+                .password("testPasswordd")
+                .build();
+
+        this.mockMvc.perform(post("/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.objectMapper.writeValueAsString(signInRequest)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value("002"))
+                .andDo(document("002"))
+                .andDo(print())
+        ;
     }
 }

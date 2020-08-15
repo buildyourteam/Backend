@@ -58,6 +58,8 @@ public class TestProjectFactory {
                 .projectField(ProjectField.APP)
                 .leaderId(user.getUserId())
                 .questions(questions)
+                .leaderId(user.getUserId())
+                .applyCanFile(Boolean.TRUE)
                 .build();
         ProjectMember projectMember = ProjectMember.builder()
                 .project(project)
@@ -94,6 +96,8 @@ public class TestProjectFactory {
                 .currentMember(new ProjectMemberSet(2, 1, 1, 2))
                 .needMember(needMember)
                 .projectField(projectField)
+                .applyCanFile(Boolean.TRUE)
+                .state(State.RECRUTING)
                 .build();
 
         this.projectRepository.save(project);

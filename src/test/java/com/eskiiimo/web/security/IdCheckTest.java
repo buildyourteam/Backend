@@ -1,4 +1,4 @@
-package com.eskiiimo.web.security.controller;
+package com.eskiiimo.web.security;
 
 import com.eskiiimo.web.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +37,7 @@ class IdCheckTest extends BaseControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("error").value(3))
                 .andDo(print())
+                .andDo(document("003"))
         ;
     }
 }

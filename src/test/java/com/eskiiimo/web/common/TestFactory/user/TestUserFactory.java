@@ -63,6 +63,7 @@ public class TestUserFactory {
                 .introduction("테스트용 가계정" + index)
                 .state(UserState.FREE)
                 .activate(userActivate)
+                .refreshToken(jwtTokenProvider.createRefreshToken("user" + index, Collections.singletonList("ROLE_USER")))
                 .build();
         return this.userRepository.save(user);
     }

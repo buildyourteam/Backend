@@ -1,8 +1,8 @@
 package com.eskiiimo.web.security.controller;
 
 import com.eskiiimo.web.common.response.ErrorResponse;
-import com.eskiiimo.web.security.exception.CSigninFailedException;
-import com.eskiiimo.web.security.exception.CUserNotFoundException;
+import com.eskiiimo.web.security.exception.SigninFailedException;
+import com.eskiiimo.web.security.exception.NotRegularUserException;
 import com.eskiiimo.web.security.exception.IdAlreadyExistsException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -19,15 +19,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class AuthExceptionHandleController {
 
-    @ExceptionHandler(CUserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected ErrorResponse userNotFound(CUserNotFoundException exception) {
+    @ExceptionHandler(NotRegularUserException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse userNotFound(NotRegularUserException exception) {
         return new ErrorResponse("001", exception.getMessage());
     }
 
-    @ExceptionHandler(CSigninFailedException.class)
+    @ExceptionHandler(SigninFailedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    protected ErrorResponse signinFailed(CSigninFailedException exception) {
+    @ResponseBody
+    public ErrorResponse signinFailed(SigninFailedException exception) {
         return new ErrorResponse("002", exception.getMessage());
     }
 

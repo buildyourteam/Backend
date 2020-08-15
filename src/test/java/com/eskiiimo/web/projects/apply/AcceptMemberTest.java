@@ -53,6 +53,7 @@ public class AcceptMemberTest extends BaseControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(107))
                 .andDo(print())
+        .andDo(document("107"))
         ;
     }
 
@@ -82,6 +83,7 @@ public class AcceptMemberTest extends BaseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error").value(102))
                 .andDo(print())
+                .andDo(document("102"))
         ;
     }
 }
