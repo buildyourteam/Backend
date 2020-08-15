@@ -172,8 +172,6 @@ public class TestProjectFactory {
                 .user(user01)
                 .project(project01)
                 .state(RecruitState.UNREAD)
-                .projectId(project01.getProjectId())
-                .projectName(project01.getProjectName())
                 .build();
         this.recruitRepository.save(recruit);
         return recruit;
