@@ -84,20 +84,18 @@ public class ProjectApplyService {
 
     @Transactional(readOnly = true)
     public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId) {
-        Project project = getProjectForLeaderWithEmptyApplicants(projectId, visitorId);
+        Project project = getProjectForLeader(projectId, visitorId);
 
         List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
 
-        if(project.getApplies() != null) {
-            for (ProjectApply projectApply : project.getApplies()) {
-                ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
-                        .state(projectApply.getState())
-                        .userId(projectApply.getUser().getUserId())
-                        .userName(projectApply.getUser().getUserName())
-                        .role(projectApply.getRole())
-                        .build();
-                applicants.add(projectApplicantDto);
-            }
+        for (ProjectApply projectApply : project.getApplies()) {
+            ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
+                    .state(projectApply.getState())
+                    .userId(projectApply.getUser().getUserId())
+                    .userName(projectApply.getUser().getUserName())
+                    .role(projectApply.getRole())
+                    .build();
+            applicants.add(projectApplicantDto);
         }
 
         return applicants;
@@ -111,7 +109,7 @@ public class ProjectApplyService {
             project = projectRepository.findById(projectId)
                     .orElseThrow(() -> new ProjectNotFoundException(projectId));
         else
-            project = getProject(projectId);
+            project = getProjectForLeader(projectId, visitorId);
 
         ProjectApply projectApply = findApply(project, userId);
         projectApply.markAsRead();
@@ -170,21 +168,6 @@ public class ProjectApplyService {
         throw new ApplyNotFoundException(userId);
     }
 
-    private Project getProject(long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
-
-        return project;
-    }
-
-    private Project getProjectForLeaderWithEmptyApplicants(Long projectId, String visitorId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        if (!this.isLeader(project, visitorId))
-            throw new YouAreNotLeaderException(visitorId);
-        return project;
-    }
-
     private Project getProjectForLeader(Long projectId, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
@@ -192,6 +175,7 @@ public class ProjectApplyService {
             throw new YouAreNotLeaderException(visitorId);
         if (project.getApplies() == null)
             throw new ApplicantNotFoundException(projectId);
+
         return project;
     }
 
