@@ -51,7 +51,15 @@ public class AgentUtils {
 
     public static Version getBrowserVersion(HttpServletRequest request) {
         UserAgent userAgent = getUserAgent(request);
-        return userAgent == null ? new Version("0", "0", "0") : userAgent.getBrowserVersion();
+        if (userAgent == null) {
+            return new Version("0", "0", "0");
+        } else {
+            Version version = userAgent.getBrowserVersion();
+            if (version == null)
+                return new Version("0", "0", "0");
+            else
+                return version;
+        }
     }
 
     public static BrowserType getBrowserType(HttpServletRequest request) {

@@ -51,19 +51,6 @@ class ProjectImageControllerTest extends BaseControllerTest {
                .andDo(document("upload-project-image",
                        pathParameters(
                          parameterWithName("projectid").description("Project Id")
-                       ),
-                       requestHeaders(
-                               headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-                               headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                       ),
-                       responseHeaders(
-                               headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-                       ),
-                       responseFields(
-                               fieldWithPath("fileName").description("사진 이름"),
-                               fieldWithPath("fileDownloadUri").description("사진의 Url"),
-                               fieldWithPath("fileType").description("사진의 형태"),
-                               fieldWithPath("size").description("사진 크기")
                        )
                ))
        ;
@@ -81,6 +68,16 @@ class ProjectImageControllerTest extends BaseControllerTest {
                 .build();
         projectImageRepository.save(projectImage);
 
+        this.mockMvc.perform(get("/projects/image/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+        ;
+
+    }
+
+    @Test
+    @DisplayName("프로젝트 이미지 다운로드_디폴트 이미지")
+    void downloadProjectDefaultImageSuccess () throws Exception {
         this.mockMvc.perform(get("/projects/image/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print())

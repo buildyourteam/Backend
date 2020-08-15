@@ -1,74 +1,167 @@
 package com.eskiiimo.web.security.provider;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.DecodingException;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
+import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * JWT 토큰 처리기
+ *
+ * @author always0ne
+ * @version 1.0
+ */
 @RequiredArgsConstructor
 @Component
-public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
+public class JwtTokenProvider {
+    /**
+     * Secret Key
+     */
     @Value("${jwt.secretKey}")
     private String secretKey;
+    /**
+     * encrypted Secret Key
+     */
+    private Key key;
+    /**
+     * AccessToken 유효시간(10분)
+     */
+    private final long accessTokenValidMilSecond = 1000L * 60 * 10;
+    /**
+     * RefreshToken 유효시간(일주일)
+     */
+    private final long refreshTokenValidMilSecond = 1000L * 60 * 60 * 24 * 7;
 
-    private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
-
-    private final UserDetailsService userDetailsService;
-
+    /**
+     * SecretKey 암호화 하면서 초기화
+     */
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        this.key = Keys.hmacShaKeyFor(this.secretKey.getBytes());
     }
 
-    // Jwt 토큰 생성
-    public String createToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk);
+    /**
+     * AccessToken 생성
+     *
+     * @param userId 발급할 사용자의 아이디
+     * @param roles  사용자에게 허용할 권한
+     * @return AccessToken
+     */
+    public String createAccessToken(String userId, List<String> roles) {
+        return generateToken(userId, roles, accessTokenValidMilSecond);
+    }
+
+    /**
+     * RefreshToken 생성
+     *
+     * @param userId 발급할 사용자의 아이디
+     * @param roles  사용자에게 허용할 권한
+     * @return AccessToken
+     */
+    public String createRefreshToken(String userId, List<String> roles) {
+        return generateToken(userId, roles, refreshTokenValidMilSecond);
+    }
+
+    /**
+     * JWTToken 생성
+     *
+     * @param userId              발급할 사용자의 아이디
+     * @param roles               사용자에게 허용할 권한
+     * @param tokenValidMilSecond 토큰 유효시간
+     * @return AccessToken
+     */
+    public String generateToken(String userId, List<String> roles, long tokenValidMilSecond) {
+        Claims claims = Jwts.claims().setSubject(userId);
         claims.put("roles", roles);
         Date now = new Date();
         return Jwts.builder()
-                .setClaims(claims) // 데이터
-                .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() + tokenValidMilisecond)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + tokenValidMilSecond))
+                .signWith(this.key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Jwt 토큰으로 인증 정보를 조회
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    /**
+     * Http Request 에서 JWT 토큰의 데이터 추출
+     * Authorization 헤더에 Bearer [Token] 형태로 되어야 함
+     *
+     * @param req Http 요청
+     * @return 토큰 데이터
+     */
+    public Claims resolveToken(HttpServletRequest req) {
+        String token = req.getHeader("Authorization");
+        if (token == null)
+            return null;
+        else
+        if(token.contains("Bearer"))
+            token = token.replace("Bearer ", "");
+        else
+            throw new DecodingException("");
+
+        return getClaimsFromToken(token);
     }
 
-    // Jwt 토큰에서 회원 구별 정보 추출
-    public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    /**
+     * 토큰에서 토큰 데이터를 추출
+     *
+     * @param token JWT 토큰
+     * @return 토큰 데이터
+     */
+    public Claims getClaimsFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
-    // Request의 Header에서 token 파싱
-    public String resolveToken(HttpServletRequest req) {
-        return req.getHeader("authtoken");
+    /**
+     * Spring Security 인증토큰 발급
+     * accessToken 은 주기가 짧기 때문에 검사없이 허용한다.
+     * 매번 DB에 검증 하기엔 OverHead 가 너무 큼
+     *
+     * @param claims JWT 토큰 데이터
+     * @return Spring Security 인증토큰
+     */
+    public Authentication getAuthentication(Claims claims) {
+        return new UsernamePasswordAuthenticationToken(this.getUserId(claims), "", this.getAuthorities(claims));
     }
 
-    // Jwt 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(String jwtToken) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
-        }
+    /**
+     * JWT 토큰 데이터 에서 UserID 추출
+     *
+     * @param claims JWT 토큰 데이터
+     * @return UserId
+     */
+    public String getUserId(Claims claims) {
+        return claims.getSubject();
+    }
+
+    /**
+     * JWT 토큰 데이터 에서 UserID 추출
+     *
+     * @param claims JWT 토큰 데이터
+     * @return 사용자 권한 정보
+     */
+    private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
+        List<String> roles = claims.get("roles", List.class);
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 }

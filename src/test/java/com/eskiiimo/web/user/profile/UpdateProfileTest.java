@@ -34,31 +34,8 @@ public class UpdateProfileTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("update-profile",
-                        links(
-                                linkWithRel("self").description("self 링크"),
-                                linkWithRel("profile").description("Api 명세서")
-                        ),
                         pathParameters(
                                 parameterWithName("userId").description("사용자 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("userName").description("사용자 이름"),
-                                fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stacks").description("기술스택"),
-                                fieldWithPath("contact").description("연락처"),
-                                fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("introduction").description("자기소개")
-                        ),
-                        responseFields(
-                                fieldWithPath("userName").description("사용자 이름"),
-                                fieldWithPath("role").description("역할군"),
-                                fieldWithPath("stacks").description("기술스택"),
-                                fieldWithPath("contact").description("연락처"),
-                                fieldWithPath("area").description("활동지역"),
-                                fieldWithPath("grade").description("레벨"),
-                                fieldWithPath("introduction").description("자기소개"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
                         )
                 ))
         ;
