@@ -1,25 +1,31 @@
 package com.eskiiimo.web.common.TestFactory.user;
 
 import com.eskiiimo.repository.user.model.User;
-import com.eskiiimo.repository.user.model.UsersStack;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import com.eskiiimo.web.security.provider.JwtTokenProvider;
+import com.eskiiimo.web.security.request.SignUpRequest;
+import com.eskiiimo.web.security.service.AuthService;
 import com.eskiiimo.web.user.enumtype.UserActivate;
-import com.eskiiimo.web.user.enumtype.UserState;
+import com.eskiiimo.web.user.request.UpdateProfileRequest;
+import com.eskiiimo.web.user.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
 @Component
 public class TestUserFactory {
 
+    @Autowired
+    AuthService authService;
+    @Autowired
+    ProfileService profileService;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -29,63 +35,50 @@ public class TestUserFactory {
 
 
     public User generateUser(int index) {
-        List<UsersStack> stacks1 = new ArrayList<UsersStack>();
-        stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
-        User user = User.builder()
-                .userId("user" + index)
-                .password(passwordEncoder.encode("testpassword"))
-                .grade((long) 1)
-                .stacks(stacks1)
-                .area("Seoul")
-                .userName("UserName" + (3 * index + 1))
-                .role(ProjectRole.DEVELOPER)
-                .contact("010-1234-5678")
-                .introduction("테스트용 가계정" + index)
-                .state(UserState.FREE)
-                .activate(UserActivate.REGULAR)
-                .refreshToken(jwtTokenProvider.createRefreshToken("user" + index, Collections.singletonList("ROLE_USER")))
-                .build();
-        return this.userRepository.save(user);
+        authService.signUp(generateSignUpRequest(index));
+        UpdateProfileRequest updateProfileRequest = generateUpdateProfileRequest(index, "테스트용 가계정" + index, ProjectRole.DEVELOPER);
+        profileService.updateProfile("user" + index, "user" + index, updateProfileRequest);
+        return userRepository.findByUserIdAndActivate("user" + index, UserActivate.REGULAR).get();
     }
 
-    public User generateUser(int index, UserActivate userActivate) {
-        List<UsersStack> stacks1 = new ArrayList<UsersStack>();
-        stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
-        User user = User.builder()
-                .userId("user" + index)
-                .password(passwordEncoder.encode("testpassword"))
-                .grade((long) 1)
-                .stacks(stacks1)
-                .area("Seoul")
-                .userName("UserName" + (3 * index + 1))
-                .role(ProjectRole.DEVELOPER)
-                .contact("010-1234-5678")
-                .introduction("테스트용 가계정" + index)
-                .state(UserState.FREE)
-                .activate(userActivate)
-                .refreshToken(jwtTokenProvider.createRefreshToken("user" + index, Collections.singletonList("ROLE_USER")))
-                .build();
-        return this.userRepository.save(user);
+    public void generateLeader(int index) {
+        authService.signUp(generateSignUpRequest(index));
+        UpdateProfileRequest updateProfileRequest = generateUpdateProfileRequest(index, "테스트용 가계정" + index, ProjectRole.LEADER);
+        profileService.updateProfile("user" + index, "user" + index, updateProfileRequest);
     }
 
-    public User generateLeader(int index) {
-        List<UsersStack> stacks1 = new ArrayList<UsersStack>();
-        stacks1.add(new UsersStack(TechnicalStack.SPRINGBOOT));
-        User user = User.builder()
-                .userId("testLeader" + (3 * index + 1))
-                .password(passwordEncoder.encode("testpassword"))
-                .grade((long) 1)
-                .stacks(stacks1)
-                .area("Seoul")
-                .userName("User" + (3 * index + 1))
-                .role(ProjectRole.LEADER)
-                .state(UserState.FREE)
-                .activate(UserActivate.REGULAR)
-                .build();
-        return this.userRepository.save(user);
+    public User generateBlockedUser(int index) {
+        generateUser(index);
+        User user = userRepository.findByUserIdAndActivate("user" + index, UserActivate.REGULAR).get();
+        authService.blockUser("user"+index);
+        return user;
     }
 
     public void generatePeople() {
         IntStream.range(0, 4).forEach(this::generateUser);
+    }
+
+    public SignUpRequest generateSignUpRequest(int index) {
+
+        return SignUpRequest.builder()
+                .name("user" + index)
+                .password("password")
+                .userEmail("test@email.com")
+                .userId("user" + index)
+                .build();
+    }
+
+    public UpdateProfileRequest generateUpdateProfileRequest(int index, String introduction, ProjectRole role) {
+        List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
+        stacks.add(TechnicalStack.SPRINGBOOT);
+
+        return UpdateProfileRequest.builder()
+                .area("Seoul")
+                .contact("010-1234-5678")
+                .introduction(introduction)
+                .role(role)
+                .stacks(stacks)
+                .userName("user" + index)
+                .build();
     }
 }

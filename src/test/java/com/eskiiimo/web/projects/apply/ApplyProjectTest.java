@@ -1,12 +1,10 @@
 package com.eskiiimo.web.projects.apply;
 
 import com.eskiiimo.repository.projects.model.Project;
-import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.web.projects.request.ProjectApplyRequest;
-import com.eskiiimo.web.user.enumtype.UserActivate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
@@ -15,8 +13,6 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -114,7 +110,7 @@ public class ApplyProjectTest extends BaseControllerTest {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
         User user1 = testUserFactory.generateUser(1);
-        ProjectApply projectApply = testProjectFactory.generateApply(project, user1);
+        testProjectFactory.generateApply(project, user1);
         ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
 
         // When & Then
@@ -152,7 +148,7 @@ public class ApplyProjectTest extends BaseControllerTest {
     void applyProjectFailBecause_cannotAccessUser() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
-        User user1=testUserFactory.generateUser(1, UserActivate.BLOCKED);
+        User user1 = testUserFactory.generateBlockedUser(1);
         ProjectApplyRequest projectApplyRequest = testProjectFactory.generateProjectApplyRequest();
 
         // When & Then
