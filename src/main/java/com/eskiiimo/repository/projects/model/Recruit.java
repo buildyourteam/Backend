@@ -23,9 +23,7 @@ public class Recruit {
     private String introduction;
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
-    @Column(insertable = false, updatable = false)
     private Long projectId;
-    @Column(insertable = false, updatable = false)
     private String projectName;
 
     @ManyToOne
@@ -33,7 +31,7 @@ public class Recruit {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="projectId")
+    @JoinColumn(name="projectId", insertable = false, updatable = false)
     private Project project;
 
     public void markAsRead(){
