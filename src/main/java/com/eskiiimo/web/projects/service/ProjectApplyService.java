@@ -113,7 +113,7 @@ public class ProjectApplyService {
         projectApply.markAsRead();
 
         return ProjectApplyDto.builder()
-                .userName(projectApply.getUser().getUsername())
+                .userName(projectApply.getUser().getUserName())
                 .questions(project.getQuestions())
                 .answers(projectApply.getAnswers())
                 .introduction(projectApply.getIntroduction())

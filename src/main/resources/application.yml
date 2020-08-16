@@ -17,7 +17,7 @@ spring:
 
   jackson:
     deserialization:
-      fail-on-unknown-properties : true
+      fail-on-unknown-properties: true
 
   servlet:
     multipart:
@@ -30,9 +30,21 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+  boot:
+    admin:
+      client:
+        url: http://egluubootadmin.herokuapp.com/
+        instance:
+          service-url: https://egluuapi.codingnome.dev/
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        
 jwt:
-  secretKey: govlepel@$&amp;
+  secretKey: EGLUUSecretKeyV1ThisDataMustBeHide
 
 
 log:
@@ -47,8 +59,12 @@ log:
 
 file:
   upload-dir: ./files
-  projectimage-dir: ./files/projectimg
-  profileimage-dir: ./files/profileimg
+  project:
+    dir: ./files/projectimg
+    defaultImg: ./files/projectimg/defaultImage.png
+  profile:
+    dir: ./files/profileimg
+    defaultImg: ./files/profileimg/defaultImage.png
 
 
 logging:

@@ -51,19 +51,6 @@ class ProfileImageControllerTest extends BaseControllerTest {
                 .andDo(document("upload-profile-image",
                         pathParameters(
                                 parameterWithName("user_id").description("user id")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-                        ),
-                        responseFields(
-                                fieldWithPath("fileName").description("사진 이름"),
-                                fieldWithPath("fileDownloadUri").description("사진의 Url"),
-                                fieldWithPath("fileType").description("사진의 형태"),
-                                fieldWithPath("size").description("사진 크기")
                         )
                 ))
         ;
@@ -81,6 +68,17 @@ class ProfileImageControllerTest extends BaseControllerTest {
                 .filePath(targetFile.getPath())
                 .build();
         profileImageRepository.save(profileImage);
+
+        this.mockMvc.perform(get("/profile/image/testuser"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(print())
+        ;
+    }
+
+
+    @Test
+    @DisplayName("프로필 이미지 다운로드_디폴트 이미지")
+    void downloadProfileDefaultImageSuccess() throws Exception {
 
         this.mockMvc.perform(get("/profile/image/testuser"))
                 .andExpect(MockMvcResultMatchers.status().isOk())

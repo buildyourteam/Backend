@@ -4,14 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class ErrorResponse {
-    private int error;
+    private String error;
     private String message;
 
-    public ErrorResponse() {
-
-    }
-
-    public ErrorResponse(int error, String message) {
+    public ErrorResponse(String error, String message) {
         this.error = error;
         this.message = message;
     }

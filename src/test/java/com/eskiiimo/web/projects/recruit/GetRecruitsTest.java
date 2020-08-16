@@ -35,21 +35,6 @@ public class GetRecruitsTest extends BaseControllerTest {
                 .andDo(document("getSendRecruits",
                         pathParameters(
                                 parameterWithName("projectId").description("프로젝트 아이디")
-                        ),
-                        responseFields(
-                                fieldWithPath("_embedded.recruitDtoList[].userName").description("유저이름"),
-                                fieldWithPath("_embedded.recruitDtoList[].introduction").description("자기소개"),
-                                fieldWithPath("_embedded.recruitDtoList[].role").description("지원할 역할"),
-                                fieldWithPath("_embedded.recruitDtoList[].state").description("상태"),
-                                fieldWithPath("_embedded.recruitDtoList[].projectId").description("영입 제안 프로젝트 Id"),
-                                fieldWithPath("_embedded.recruitDtoList[].projectName").description("영입 제안 프로젝트 이름"),
-                                fieldWithPath("_embedded.recruitDtoList[]._links.self.href").description("self 링크"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
-                        ),
-                        links(
-                                linkWithRel("self").description("self 링크"),
-                                linkWithRel("profile").description("Api 명세서")
                         )
                 ));
         ;
