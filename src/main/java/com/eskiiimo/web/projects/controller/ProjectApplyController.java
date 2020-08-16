@@ -74,10 +74,13 @@ public class ProjectApplyController {
 
         //Add Link
         List<ProjectApplicantResource> projectApplicantResources = new ArrayList<ProjectApplicantResource>();
+
+        // 지원자가 존재하는 경우
         for (ProjectApplicantDto projectApplicantDto : applicants)
-            projectApplicantResources.add(new ProjectApplicantResource(projectApplicantDto, projectId));
+        projectApplicantResources.add(new ProjectApplicantResource(projectApplicantDto, projectId));
 
         return new GetApplicantsResponse(projectApplicantResources, projectId);
+
     }
 
     @GetMapping("/{userId}")

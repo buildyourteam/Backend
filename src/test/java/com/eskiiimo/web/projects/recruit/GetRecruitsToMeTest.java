@@ -95,8 +95,7 @@ public class GetRecruitsToMeTest extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit", "user0"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error").value(105))
+                .andExpect(status().isOk())
                 .andDo(print())
         ;
     }

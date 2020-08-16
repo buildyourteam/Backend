@@ -18,4 +18,5 @@ public class GetApplicantsResponse extends CollectionModel<List<ProjectApplicant
         add(linkTo(ProjectApplyController.class, projectId).withSelfRel());
         add(linkTo(DocsController.class).slash("#getApplicants").withRel("profile"));
     }
+
 }

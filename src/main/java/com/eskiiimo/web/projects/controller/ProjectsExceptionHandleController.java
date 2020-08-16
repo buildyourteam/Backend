@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ProjectsExceptionHandleController {
+
     @ExceptionHandler(ApplicantNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ErrorResponse handleNotFoundApplicants(ApplicantNotFoundException exception) {
-        return new ErrorResponse(101, exception.getMessage());
+    public void handleNotFoundApplicants() {
+
     }
 
     @ExceptionHandler(ApplyNotFoundException.class)
@@ -42,10 +43,10 @@ public class ProjectsExceptionHandleController {
     }
 
     @ExceptionHandler(RecruitNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ErrorResponse handleNotFoundRecruit(RecruitNotFoundException exception) {
-        return new ErrorResponse(105, exception.getMessage());
+    public void handleNotFoundRecruit() {
+
     }
 
     @ExceptionHandler(WrongDateException.class)
@@ -61,4 +62,12 @@ public class ProjectsExceptionHandleController {
     public ErrorResponse handleYouAreNotReader(YouAreNotLeaderException exception) {
         return new ErrorResponse(107, exception.getMessage());
     }
+
+    @ExceptionHandler(DuplicateApplicantException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse handleDuplicateApplicant(DuplicateApplicantException exception) {
+        return new ErrorResponse(108, exception.getMessage());
+    }
+
 }

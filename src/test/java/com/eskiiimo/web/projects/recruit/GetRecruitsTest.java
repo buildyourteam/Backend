@@ -96,9 +96,8 @@ public class GetRecruitsTest extends BaseControllerTest {
 
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", project.getProjectId()))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error").value(105))
-                .andDo(print())
+                .andExpect(status().isOk())
+               .andDo(print())
         ;
     }
 
