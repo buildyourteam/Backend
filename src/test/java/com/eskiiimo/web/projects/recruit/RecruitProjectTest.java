@@ -46,6 +46,27 @@ public class RecruitProjectTest extends BaseControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user0")
+    @DisplayName("프로젝트 영입하기_중복 영입지원")
+    void recruitProjectFailBecause_duplicatedRecruit() throws Exception {
+        // Given
+        Project project = testProjectFactory.generateMyProject(0);
+        User user = testUserFactory.generateUser(1);
+        testProjectFactory.generateRecruit(user, project);
+        RecruitProjectRequest recruitProjectRequest = testProjectFactory.generateRecruitRequest(project.getProjectId(), user);
+
+        // When & Then
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/profile/{userId}/recruit", user.getUserId())
+                .content(objectMapper.writeValueAsString(recruitProjectRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error").value(109))
+                .andDo(print())
+        ;
+    }
+
+    @Test
     @WithMockUser(username = "user1")
     @DisplayName("프로젝트 영입하기_권한없는 사용자")
     void recruitProjectFailBecause_noPermittedUser() throws Exception {

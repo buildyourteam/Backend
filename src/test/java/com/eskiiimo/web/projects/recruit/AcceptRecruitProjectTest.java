@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import java.util.List;
-
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -27,11 +25,11 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
     void acceptRecruitProjectSuccess() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
-        String userId = me.getUserId();
-        List<Project> projects = testProjectFactory.generateProjectRecruits(2, me);
+        Project project = testProjectFactory.generateMyProject(3);
+        testProjectFactory.generateRecruit(me, project);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", me.getUserId(), project.getProjectId()))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("acceptRecruit",
@@ -41,8 +39,9 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
                         )
                 ));
 
-        this.mockMvc.perform(get("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
+        this.mockMvc.perform(get("/profile/{userId}/recruit/{projectId}", me.getUserId(), project.getProjectId()))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("state").value("ACCEPT"))
         ;
     }
@@ -53,11 +52,11 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
     void acceptRecruitProjectFailBecause_noPermittedUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
-        String userId = me.getUserId();
-        List<Project> projects = testProjectFactory.generateProjectRecruits(2, me);
+        Project project = testProjectFactory.generateMyProject(3);
+        testProjectFactory.generateRecruit(me, project);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", me.getUserId(), project.getProjectId()))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(104))
                 .andDo(print())
@@ -70,11 +69,11 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
     void acceptRecruitProjectFailBecause_notLoginUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
-        String userId = me.getUserId();
-        List<Project> projects = testProjectFactory.generateProjectRecruits(2, me);
+        Project project = testProjectFactory.generateMyProject(3);
+        testProjectFactory.generateRecruit(me, project);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", me.getUserId(), project.getProjectId()))
                 .andExpect(status().isForbidden())
                 .andDo(print())
         ;

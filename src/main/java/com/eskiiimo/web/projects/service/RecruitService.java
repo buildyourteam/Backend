@@ -10,10 +10,7 @@ import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.RecruitState;
-import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
-import com.eskiiimo.web.projects.exception.RecruitNotAuthException;
-import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.exception.*;
 import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
@@ -39,6 +36,9 @@ public class RecruitService {
             throw new YouAreNotLeaderException(visitorId);
         User user = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (isDuplicatedRecruit(project, userId))
+            throw new DuplicatedRecruitException(userId);
 
         Recruit projectRecruit = Recruit.builder()
                 .role(recruit.getRole())
@@ -116,5 +116,20 @@ public class RecruitService {
         return Boolean.FALSE;
     }
 
+    private Boolean isDuplicatedRecruit(Project project, String userId) {
+        // 팀원 여부 체크
+        for (ProjectMember projectMember : project.getProjectMembers()) {
+            if (projectMember.getUser().getUserId().equals(userId)) {
+                throw new DuplicatedRecruitException(userId);
+            }
+        }
+
+        // 영입제안 중복 체크
+        if (recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, project.getProjectId()).isPresent())
+            return Boolean.TRUE;
+
+        return Boolean.FALSE;
+
+    }
 
 }
