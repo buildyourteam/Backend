@@ -74,10 +74,12 @@ public class ProjectApplyController {
 
         //Add Link
         List<ProjectApplicantResource> projectApplicantResources = new ArrayList<ProjectApplicantResource>();
+
         for (ProjectApplicantDto projectApplicantDto : applicants)
-            projectApplicantResources.add(new ProjectApplicantResource(projectApplicantDto, projectId));
+        projectApplicantResources.add(new ProjectApplicantResource(projectApplicantDto, projectId));
 
         return new GetApplicantsResponse(projectApplicantResources, projectId);
+
     }
 
     @GetMapping("/{userId}")

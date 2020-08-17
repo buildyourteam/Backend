@@ -6,17 +6,13 @@ import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.model.ProjectMember;
-import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.exception.ApplicantNotFoundException;
-import com.eskiiimo.web.projects.exception.ApplyNotFoundException;
-import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.exception.*;
 import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
@@ -34,7 +30,6 @@ public class ProjectApplyService {
     private final UserRepository userRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
-    private final ProjectApplyRepository projectApplyRepository;
 
     @Transactional
     public void addLeader(Project project, String userId) {
@@ -58,6 +53,8 @@ public class ProjectApplyService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         User user = userRepository.findByUserIdAndActivate(visitorId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(visitorId));
+
+        isDuplicateApply(project, user, visitorId);
 
         List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
         for (String answer : apply.getAnswers())
@@ -85,9 +82,10 @@ public class ProjectApplyService {
 
     @Transactional(readOnly = true)
     public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId) {
-        Project project = getProjectForLeader(projectId, visitorId);
+        Project project = getProjectList(projectId, visitorId);
 
         List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
+
         for (ProjectApply projectApply : project.getApplies()) {
             ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
                     .state(projectApply.getState())
@@ -97,12 +95,14 @@ public class ProjectApplyService {
                     .build();
             applicants.add(projectApplicantDto);
         }
+
         return applicants;
     }
 
     @Transactional
     public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
         Project project;
+
         if (userId.equals(visitorId))
             project = projectRepository.findById(projectId)
                     .orElseThrow(() -> new ProjectNotFoundException(projectId));
@@ -166,13 +166,59 @@ public class ProjectApplyService {
         throw new ApplyNotFoundException(userId);
     }
 
+    private Project getProjectList(Long projectId, String visitorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        if (!this.isLeader(project, visitorId))
+            throw new YouAreNotLeaderException(visitorId);
+
+        if (project.getApplies() == null ||
+                project.getApplies().isEmpty()) {
+            throw new EmptyApplicantListException(projectId);
+        }
+
+        return project;
+    }
+
     private Project getProjectForLeader(Long projectId, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotLeaderException(visitorId);
-        if (project.getApplies() == null)
+
+        if (project.getApplies() == null ||
+                project.getApplies().isEmpty()) {
             throw new ApplicantNotFoundException(projectId);
+        }
+
         return project;
     }
+
+    // 프로젝트 중복 지원 여부 검사
+    private void isDuplicateApply(Project project, User user, String visitorId) {
+
+        // 프로젝트에서 리더인 경우
+        if(isLeader(project, visitorId)) {
+            throw new DuplicateApplicantException(visitorId);
+        }
+
+        // 프로젝트에 이미 등록된 사용자인 경우
+        for(ProjectMember projectMember : project.getProjectMembers()) {
+            if(projectMember.getUser().getUserId().equals(visitorId)) {
+                throw new DuplicateApplicantException(visitorId);
+            }
+        }
+
+        // 프로젝트 지원자가 없는 경우에 대한 예외 처리
+        if(project.getApplies() != null) {
+
+            // 프로젝트에 이미 지원한 사용자인 경우
+            for (ProjectApply projectApply : project.getApplies()) {
+                if (projectApply.getUser().getAccountId() == user.getAccountId()) {
+                    throw new DuplicateApplicantException(visitorId);
+                }
+            }
+        }
+    }
+
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -21,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("프로젝트 지원자 리스트 확인하기")
 public class GetApplicantsTest extends BaseControllerTest {
-
 
     @Test
     @DisplayName("프로젝트 지원자 확인하기_팀장일 때")
@@ -92,12 +92,10 @@ public class GetApplicantsTest extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(get("/projects/{projectId}/apply", project.getProjectId()))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error").value(101))
+                .andExpect(status().isOk())
                 .andDo(print())
-        ;
+            ;
     }
-
 
 
 }

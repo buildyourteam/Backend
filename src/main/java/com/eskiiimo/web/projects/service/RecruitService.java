@@ -10,10 +10,7 @@ import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.repository.user.repository.UserRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.RecruitState;
-import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
-import com.eskiiimo.web.projects.exception.RecruitNotAuthException;
-import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
-import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
+import com.eskiiimo.web.projects.exception.*;
 import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
@@ -61,7 +58,8 @@ public class RecruitService {
             throw new RecruitNotAuthException();
 
         List<Recruit> RecruitList = this.recruitRepository.findAllByUser_UserId(visitorId)
-                .orElseThrow(() -> new RecruitNotFoundException());
+                .orElseThrow(() -> new EmptyRecruitListException(userId));
+
         List<RecruitDto> projectRecruits = new ArrayList<RecruitDto>();
         for (Recruit recruit : RecruitList)
             projectRecruits.add(this.modelMapper.map(recruit, RecruitDto.class));
