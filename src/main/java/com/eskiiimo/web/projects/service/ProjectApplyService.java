@@ -17,6 +17,7 @@ import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -172,10 +173,8 @@ public class ProjectApplyService {
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotLeaderException(visitorId);
 
-        if (project.getApplies() == null ||
-                project.getApplies().isEmpty()) {
-            throw new EmptyApplicantListException(projectId);
-        }
+        if (ObjectUtils.isEmpty(project.getApplies()))
+            throw new ApplicantNotFoundException();
 
         return project;
     }
