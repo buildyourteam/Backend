@@ -113,7 +113,7 @@ public class ProjectApplyService {
         projectApply.markAsRead();
 
         return ProjectApplyDto.builder()
-                .userName(projectApply.getUser().getUsername())
+                .userName(projectApply.getUser().getUserName())
                 .questions(project.getQuestions())
                 .answers(projectApply.getAnswers())
                 .introduction(projectApply.getIntroduction())
@@ -187,8 +187,8 @@ public class ProjectApplyService {
             throw new YouAreNotLeaderException(visitorId);
 
         if (project.getApplies() == null ||
-                project.getApplies().isEmpty()) {
-            throw new ApplicantNotFoundException(projectId);
+            project.getApplies().isEmpty()) {
+            throw new ApplicantNotFoundException();
         }
 
         return project;

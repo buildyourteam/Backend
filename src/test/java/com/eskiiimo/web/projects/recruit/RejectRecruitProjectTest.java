@@ -88,8 +88,7 @@ public class RejectRecruitProjectTest extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/profile/{userId}/recruit/{projectId}", project.getLeaderId(), project.getProjectId()))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error").value(105))
+                .andExpect(status().isOk())
                 .andDo(print())
         ;
     }

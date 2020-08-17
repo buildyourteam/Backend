@@ -15,7 +15,6 @@ import com.eskiiimo.web.projects.request.RecruitProjectRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,6 @@ public class RecruitService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final RecruitRepository recruitRepository;
-    private final ModelMapper modelMapper;
 
     @Transactional
     public void recruitProject(String userId, RecruitProjectRequest recruit, String visitorId) {
@@ -45,8 +43,6 @@ public class RecruitService {
                 .user(user)
                 .project(project)
                 .state(RecruitState.UNREAD)
-                .projectId(project.getProjectId())
-                .projectName(project.getProjectName())
                 .build();
 
         this.recruitRepository.save(projectRecruit);
@@ -61,8 +57,17 @@ public class RecruitService {
                 .orElseThrow(() -> new EmptyRecruitListException(userId));
 
         List<RecruitDto> projectRecruits = new ArrayList<RecruitDto>();
-        for (Recruit recruit : RecruitList)
-            projectRecruits.add(this.modelMapper.map(recruit, RecruitDto.class));
+        for (Recruit recruit : RecruitList) {
+            RecruitDto recruitDto = RecruitDto.builder()
+                    .introduction(recruit.getIntroduction())
+                    .projectId(recruit.getProject().getProjectId())
+                    .projectName(recruit.getProject().getProjectName())
+                    .role(recruit.getRole())
+                    .state(recruit.getState())
+                    .userName(recruit.getUser().getUserName())
+                    .build();
+            projectRecruits.add(recruitDto);
+        }
         return projectRecruits;
     }
 
@@ -70,7 +75,14 @@ public class RecruitService {
     public RecruitDto getRecruit(String userId, Long projectId, String visitorId) {
         Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
         recruit.markAsRead();
-        return this.modelMapper.map(recruit, RecruitDto.class);
+        return RecruitDto.builder()
+                .introduction(recruit.getIntroduction())
+                .projectId(recruit.getProject().getProjectId())
+                .projectName(recruit.getProject().getProjectName())
+                .role(recruit.getRole())
+                .state(recruit.getState())
+                .userName(recruit.getUser().getUserName())
+                .build();
     }
 
     @Transactional

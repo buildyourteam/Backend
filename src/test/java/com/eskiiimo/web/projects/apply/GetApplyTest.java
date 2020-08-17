@@ -10,8 +10,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,18 +35,6 @@ public class GetApplyTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디"),
                                 parameterWithName("userId").description("지원자 아이디")
                         ),
-                        responseFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("state").description("상태"),
-                                fieldWithPath("questions").description("질문"),
-                                fieldWithPath("answers").description("응답"),
-                                fieldWithPath("introduction").description("자기소개"),
-                                fieldWithPath("role").description("지원할 역할"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.acceptApply.href").description("지원서 승인하기"),
-                                fieldWithPath("_links.rejectApply.href").description("지원서 거절하기"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
-                        ),
                         links(
                                 linkWithRel("self").description("self 링크"),
                                 linkWithRel("acceptApply").description("지원서 승인하기"),
@@ -71,6 +57,12 @@ public class GetApplyTest extends BaseControllerTest {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/apply/{userId}", project.getProjectId(), "user1"))
                 .andExpect(status().isOk())
                 .andDo(print())
+                .andDo(document("getMyApply",
+                        links(
+                                linkWithRel("self").description("self 링크"),
+                                linkWithRel("updateApply").description("지원서 수정하기"),
+                                linkWithRel("profile").description("Api 명세서")
+                        )))
         ;
     }
 
@@ -132,6 +124,7 @@ public class GetApplyTest extends BaseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error").value(103))
                 .andDo(print())
+                .andDo(document("103"))
         ;
     }
 

@@ -41,11 +41,6 @@ public class RecruitProjectTest extends BaseControllerTest {
                 .andDo(document("projectRecruit",
                         pathParameters(
                                 parameterWithName("userId").description("유저 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
-                                fieldWithPath("role").description("지원할 역할"),
-                                fieldWithPath("introduction").description("자기소개")
                         )
                 ));
     }

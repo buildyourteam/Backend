@@ -42,11 +42,6 @@ public class UpdateApplyTest extends BaseControllerTest {
                 .andDo(document("updateApply",
                         pathParameters(
                                 parameterWithName("projectId").description("프로젝트 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("answers").description("지원서 응답"),
-                                fieldWithPath("role").description("지원할 역할"),
-                                fieldWithPath("introduction").description("자기소개")
                         )
                 ))
         ;

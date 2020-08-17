@@ -53,6 +53,7 @@ public class ProjectDetailDto {
                             .userName(projectMember.getUser().getUserName())
                             .role(projectMember.getRole())
                             .stack(projectMember.getStack())
+                            .grade(projectMember.getUser().getGrade())
                             .build();
                     ProjectMemberResource projectMemberResource = new ProjectMemberResource(projectMemberDto, projectMember.getUser().getUserId());
                     projectMemberListResource.add(projectMemberResource);

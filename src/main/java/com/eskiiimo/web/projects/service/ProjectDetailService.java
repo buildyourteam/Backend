@@ -16,7 +16,6 @@ import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
 import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
 import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,6 @@ public class ProjectDetailService {
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectApplyService projectApplyService;
     private final RecruitRepository recruitRepository;
-    private final ModelMapper modelMapper;
 
     @Transactional
     public Project storeProject(ProjectDetailRequest projectDetailRequest, String user_id) {
@@ -97,8 +95,17 @@ public class ProjectDetailService {
                 .orElseThrow(() -> new RecruitNotFoundException());
 
         List<RecruitDto> recruitDtos = new ArrayList<RecruitDto>();
-        for (Recruit recruit : recruits)
-            recruitDtos.add(this.modelMapper.map(recruit, RecruitDto.class));
+        for (Recruit recruit : recruits) {
+            RecruitDto recruitDto = RecruitDto.builder()
+                    .introduction(recruit.getIntroduction())
+                    .projectId(recruit.getProject().getProjectId())
+                    .projectName(recruit.getProject().getProjectName())
+                    .role(recruit.getRole())
+                    .state(recruit.getState())
+                    .userName(recruit.getUser().getUserName())
+                    .build();
+            recruitDtos.add(recruitDto);
+        }
         return recruitDtos;
     }
 

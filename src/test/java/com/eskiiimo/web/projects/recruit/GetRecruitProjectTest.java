@@ -42,19 +42,6 @@ public class GetRecruitProjectTest extends BaseControllerTest {
                                 parameterWithName("projectId").description("프로젝트 아이디"),
                                 parameterWithName("userId").description("지원자 아이디")
                         ),
-                        responseFields(
-                                fieldWithPath("userName").description("유저이름"),
-                                fieldWithPath("state").description("상태"),
-                                fieldWithPath("projectId").description("영입 제안 프로젝트 Id"),
-                                fieldWithPath("projectName").description("영입 제안 프로젝트 이름"),
-                                fieldWithPath("role").description("지원할 역할"),
-                                fieldWithPath("introduction").description("자기소개"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("_links.acceptRecruit.href").description("영입 승인하기"),
-                                fieldWithPath("_links.rejectRecruit.href").description("영입 거절하기"),
-                                fieldWithPath("_links.profile.href").description("Api 명세서")
-
-                        ),
                         links(
                                 linkWithRel("self").description("self 링크"),
                                 linkWithRel("acceptRecruit").description("영입 승인하기"),
@@ -108,8 +95,7 @@ public class GetRecruitProjectTest extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", userId, myProject.getProjectId()))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error").value(105))
+                .andExpect(status().isOk())
                 .andDo(print())
         ;
     }

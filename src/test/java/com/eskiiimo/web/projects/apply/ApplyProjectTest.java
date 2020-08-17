@@ -46,17 +46,12 @@ public class ApplyProjectTest extends BaseControllerTest {
                 .andDo(document("applyProject",
                         pathParameters(
                                 parameterWithName("projectId").description("프로젝트 아이디")
-                        ),
-                        requestFields(
-                                fieldWithPath("answers").description("지원서 응답"),
-                                fieldWithPath("role").description("지원할 역할"),
-                                fieldWithPath("introduction").description("자기소개")
                         )
                 ))
         ;
         this.mockMvc.perform(get("/projects/{projectId}/apply/{userId}", project.getProjectId(), me.getUserId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("userName").value("user1"))
+                .andExpect(jsonPath("userName").value(me.getUserName()))
                 .andExpect(jsonPath("role").value("DEVELOPER"))
                 .andExpect(jsonPath("introduction").value("안녕하세요? 저는 그냥 개발자입니다."))
                 .andExpect(jsonPath("answers[0]").value("1번 응답"))
@@ -83,6 +78,7 @@ public class ApplyProjectTest extends BaseControllerTest {
                 .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(108))
+                .andDo(document("108"))
                 .andDo(print())
         ;
     }
@@ -167,6 +163,8 @@ public class ApplyProjectTest extends BaseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error").value(202))
                 .andDo(print())
+                .andDo(document("202"))
+
         ;
 
     }

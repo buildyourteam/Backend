@@ -38,44 +38,41 @@ public class ProjectDetailController {
 
     private final ProjectValidator projectValidator;
 
-    @GetMapping(value = "/{project_id}")
+    @GetMapping(value = "/{projectId}")
     @ResponseStatus(HttpStatus.OK)
     public ProjectDetailResponse getProjectDetail(
-            @PathVariable Long project_id
+            @PathVariable Long projectId
     ) {
-        ProjectDetailDto projectDetailDto = projectDetailService.getProject(project_id);
-        ProjectDetailResponse projectDetailResponse = new ProjectDetailResponse(projectDetailDto, project_id);
+        ProjectDetailDto projectDetailDto = projectDetailService.getProject(projectId);
+        ProjectDetailResponse projectDetailResponse = new ProjectDetailResponse(projectDetailDto, projectId);
 
-        boolean myProject = Boolean.TRUE;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null)
-            myProject = isMyProject(projectDetailDto, authentication.getName());
+        String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (myProject) {
-            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("updateProject"));
-            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id).withRel("deleteProject"));
-            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id + "/apply").withRel("applicants"));
+        if (isMyProject(projectDetailDto, visitorId)) {
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(projectId).withRel("updateProject"));
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(projectId).withRel("deleteProject"));
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(projectId + "/apply").withRel("getApplicants"));
         } else
-            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(project_id + "/apply").withRel("apply"));
+            projectDetailResponse.add(linkTo(ProjectDetailController.class).slash(projectId + "/apply").withRel("apply"));
         projectDetailResponse.add(linkTo(DocsController.class).slash("#resourcesProjectGet").withRel("profile"));
 
         return projectDetailResponse;
     }
 
     // 내가 보낸 영입제안 리스트
-    @GetMapping(value = "/{project_id}/recruits")
+    @GetMapping(value = "/{projectId}/recruits")
     @ResponseStatus(HttpStatus.OK)
     public GetRecruitsResponse getRecruits(
-            @PathVariable Long project_id
+            @PathVariable Long projectId
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        List<RecruitDto> recruits = this.projectDetailService.getRecruits(visitorId, project_id);
+        List<RecruitDto> recruits = this.projectDetailService.getRecruits(visitorId, projectId);
         List<RecruitResponse> recruitResponses = new ArrayList<RecruitResponse>();
         for (RecruitDto recruitDto : recruits)
             recruitResponses.add(new RecruitResponse(recruitDto, visitorId));
 
-        return new GetRecruitsResponse(recruitResponses, project_id);
+        return new GetRecruitsResponse(recruitResponses, projectId);
     }
 
     @PostMapping
@@ -93,28 +90,28 @@ public class ProjectDetailController {
         return linkTo(DocsController.class).slash("#resourcesProjectCreate").withRel("profile");
     }
 
-    @PutMapping("/{project_id}")
+    @PutMapping("/{projectId}")
     @ResponseStatus(HttpStatus.OK)
     public ProjectDetailResponse updateProject(
-            @PathVariable Long project_id,
+            @PathVariable Long projectId,
             @RequestBody ProjectDetailRequest projectDetailRequest
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
-        ProjectDetailDto project = projectDetailService.updateProject(project_id, projectDetailRequest, visitorId);
-        ProjectDetailResponse projectDetailResponse = new ProjectDetailResponse(project, project_id);
+        ProjectDetailDto project = projectDetailService.updateProject(projectId, projectDetailRequest, visitorId);
+        ProjectDetailResponse projectDetailResponse = new ProjectDetailResponse(project, projectId);
         projectDetailResponse.add(linkTo(DocsController.class).slash("#resourcesProjectUpdate").withRel("profile"));
 
         return projectDetailResponse;
     }
 
-    @DeleteMapping("/{project_id}")
+    @DeleteMapping("/{projectId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteProject(
-            @PathVariable Long project_id
+            @PathVariable Long projectId
     ) {
         String visitorId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        this.projectDetailService.deleteProject(project_id, visitorId);
+        this.projectDetailService.deleteProject(projectId, visitorId);
     }
 
     public boolean isMyProject(ProjectDetailDto projectDetailDto, String userId) {

@@ -53,41 +53,10 @@ public class GetMyPlanHiddenProjectsTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("get-planned-hidden-project",
-                        links(
-                                linkWithRel("self").description("link to self")
-                        ),
                         requestParameters(
-                                parameterWithName("page").description("page"),
-                                parameterWithName("size").description("number of projects per page"),
-                                parameterWithName("sort").description("sort")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-                        ),
-                        responseFields(
-
-                                fieldWithPath("_embedded.projectList[].projectId").description("프로젝트 아이디 (=이미지 파일 이름)"),
-                                fieldWithPath("_embedded.projectList[].projectName").description("프로젝트 이름"),
-                                fieldWithPath("_embedded.projectList[].teamName").description("팀명"),
-                                fieldWithPath("_embedded.projectList[].endDate").description("마감일"),
-                                fieldWithPath("_embedded.projectList[].introduction").description("프로젝트에 대한 설명"),
-                                fieldWithPath("_embedded.projectList[].state").description("프로젝트 상태(모집중, 진행중, 마감)"),
-                                fieldWithPath("_embedded.projectList[].projectField").description("프로젝트 분야(앱, 웹, AI 등등.."),
-                                fieldWithPath("_embedded.projectList[].leaderId").description("팀장 아이디"),
-                                fieldWithPath("_embedded.projectList[].currentMember.developer").description("현재 개발자 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.designer").description("현재 디자이너 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.planner").description("현재 기획자 수"),
-                                fieldWithPath("_embedded.projectList[].currentMember.etc").description("현재 기타 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.developer").description("필요한 개발자 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.designer").description("필요한 디자이너 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.planner").description("필요한 기획자 수"),
-                                fieldWithPath("_embedded.projectList[].needMember.etc").description("그 외 필요한 인원 수"),
-                                fieldWithPath("_links.self.href").description("self 링크"),
-                                fieldWithPath("page.size").description("한 페이지 당 프로젝트 갯수"),
-                                fieldWithPath("page.totalElements").description("총 프로젝트 갯수"),
-                                fieldWithPath("page.totalPages").description("총 페이지 수"),
-                                fieldWithPath("page.number").description("페이지 수")
-
+                                parameterWithName("page").description("찾은 페이지"),
+                                parameterWithName("size").description("한 페이지당 프로젝트 갯수"),
+                                parameterWithName("sort").description("정렬하여 paging하는 경우 기준")
                         )
                 ))
 
