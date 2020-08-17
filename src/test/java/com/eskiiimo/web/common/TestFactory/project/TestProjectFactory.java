@@ -110,7 +110,7 @@ public class TestProjectFactory {
     public List<Project> generateProjectRecruits(int index, User user) {
         List<Project> projects = new ArrayList<>();
         IntStream.range(0, index).forEach(i -> {
-            Project project = generateProject(i, user, State.RECRUTING);
+            Project project = generateProject(i, testUserFactory.generateUser(i + 10), State.RECRUTING);
             generateRecruit(user, project);
             projects.add(project);
         });
