@@ -114,6 +114,9 @@ operation::107[snippets='response-body']
 [[E108]]
 ==== Error108
 operation::108[snippets='response-body']
+[[E109]]
+==== Error109
+operation::109[snippets='response-body']
 [[UserApiError]]
 === User Api Error
 [[E201]]
