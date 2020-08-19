@@ -37,6 +37,8 @@ public class RecruitService {
         User user = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
+        checkDuplicateRecruit(project, userId);
+
         Recruit projectRecruit = Recruit.builder()
                 .role(recruit.getRole())
                 .introduction(recruit.getIntroduction())
@@ -114,5 +116,18 @@ public class RecruitService {
         return Boolean.FALSE;
     }
 
+    private void checkDuplicateRecruit(Project project, String userId) {
+        // 팀원 여부 체크
+        for (ProjectMember projectMember : project.getProjectMembers()) {
+            if (projectMember.getUser().getUserId().equals(userId)) {
+                throw new DuplicatedRecruitException(userId);
+            }
+        }
+
+        // 영입제안 중복 체크
+        if (recruitRepository.findProjectRecruitByUser_UserIdAndProject_ProjectId(userId, project.getProjectId()).isPresent())
+            throw new DuplicatedRecruitException(userId);
+
+    }
 
 }

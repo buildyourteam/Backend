@@ -1,17 +1,18 @@
 package com.eskiiimo.web.common.TestFactory.project;
 
-import com.eskiiimo.repository.projects.model.*;
-import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
-import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
-import com.eskiiimo.repository.projects.repository.ProjectRepository;
-import com.eskiiimo.repository.projects.repository.RecruitRepository;
+import com.eskiiimo.repository.projects.model.Project;
+import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.TestFactory.user.TestUserFactory;
 import com.eskiiimo.web.projects.enumtype.*;
 import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import com.eskiiimo.web.projects.request.RecruitProjectRequest;
+import com.eskiiimo.web.projects.service.ProjectApplyService;
+import com.eskiiimo.web.projects.service.ProjectDetailService;
+import com.eskiiimo.web.projects.service.RecruitService;
 import com.eskiiimo.web.user.request.UpdateProfileRequest;
+import com.eskiiimo.web.user.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,83 +26,37 @@ import java.util.stream.IntStream;
 public class TestProjectFactory {
 
     @Autowired
-    ProjectRepository projectRepository;
-
-    @Autowired
-    ProjectMemberRepository projectMemberRepository;
-
-    @Autowired
     TestUserFactory testUserFactory;
 
     @Autowired
-    ProjectApplyRepository projectApplyRepository;
+    ProjectDetailService projectDetailService;
 
     @Autowired
-    RecruitRepository recruitRepository;
+    ProjectApplyService projectApplyService;
+
+    @Autowired
+    RecruitService recruitService;
+
+    @Autowired
+    ProfileService profileService;
 
     /*
     프로젝트를 생성하고, 해당 프로젝트 팀장을 연결
      */
     public Project generateProject(int index, User user, State status) {
-        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("question1").build());
-        questions.add(ProjectApplyQuestion.builder().question("question2").build());
+        ProjectDetailRequest createProjectRequest = generateProjectDetailRequest(index, status, ProjectField.WEB, true);
 
-        Project project = Project.builder()
-                .projectName("project" + index)
-                .teamName("project team" + index * 2)
-                .endDate(LocalDateTime.now().plusDays(1))
-                .introduction("need yes 입니다.")
-                .currentMember(new ProjectMemberSet(2, 1, 1, 2))
-                .needMember(new ProjectMemberSet(1, 4, 6, 8))
-                .state(status)
-                .projectField(ProjectField.APP)
-                .leaderId(user.getUserId())
-                .questions(questions)
-                .leaderId(user.getUserId())
-                .applyCanFile(Boolean.TRUE)
-                .build();
-        ProjectMember projectMember = ProjectMember.builder()
-                .project(project)
-                .user(user)
-                .hide(Boolean.FALSE)
-                .role(ProjectRole.LEADER)
-                .introduction("프로젝트 팀장 입니다.")
-                .build();
-        projectMember.joinProject(project);
-
-        this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
-        return project;
+        return projectDetailService.storeProject(createProjectRequest, user.getUserId());
     }
 
     /*
     프로젝트 필터(분야,직군)별 검색기능 테스트를 위한 프로젝트 생성
     */
-    public Project generateProject(int index, ProjectField projectField, Boolean is_need) {
+    private Project generateProject(int index, ProjectField projectField, Boolean is_need) {
+        User leader = testUserFactory.generateUser(index);
+        ProjectDetailRequest createProjectRequest = generateProjectDetailRequest(index, State.RECRUTING, projectField, is_need);
 
-        ProjectMemberSet need_zero = new ProjectMemberSet(0, 0, 0, 0);
-        ProjectMemberSet need_yes = new ProjectMemberSet(1, 4, 6, 8);
-        ProjectMemberSet needMember;
-        if (is_need.equals(true)) {
-            needMember = need_yes;
-        } else {
-            needMember = need_zero;
-        }
-        Project project = Project.builder()
-                .projectName("project" + index)
-                .teamName("project team" + index * 2)
-                .endDate(LocalDateTime.now().plusDays((long) (Math.random() * 10)))
-                .introduction("need yes 입니다.")
-                .currentMember(new ProjectMemberSet(2, 1, 1, 2))
-                .needMember(needMember)
-                .projectField(projectField)
-                .applyCanFile(Boolean.TRUE)
-                .state(State.RECRUTING)
-                .build();
-
-        this.projectRepository.save(project);
-        return project;
+        return projectDetailService.storeProject(createProjectRequest, leader.getUserId());
     }
 
     @Transactional
@@ -117,47 +72,25 @@ public class TestProjectFactory {
 
     public Project generateMyProject(int index) {
         User leader = testUserFactory.generateUser(index);
-        Project project = generateProject(0, leader, State.RECRUTING);
-        return project;
+
+        return generateProject(0, leader, State.RECRUTING);
     }
 
     /*
     프로젝트 팀원 매칭
      */
-    public ProjectMember generateProjectMember(User user, Project project, Boolean hide) {
-        ProjectMember projectMember = ProjectMember.builder()
-                .project(project)
-                .user(user)
-                .role(ProjectRole.DEVELOPER)
-                .introduction("프로젝트 팀원 입니다.")
-                .hide(hide)
-                .build();
-        project.getProjectMembers().add(projectMember);
+    public void generateProjectMember(User user, Project project, Boolean hide) {
+        generateApply(project, user);
 
-        this.projectMemberRepository.save(projectMember);
-        this.projectRepository.save(project);
-        return projectMember;
+        projectApplyService.acceptApply(project.getProjectId(), user.getUserId(), project.getLeaderId());
+        if (hide)
+            profileService.hideProject(user.getUserId(), user.getUserId(), project.getProjectId());
     }
 
-    public ProjectApply generateApply(Project project, User user) {
+    public void generateApply(Project project, User user) {
         ProjectApplyRequest projectApplyRequest = generateProjectApplyRequest();
 
-        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        for (String answer : projectApplyRequest.getAnswers())
-            answers.add(ProjectApplyAnswer.builder().answer(answer).build());
-
-        ProjectApply projectApply = ProjectApply.builder()
-                .answers(answers)
-                .introduction(projectApplyRequest.getIntroduction())
-                .role(projectApplyRequest.getRole())
-                .state(ProjectApplyState.UNREAD)
-                .user(user)
-                .build();
-        project.addApply(projectApply);
-
-        this.projectApplyRepository.save(projectApply);
-        this.projectRepository.save(project);
-        return projectApply;
+        projectApplyService.applyProject(project.getProjectId(), projectApplyRequest, user.getUserId());
     }
 
     public Project generateProjectApplies(int index) {
@@ -168,47 +101,51 @@ public class TestProjectFactory {
         return project;
     }
 
-    public Recruit generateRecruit(User user01, Project project01) {
-        RecruitProjectRequest recruitProjectRequest = generateRecruitRequest(project01.getProjectId(), user01);
-        Recruit recruit = Recruit.builder()
-                .role(recruitProjectRequest.getRole())
-                .introduction(recruitProjectRequest.getIntroduction())
-                .user(user01)
-                .project(project01)
-                .state(RecruitState.UNREAD)
-                .build();
-        this.recruitRepository.save(recruit);
-        return recruit;
+    public void generateRecruit(User user, Project project) {
+        RecruitProjectRequest recruitProjectRequest = generateRecruitRequest(project.getProjectId(), user);
+
+        recruitService.recruitProject(user.getUserId(), recruitProjectRequest, project.getLeaderId());
     }
 
     public List<Project> generateProjectRecruits(int index, User user) {
         List<Project> projects = new ArrayList<>();
         IntStream.range(0, index).forEach(i -> {
-            Project project = generateProject(i, ProjectField.WEB, Boolean.TRUE);
+            Project project = generateProject(i, testUserFactory.generateUser(i + 10), State.RECRUTING);
             generateRecruit(user, project);
             projects.add(project);
         });
         return projects;
     }
 
-    public ProjectDetailRequest generateProjectDetailRequest(Project myProject) {
-        ProjectDetailRequest projectDetailRequest = ProjectDetailRequest.builder()
-                .projectName(myProject.getProjectName())
-                .teamName(myProject.getTeamName())
-                .endDate(myProject.getEndDate())
-                .introduction(myProject.getIntroduction())
-                .needMember(myProject.getNeedMember())
-                .projectField(myProject.getProjectField())
-                .applyCanFile(myProject.getApplyCanFile())
-                .questions(myProject.getQuestions())
+    public ProjectDetailRequest generateProjectDetailRequest(int index, State status, ProjectField projectField, Boolean isNeed) {
+        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
+        questions.add(ProjectApplyQuestion.builder().question("question1").build());
+        questions.add(ProjectApplyQuestion.builder().question("question2").build());
+
+        ProjectMemberSet needMember;
+        if (isNeed.equals(true))
+            needMember = new ProjectMemberSet(0, 0, 0, 0);
+        else
+            needMember = new ProjectMemberSet(1, 4, 6, 8);
+
+        return ProjectDetailRequest.builder()
+                .projectName("project" + index)
+                .teamName("project team" + index * 2)
+                .endDate(LocalDateTime.now().plusDays(1))
+                .introduction("need yes 입니다.")
+                .needMember(needMember)
+                .state(status)
+                .projectField(projectField)
+                .questions(questions)
+                .applyCanFile(Boolean.TRUE)
                 .build();
-        return projectDetailRequest;
     }
 
     public UpdateProfileRequest generateUpdateProfileRequest() {
         List<TechnicalStack> stacks = new ArrayList<TechnicalStack>();
         stacks.add(TechnicalStack.DJANGO);
-        UpdateProfileRequest updateProfileRequest = UpdateProfileRequest.builder()
+
+        return UpdateProfileRequest.builder()
                 .area("서울시 구로구")
                 .contact("010-9876-5432")
                 .introduction("프로필 업데이트 하기")
@@ -216,12 +153,10 @@ public class TestProjectFactory {
                 .stacks(stacks)
                 .userName("회원 01")
                 .build();
-
-        return updateProfileRequest;
     }
 
     public ProjectDetailRequest generateProjectUpdateRequest(Project project) {
-        ProjectDetailRequest projectDetailRequest = ProjectDetailRequest.builder()
+        return ProjectDetailRequest.builder()
                 .projectName(project.getProjectName())
                 .teamName(project.getTeamName())
                 .endDate(project.getEndDate())
@@ -232,16 +167,14 @@ public class TestProjectFactory {
                 .applyCanFile(project.getApplyCanFile())
                 .projectField(project.getProjectField())
                 .build();
-        return projectDetailRequest;
     }
 
     public RecruitProjectRequest generateRecruitRequest(Long projectId, User user) {
-        RecruitProjectRequest recruitProjectRequest = RecruitProjectRequest.builder()
+        return RecruitProjectRequest.builder()
                 .projectId(projectId)
                 .introduction("플젝에 영입하고 싶어요")
                 .role(user.getRole())
                 .build();
-        return recruitProjectRequest;
     }
 
     public ProjectApplyRequest generateProjectApplyRequest() {
@@ -249,13 +182,10 @@ public class TestProjectFactory {
         answers.add("1번 응답");
         answers.add("2번 응답");
         answers.add("3번 응답");
-        ProjectApplyRequest projectApplyRequest = ProjectApplyRequest.builder()
+        return ProjectApplyRequest.builder()
                 .role(ProjectRole.DEVELOPER)
                 .introduction("안녕하세요? 저는 그냥 개발자입니다.")
                 .answers(answers)
                 .build();
-        return projectApplyRequest;
     }
-
-
 }

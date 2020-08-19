@@ -27,11 +27,11 @@ public class GetRecruitProjectTest extends BaseControllerTest {
     void getRecruitProjectSuccess() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
-        String userId = me.getUserId();
-        List<Project> projects = testProjectFactory.generateProjectRecruits(2, me);
+        Project project = testProjectFactory.generateMyProject(3);
+        testProjectFactory.generateRecruit(me, project);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", me.getUserId(), project.getProjectId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("state").value("READ"))
                 .andDo(print())
@@ -57,11 +57,11 @@ public class GetRecruitProjectTest extends BaseControllerTest {
     void getRecruitProjectFailBecause_noPermittedUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
-        String userId = me.getUserId();
-        List<Project> projects = testProjectFactory.generateProjectRecruits(2, me);
+        Project project = testProjectFactory.generateMyProject(3);
+        testProjectFactory.generateRecruit(me, project);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", me.getUserId(), project.getProjectId()))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(104))
                 .andDo(print())
@@ -73,11 +73,11 @@ public class GetRecruitProjectTest extends BaseControllerTest {
     void getRecruitProjectFailBecause_notLoginUser() throws Exception {
         // Given
         User me = testUserFactory.generateUser(0);
-        String userId = me.getUserId();
-        List<Project> projects = testProjectFactory.generateProjectRecruits(2, me);
+        Project project = testProjectFactory.generateMyProject(3);
+        testProjectFactory.generateRecruit(me, project);
 
         // When & Then
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", userId, projects.get(0).getProjectId()))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit/{projectId}", me.getUserId(), project.getProjectId()))
                 .andExpect(status().isForbidden())
                 .andDo(print())
         ;

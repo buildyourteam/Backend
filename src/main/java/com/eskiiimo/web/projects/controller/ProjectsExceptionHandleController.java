@@ -73,6 +73,13 @@ public class ProjectsExceptionHandleController {
         return new ErrorResponse("108", exception.getMessage());
     }
 
+    @ExceptionHandler(DuplicatedRecruitException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorResponse handleDuplicatedRecruit(DuplicatedRecruitException exception) {
+        return new ErrorResponse("109", exception.getMessage());
+    }
+
     @ExceptionHandler(EmptyApplicantListException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

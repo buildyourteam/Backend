@@ -6,16 +6,9 @@ import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.State;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,17 +27,14 @@ public class GetRunningHiddenProjectsTest extends BaseControllerTest {
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
 
-        Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
-        Project project2 = testProjectFactory.generateProject(2, user1, State.RECRUTING);
-        Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
+        testProjectFactory.generateProject(1, user1, State.RUNNING);
+        testProjectFactory.generateProject(2, user1, State.RECRUTING);
+        testProjectFactory.generateProject(3, user1, State.RUNNING);
 
         Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
         Project project5 = testProjectFactory.generateProject(5, user2, State.RECRUTING);
         Project project6 = testProjectFactory.generateProject(6, user2, State.RUNNING);
 
-        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
-        testProjectFactory.generateProjectMember(user1, project2, Boolean.TRUE);
-        testProjectFactory.generateProjectMember(user1, project3, Boolean.FALSE);
         testProjectFactory.generateProjectMember(user1, project4, Boolean.TRUE);
         testProjectFactory.generateProjectMember(user1, project5, Boolean.FALSE);
         testProjectFactory.generateProjectMember(user1, project6, Boolean.TRUE);
@@ -74,13 +64,14 @@ public class GetRunningHiddenProjectsTest extends BaseControllerTest {
     @DisplayName("사용자가 참여중인 숨겨진 프로젝트 리스트 가져오기_권한 없는 사용자")
     public void getRunningHiddenProjectListFailBecause_noPermittedUser() throws Exception {
         // Given
+        User user0 = testUserFactory.generateUser(0);
         User user1 = testUserFactory.generateUser(1);
         Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
         Project project2 = testProjectFactory.generateProject(2, user1, State.RECRUTING);
         Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
-        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
-        testProjectFactory.generateProjectMember(user1, project2, Boolean.TRUE);
-        testProjectFactory.generateProjectMember(user1, project3, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user0, project1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user0, project2, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user0, project3, Boolean.FALSE);
 
 
         // When & Then
@@ -99,13 +90,14 @@ public class GetRunningHiddenProjectsTest extends BaseControllerTest {
     @DisplayName("사용자가 참여중인 숨겨진 프로젝트 리스트 가져오기_로그인하지 않은 사용자")
     public void getRunningHiddenProjectListFailBecause_notLoginUser() throws Exception {
         // Given
+        User user0 = testUserFactory.generateUser(0);
         User user1 = testUserFactory.generateUser(1);
         Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
         Project project2 = testProjectFactory.generateProject(2, user1, State.RECRUTING);
         Project project3 = testProjectFactory.generateProject(3, user1, State.RUNNING);
-        testProjectFactory.generateProjectMember(user1, project1, Boolean.FALSE);
-        testProjectFactory.generateProjectMember(user1, project2, Boolean.TRUE);
-        testProjectFactory.generateProjectMember(user1, project3, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user0, project1, Boolean.FALSE);
+        testProjectFactory.generateProjectMember(user0, project2, Boolean.TRUE);
+        testProjectFactory.generateProjectMember(user0, project3, Boolean.FALSE);
 
 
         // When & Then

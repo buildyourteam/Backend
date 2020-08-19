@@ -1,10 +1,11 @@
 package com.eskiiimo.web.projects.detail;
 
-import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
+import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
+import com.eskiiimo.web.projects.enumtype.State;
 import com.eskiiimo.web.projects.request.ProjectDetailRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,8 @@ public class CreateProjectTest extends BaseControllerTest {
     @DisplayName("프로젝트 생성 성공")
     public void createProjectSuccess() throws Exception {
         // Given
-        Project myProject = testProjectFactory.generateMyProject(0);
-        ProjectDetailRequest project = testProjectFactory.generateProjectDetailRequest(myProject);
+        User user = testUserFactory.generateUser(0);
+        ProjectDetailRequest project = testProjectFactory.generateProjectDetailRequest(0, State.RECRUTING, ProjectField.WEB, true);
 
         // When & Then
         mockMvc.perform(post("/projects")
@@ -43,7 +44,7 @@ public class CreateProjectTest extends BaseControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(document("create-project"))
         ;
-        mockMvc.perform(get("/projects/", myProject.getProjectId()))
+        mockMvc.perform(get("/projects/", 1))
                 .andDo(print());
     }
 

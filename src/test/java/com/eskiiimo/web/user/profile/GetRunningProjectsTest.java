@@ -6,15 +6,8 @@ import com.eskiiimo.web.common.BaseControllerTest;
 import com.eskiiimo.web.projects.enumtype.State;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,10 +23,9 @@ public class GetRunningProjectsTest extends BaseControllerTest {
         // Given
         User user1 = testUserFactory.generateUser(1);
         User user2 = testUserFactory.generateUser(2);
-        Project project1 = testProjectFactory.generateProject(1, user1, State.RUNNING);
+        testProjectFactory.generateProject(1, user1, State.RUNNING);
         Project project4 = testProjectFactory.generateProject(4, user2, State.RUNNING);
         testProjectFactory.generateProjectMember(user1, project4, Boolean.FALSE);
-        testProjectFactory.generateProjectMember(user1, project1, Boolean.TRUE);
 
         // When & Then
         this.mockMvc.perform(get("/profile/user1/running")

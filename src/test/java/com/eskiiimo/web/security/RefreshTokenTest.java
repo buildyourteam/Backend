@@ -2,9 +2,8 @@ package com.eskiiimo.web.security;
 
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.common.BaseControllerTest;
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.security.request.RefreshRequest;
-import com.eskiiimo.web.user.enumtype.UserActivate;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -39,7 +38,7 @@ class RefreshTokenTest extends BaseControllerTest {
     @Transactional
     @DisplayName("토큰 재발급 받기_제제당하거나 없는 계정")
     void refreshTokenFailBecauseNotActive() throws Exception {
-        User user = testUserFactory.generateUser(1, UserActivate.BLOCKED);
+        User user = testUserFactory.generateBlockedUser(1);
         // 계정 제제 로직 필요
         RefreshRequest refreshRequest = RefreshRequest.builder()
                 .refreshToken(user.getRefreshToken())
