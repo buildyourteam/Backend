@@ -63,6 +63,7 @@ public class RecruitProjectTest extends BaseControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error").value(109))
                 .andDo(print())
+                .andDo(document("109"))
         ;
     }
 
