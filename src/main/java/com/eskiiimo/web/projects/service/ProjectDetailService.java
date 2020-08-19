@@ -11,6 +11,7 @@ import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import com.eskiiimo.web.projects.exception.EmptyRecruitListException;
 import com.eskiiimo.web.projects.exception.ProjectNotFoundException;
 import com.eskiiimo.web.projects.exception.RecruitNotFoundException;
 import com.eskiiimo.web.projects.exception.YouAreNotLeaderException;
@@ -92,7 +93,7 @@ public class ProjectDetailService {
     public List<RecruitDto> getRecruits(String visitorId, Long projectId) {
         getProjectForLeader(projectId, visitorId);
         List<Recruit> recruits = this.recruitRepository.findAllByProject_ProjectId(projectId)
-                .orElseThrow(() -> new RecruitNotFoundException());
+                .orElseThrow(() -> new EmptyRecruitListException(visitorId));
 
         List<RecruitDto> recruitDtos = new ArrayList<RecruitDto>();
         for (Recruit recruit : recruits) {

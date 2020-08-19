@@ -174,7 +174,7 @@ public class ProjectApplyService {
             throw new YouAreNotLeaderException(visitorId);
 
         if (ObjectUtils.isEmpty(project.getApplies()))
-            throw new ApplicantNotFoundException();
+            throw new EmptyApplicantListException(projectId);
 
         return project;
     }
@@ -187,7 +187,7 @@ public class ProjectApplyService {
 
         if (project.getApplies() == null ||
             project.getApplies().isEmpty()) {
-            throw new ApplicantNotFoundException();
+            throw new ApplicantNotFoundException(projectId);
         }
 
         return project;

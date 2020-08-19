@@ -91,7 +91,8 @@ public class AcceptRecruitProjectTest extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.put("/profile/{userId}/recruit/{projectId}", userId, project.getProjectId()))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error").value(105))
                 .andDo(print())
                 .andDo(document("105"))
         ;

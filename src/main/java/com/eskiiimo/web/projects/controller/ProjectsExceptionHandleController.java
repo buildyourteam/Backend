@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ProjectsExceptionHandleController {
 
     @ExceptionHandler(ApplicantNotFoundException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public void handleNotFoundApplicants() {
+    public ErrorResponse handleNotFoundApplicants(ApplicantNotFoundException exception) {
+        return new ErrorResponse("101", exception.getMessage());
     }
 
     @ExceptionHandler(ApplyNotFoundException.class)
@@ -45,9 +46,10 @@ public class ProjectsExceptionHandleController {
     }
 
     @ExceptionHandler(RecruitNotFoundException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public void handleNotFoundRecruit() {
+    public ErrorResponse handleNotFoundRecruit(RecruitNotFoundException exception) {
+        return new ErrorResponse("105", exception.getMessage());
     }
 
     @ExceptionHandler(WrongDateException.class)
