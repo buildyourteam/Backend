@@ -13,10 +13,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 
 public class GetRecruitsToMeResponse extends CollectionModel<List<RecruitResponse>> {
+
+    public GetRecruitsToMeResponse(String userId, Link... links){
+        super(Collections.emptyList(), links);
+        add(linkTo(RecruitController.class, userId).withSelfRel());
+    }
+
     public GetRecruitsToMeResponse(List<RecruitResponse> recruits, String userId, Link... links){
         super(Collections.singleton(recruits), links);
         add(linkTo(RecruitController.class, userId).withSelfRel());
         add(linkTo(DocsController.class).slash("#getRecruits").withRel("profile"));
-
     }
 }

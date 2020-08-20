@@ -13,9 +13,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 public class GetApplicantsResponse extends CollectionModel<List<ProjectApplicantResource>> {
 
+    public GetApplicantsResponse(Long projectId, Link... links) {
+        super(Collections.emptyList(), links);
+        add(linkTo(ProjectApplyController.class, projectId).withSelfRel());
+    }
+
     public GetApplicantsResponse(List<ProjectApplicantResource> applicants, Long projectId, Link... links) {
         super(Collections.singleton(applicants), links);
         add(linkTo(ProjectApplyController.class, projectId).withSelfRel());
         add(linkTo(DocsController.class).slash("#getApplicants").withRel("profile"));
     }
+
 }

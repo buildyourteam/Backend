@@ -13,4 +13,5 @@ public class ProjectApplicantResource extends EntityModel<ProjectApplicantDto> {
         super(applicant, links);
         add(linkTo(ProjectApplyController.class,projectId).slash(applicant.getUserId()).withSelfRel());
     }
+
 }

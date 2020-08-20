@@ -6,7 +6,6 @@ import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.model.ProjectMember;
-import com.eskiiimo.repository.projects.repository.ProjectApplyRepository;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.user.model.User;
@@ -18,6 +17,7 @@ import com.eskiiimo.web.projects.request.ProjectApplyRequest;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,6 @@ public class ProjectApplyService {
     private final UserRepository userRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
-    private final ProjectApplyRepository projectApplyRepository;
 
     @Transactional
     public void addLeader(Project project, String userId) {
@@ -84,10 +83,11 @@ public class ProjectApplyService {
 
     @Transactional(readOnly = true)
     public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId) {
-        Project project = getProjectForLeader(projectId, visitorId);
+        List<ProjectApply> projectApplies = getAppliesForLeader(projectId, visitorId);
 
         List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
-        for (ProjectApply projectApply : project.getApplies()) {
+
+        for (ProjectApply projectApply : projectApplies) {
             ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
                     .state(projectApply.getState())
                     .userId(projectApply.getUser().getUserId())
@@ -96,12 +96,14 @@ public class ProjectApplyService {
                     .build();
             applicants.add(projectApplicantDto);
         }
+
         return applicants;
     }
 
     @Transactional
     public ProjectApplyDto getApply(Long projectId, String userId, String visitorId) {
         Project project;
+
         if (userId.equals(visitorId))
             project = projectRepository.findById(projectId)
                     .orElseThrow(() -> new ProjectNotFoundException(projectId));
@@ -170,9 +172,26 @@ public class ProjectApplyService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         if (!this.isLeader(project, visitorId))
             throw new YouAreNotLeaderException(visitorId);
-        if (project.getApplies() == null)
+
+        if (project.getApplies() == null ||
+            project.getApplies().isEmpty()) {
             throw new ApplicantNotFoundException(projectId);
+        }
+
         return project;
+    }
+
+    private List<ProjectApply> getAppliesForLeader(Long projectId, String visitorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        if (!this.isLeader(project, visitorId))
+            throw new YouAreNotLeaderException(visitorId);
+
+        if (ObjectUtils.isEmpty(project.getApplies()))
+            throw new EmptyApplicantListException(project.getProjectId());
+
+        return project.getApplies();
     }
 
     // 프로젝트 중복 지원 여부 검사

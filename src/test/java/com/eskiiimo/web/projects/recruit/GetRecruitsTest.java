@@ -7,11 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -75,14 +71,13 @@ public class GetRecruitsTest extends BaseControllerTest {
     @Test
     @DisplayName("내가 보낸 영입제안 리스트 확인하기_영입제안이 없을 때")
     @WithMockUser(username = "user0")
-    public void getRecruitsFailBecause_notExistRecruit() throws Exception {
+    public void getRecruitsSuccessThat_notExistRecruit() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
 
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/projects/{projectId}/recruits", project.getProjectId()))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error").value(105))
+                .andExpect(status().isOk())
                 .andDo(print())
         ;
     }

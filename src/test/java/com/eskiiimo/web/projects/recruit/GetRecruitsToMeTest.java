@@ -76,12 +76,11 @@ public class GetRecruitsToMeTest extends BaseControllerTest {
     @Test
     @WithMockUser(username = "user0")
     @DisplayName("나한테 온 프로젝트 영입 제안리스트_영입제안이 없을 때")
-    void getRecruitListToMeFailBecause_notExistRecruit() throws Exception {
+    void getRecruitListToMeSuccessThat_notExistRecruit() throws Exception {
 
         // When & Then
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("/profile/{userId}/recruit", "user0"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error").value(105))
+                .andExpect(status().isOk())
                 .andDo(print())
         ;
     }

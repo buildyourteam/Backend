@@ -56,7 +56,8 @@ public class RecruitService {
             throw new RecruitNotAuthException();
 
         List<Recruit> RecruitList = this.recruitRepository.findAllByUser_UserId(visitorId)
-                .orElseThrow(() -> new RecruitNotFoundException());
+                .orElseThrow(() -> new EmptyRecruitListException(userId));
+
         List<RecruitDto> projectRecruits = new ArrayList<RecruitDto>();
         for (Recruit recruit : RecruitList) {
             RecruitDto recruitDto = RecruitDto.builder()
