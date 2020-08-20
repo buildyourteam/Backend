@@ -83,11 +83,11 @@ public class ProjectApplyService {
 
     @Transactional(readOnly = true)
     public List<ProjectApplicantDto> getApplicants(Long projectId, String visitorId) {
-        Project project = getProjectList(projectId, visitorId);
+        List<ProjectApply> projectApplies = getAppliesForLeader(projectId, visitorId);
 
         List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
 
-        for (ProjectApply projectApply : project.getApplies()) {
+        for (ProjectApply projectApply : projectApplies) {
             ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
                     .state(projectApply.getState())
                     .userId(projectApply.getUser().getUserId())
@@ -167,18 +167,6 @@ public class ProjectApplyService {
         throw new ApplyNotFoundException(userId);
     }
 
-    private Project getProjectList(Long projectId, String visitorId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        if (!this.isLeader(project, visitorId))
-            throw new YouAreNotLeaderException(visitorId);
-
-        if (ObjectUtils.isEmpty(project.getApplies()))
-            throw new EmptyApplicantListException(projectId);
-
-        return project;
-    }
-
     private Project getProjectForLeader(Long projectId, String visitorId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
@@ -191,6 +179,19 @@ public class ProjectApplyService {
         }
 
         return project;
+    }
+
+    private List<ProjectApply> getAppliesForLeader(Long projectId, String visitorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        if (!this.isLeader(project, visitorId))
+            throw new YouAreNotLeaderException(visitorId);
+
+        if (ObjectUtils.isEmpty(project.getApplies()))
+            throw new EmptyApplicantListException(project.getProjectId());
+
+        return project.getApplies();
     }
 
     // 프로젝트 중복 지원 여부 검사

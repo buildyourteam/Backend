@@ -68,7 +68,7 @@ public class GetApplicantsTest extends BaseControllerTest {
     @Test
     @DisplayName("프로젝트 지원자 확인하기_지원자가 없을때")
     @WithMockUser(username = "user0")
-    void getApplicantsFailBecause_notExistApply() throws Exception {
+    void getApplicantsSuccessThat_notExistApply() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
 

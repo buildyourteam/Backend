@@ -71,7 +71,7 @@ public class GetRecruitsTest extends BaseControllerTest {
     @Test
     @DisplayName("내가 보낸 영입제안 리스트 확인하기_영입제안이 없을 때")
     @WithMockUser(username = "user0")
-    public void getRecruitsFailBecause_notExistRecruit() throws Exception {
+    public void getRecruitsSuccessThat_notExistRecruit() throws Exception {
         // Given
         Project project = testProjectFactory.generateMyProject(0);
 

@@ -5,9 +5,6 @@ import com.eskiiimo.web.projects.controller.ProjectApplyController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 public class ProjectApplicantResource extends EntityModel<ProjectApplicantDto> {
