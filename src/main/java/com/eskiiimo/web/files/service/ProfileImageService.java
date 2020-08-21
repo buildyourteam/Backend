@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 public class ProfileImageService {
@@ -27,15 +28,12 @@ public class ProfileImageService {
 
     private final ProfileImageRepository profileImageRepository;
 
-    private String defaultProfileImage;
-
     @Autowired
     public ProfileImageService(FileUploadProperties prop, ProfileImageRepository profileImageRepository, FileService fileService) {
         this.profileImageRepository = profileImageRepository;
         this.fileService = fileService;
         this.profileImageLocation = Paths.get(prop.getProfile().getDir())
                 .toAbsolutePath().normalize();
-        this.defaultProfileImage = prop.getProfile().getDefaultImg();
         try {
             Files.createDirectories(this.profileImageLocation);
         } catch (Exception e) {
@@ -71,11 +69,10 @@ public class ProfileImageService {
     }
 
     public Resource getProfileImage(String userId) {
-        ProfileImage profileImage = this.profileImageRepository.findByUserId(userId).orElse(ProfileImage.builder()
-                .filePath(this.defaultProfileImage)
-                .build());
+        Optional<ProfileImage> image = this.profileImageRepository.findByUserId(userId);
+        if (image.isEmpty())
+            return fileService.loadFileAsResource("defaultImages/defaultProfileImage.png");
 
-        Path filePath = Paths.get(profileImage.getFilePath());
-        return fileService.loadFileAsResource(filePath);
+        return fileService.loadFileAsResource(Paths.get(image.get().getFilePath()));
     }
 }
