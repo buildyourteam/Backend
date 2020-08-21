@@ -1,8 +1,10 @@
 package com.eskiiimo.web.files.service;
 
 
+import com.eskiiimo.repository.files.model.ProfileImage;
 import com.eskiiimo.repository.files.model.ProjectImage;
 import com.eskiiimo.repository.files.repository.ProjectImageRepository;
+import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.web.configs.FileUploadProperties;
 import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
 import com.eskiiimo.web.files.response.FileUploadResponse;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 public class ProjectImageService {
@@ -64,12 +67,10 @@ public class ProjectImageService {
     }
 
     public Resource getProjectImage(Long projectId) {
-        ProjectImage projectImage = this.projectImageRepository.findByProjectId(projectId)
-                .orElse(ProjectImage.builder()
-                        .filePath(this.defaultProjectImage)
-                        .build());
+        Optional<ProjectImage> image = this.projectImageRepository.findByProjectId(projectId);
+        if (image.isEmpty())
+            return fileService.loadFileAsResource("defaultImages/defaultProjectImage.png");
 
-        Path filePath = Paths.get(projectImage.getFilePath());
-        return fileService.loadFileAsResource(filePath);
+        return fileService.loadFileAsResource(Paths.get(image.get().getFilePath()));
     }
 }

@@ -6,6 +6,7 @@ import com.eskiiimo.web.files.exception.CantCreateFileDirectoryException;
 import com.eskiiimo.web.files.exception.FileDownloadException;
 import com.eskiiimo.web.files.exception.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -68,5 +69,8 @@ public class FileService {
         }
     }
 
-
+    public Resource loadFileAsResource(String resourcePath) {
+        Resource resource = new ClassPathResource(resourcePath);
+        return resource;
+    }
 }
