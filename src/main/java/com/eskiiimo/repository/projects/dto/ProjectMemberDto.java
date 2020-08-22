@@ -1,26 +1,23 @@
 package com.eskiiimo.repository.projects.dto;
 
+import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
-@ToString
 @NoArgsConstructor
 public class ProjectMemberDto {
     private String userName;
+    private Long grade;
     private ProjectRole role;
     private TechnicalStack stack;
-    private Long grade;
 
-
-    @Builder
-    public ProjectMemberDto(String userName, ProjectRole role, TechnicalStack stack, Long grade) {
-        this.userName = userName;
-        this.role = role;
-        this.stack = stack;
-        this.grade = grade;
-
+    public ProjectMemberDto(ProjectMember projectMember) {
+        this.userName = projectMember.getUser().getUserName();
+        this.grade = projectMember.getUser().getGrade();
+        this.role = projectMember.getRole();
+        this.stack = projectMember.getStack();
     }
 }

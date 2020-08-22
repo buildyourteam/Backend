@@ -3,7 +3,6 @@ package com.eskiiimo.repository.projects.model;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import com.eskiiimo.web.projects.enumtype.State;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "projectId")
 @Entity
 @Table(name = "T_PROJECT")
@@ -98,22 +96,23 @@ public class Project {
         this.applyCanFile = applyCanFile;
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
         for (String question : newQuestions)
-            questions.add(ProjectApplyQuestion.builder().question(question).build());
+            questions.add(new ProjectApplyQuestion(question));
         this.questions = questions;
     }
 
-    @Builder
-    public Project(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet currentMember, ProjectMemberSet needMember, String leaderId, Boolean applyCanFile, List<ProjectApplyQuestion> questions) {
+    public Project(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet needMember, Boolean applyCanFile, List<String> questions, String leaderId) {
         this.projectName = projectName;
         this.teamName = teamName;
         this.endDate = endDate;
         this.introduction = introduction;
         this.state = state;
         this.projectField = projectField;
-        this.currentMember = currentMember;
+        this.currentMember = new ProjectMemberSet(0, 0, 0, 0);
         this.needMember = needMember;
         this.leaderId = leaderId;
         this.applyCanFile = applyCanFile;
-        this.questions = questions;
+        this.questions = new ArrayList<ProjectApplyQuestion>();
+        for (String question : questions)
+            this.questions.add(new ProjectApplyQuestion(question));
     }
 }

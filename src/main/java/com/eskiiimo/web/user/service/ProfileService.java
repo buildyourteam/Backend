@@ -35,8 +35,8 @@ public class ProfileService {
     public ProfileDto getProfile(String userId) {
         User profile = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        ProfileDto profileDto = profile.toProfileDto();
-        return profileDto;
+
+        return new ProfileDto(profile);
     }
 
     @Transactional
@@ -46,7 +46,8 @@ public class ProfileService {
         User profile = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         profile.updateProfile(updateData.getUserName(), updateData.getRole(), updateData.getStacks(), updateData.getContact(), updateData.getArea(), updateData.getIntroduction());
-        return profile.toProfileDto();
+
+        return new ProfileDto(profile);
     }
 
     @Transactional(readOnly = true)

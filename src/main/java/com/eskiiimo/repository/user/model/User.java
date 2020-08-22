@@ -1,34 +1,29 @@
 package com.eskiiimo.repository.user.model;
 
-import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import com.eskiiimo.web.user.enumtype.UserActivate;
 import com.eskiiimo.web.user.enumtype.UserState;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
-@Entity
-@EqualsAndHashCode(of = "accountId")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
-@Builder
+@NoArgsConstructor
+@EqualsAndHashCode(of = "accountId")
+@Entity
 @Table(name = "T_USER")
-public class User{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
@@ -62,32 +57,26 @@ public class User{
 
     private String refreshToken;
 
-    public void updateRefreshToken(String refreshToken) {
+    public User(String userId, String password, String userName, String userEmail, String refreshToken) {
+        this.userId = userId;
+        this.password = password;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.activate = UserActivate.REGULAR;
+        this.state = UserState.FREE;
+        this.grade = (long) 0;
+        this.roles = Collections.singletonList("ROLE_USER");
         this.refreshToken = refreshToken;
     }
 
-    public ProfileDto toProfileDto() {
-        List<TechnicalStack> stackList = new ArrayList<TechnicalStack>();
-        for (UsersStack stack : this.stacks) {
-            TechnicalStack technicalStack = stack.getStack();
-            stackList.add(technicalStack);
-        }
-        ProfileDto profileDto = ProfileDto.builder()
-                .userName(this.getUserName())
-                .role(this.role)
-                .stacks(stackList)
-                .area(this.area)
-                .contact(this.contact)
-                .grade(this.grade)
-                .introduction(this.introduction)
-                .build();
-        return profileDto;
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public void updateProfile(String userName, ProjectRole role, List<TechnicalStack> stacks, String contact, String area, String introduction) {
         List<UsersStack> removeList = new ArrayList<UsersStack>();
         //Compare Stack List and Remove User's Stacks
-        if(this.stacks== null)
+        if (this.stacks == null)
             this.stacks = new ArrayList<UsersStack>();
         for (UsersStack usersStack : this.stacks) {
             boolean checkRemove = Boolean.TRUE;
@@ -119,7 +108,7 @@ public class User{
         this.introduction = introduction;
     }
 
-    public void blockUser(){
+    public void blockUser() {
         this.activate = UserActivate.BLOCKED;
     }
 }

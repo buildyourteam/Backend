@@ -119,8 +119,8 @@ public class TestProjectFactory {
 
     public ProjectDetailRequest generateProjectDetailRequest(int index, State status, ProjectField projectField, Boolean isNeed) {
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("question1").build());
-        questions.add(ProjectApplyQuestion.builder().question("question2").build());
+        questions.add(new ProjectApplyQuestion("question1"));
+        questions.add(new ProjectApplyQuestion("question2"));
 
         ProjectMemberSet needMember;
         if (isNeed.equals(true))

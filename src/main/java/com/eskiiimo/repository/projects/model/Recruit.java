@@ -3,14 +3,14 @@ package com.eskiiimo.repository.projects.model;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.RecruitState;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "recruitId")
 @Entity
 @Table(name = "T_RECRUIT")
@@ -31,6 +31,14 @@ public class Recruit {
     @ManyToOne
     @JoinColumn(name = "projectId")
     private Project project;
+
+    public Recruit(ProjectRole role, String introduction, User user, Project project) {
+        this.role = role;
+        this.introduction = introduction;
+        this.user = user;
+        this.project = project;
+        this.state = RecruitState.UNREAD;
+    }
 
     public void markAsRead() {
         if (this.state == RecruitState.UNREAD)
