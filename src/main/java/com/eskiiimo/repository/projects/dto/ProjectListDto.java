@@ -9,8 +9,8 @@ import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 @Relation(collectionRelation = "projectList")
 public class ProjectListDto {
     private Long projectId;

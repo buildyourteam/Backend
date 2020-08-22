@@ -44,7 +44,7 @@ public class CreateProjectTest extends BaseControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(document("create-project"))
         ;
-        mockMvc.perform(get("/projects/", 1))
+        mockMvc.perform(get("/projects/{projectId}", 1))
                 .andDo(print());
     }
 
@@ -55,8 +55,8 @@ public class CreateProjectTest extends BaseControllerTest {
         // Given
         testUserFactory.generateUser(0);
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("question1").build());
-        questions.add(ProjectApplyQuestion.builder().question("question2").build());
+        questions.add(new ProjectApplyQuestion("question1"));
+        questions.add(new ProjectApplyQuestion("question2"));
         ProjectDetailRequest project = ProjectDetailRequest.builder()
                 .projectName("project1")
 //                .teamName("Team1")
@@ -86,8 +86,8 @@ public class CreateProjectTest extends BaseControllerTest {
         // Given
         testUserFactory.generateUser(0);
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("question1").build());
-        questions.add(ProjectApplyQuestion.builder().question("question2").build());
+        questions.add(new ProjectApplyQuestion("question1"));
+        questions.add(new ProjectApplyQuestion("question2"));
         ProjectDetailRequest project = ProjectDetailRequest.builder()
                 .projectName("project1")
                 .teamName("Team1")
@@ -116,8 +116,8 @@ public class CreateProjectTest extends BaseControllerTest {
         // Given
         testUserFactory.generateUser(0);
         List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        questions.add(ProjectApplyQuestion.builder().question("question1").build());
-        questions.add(ProjectApplyQuestion.builder().question("question2").build());
+        questions.add(new ProjectApplyQuestion("question1"));
+        questions.add(new ProjectApplyQuestion("question2"));
         ProjectDetailRequest project = ProjectDetailRequest.builder()
                 .projectName("project1")
                 .teamName("Team1")

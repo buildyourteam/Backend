@@ -3,14 +3,14 @@ package com.eskiiimo.repository.projects.model;
 import com.eskiiimo.repository.user.model.User;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "projectMemberId")
 @Entity
 @Table(name = "T_MEMBER")
@@ -35,6 +35,21 @@ public class ProjectMember {
     @JoinColumn(name = "projectId")
     private Project project;
 
+    public ProjectMember(ProjectApply projectApply, Project project) {
+        this.role = projectApply.getRole();
+        this.user = projectApply.getUser();
+        this.introduction = projectApply.getIntroduction();
+        this.hide = Boolean.FALSE;
+        joinProject(project);
+    }
+
+    public ProjectMember(User user, Project project) {
+        this.role = ProjectRole.LEADER;
+        this.user = user;
+        this.project = project;
+        this.hide = Boolean.FALSE;
+        joinProject(project);
+    }
 
     public void joinProject(Project project) {
         this.project = project;

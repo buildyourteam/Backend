@@ -12,7 +12,6 @@ import com.eskiiimo.web.security.request.SignUpRequest;
 import com.eskiiimo.web.security.response.RefreshResponse;
 import com.eskiiimo.web.security.response.SignInResponse;
 import com.eskiiimo.web.user.enumtype.UserActivate;
-import com.eskiiimo.web.user.enumtype.UserState;
 import com.eskiiimo.web.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,17 +43,15 @@ public class AuthService {
      */
     @Transactional
     public SignInResponse signUp(SignUpRequest signUpRequest) {
-        User user = userRepository.save(User.builder()
-                .userId(signUpRequest.getUserId())
-                .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                .userName(signUpRequest.getName())
-                .userEmail(signUpRequest.getUserEmail())
-                .activate(UserActivate.REGULAR)
-                .state(UserState.FREE)
-                .grade((long) 0)
-                .roles(Collections.singletonList("ROLE_USER"))
-                .refreshToken(jwtTokenProvider.createRefreshToken(signUpRequest.getUserId(), Collections.singletonList("ROLE_USER")))
-                .build());
+        User user = userRepository.save(
+                new User(
+                        signUpRequest.getUserId(),
+                        passwordEncoder.encode(signUpRequest.getPassword()),
+                        signUpRequest.getName(),
+                        signUpRequest.getUserEmail(),
+                        jwtTokenProvider.createRefreshToken(signUpRequest.getUserId(), Collections.singletonList("ROLE_USER"))
+                )
+        );
 
         return SignInResponse.builder()
                 .accessToken(jwtTokenProvider.createAccessToken(user.getUserId(), user.getRoles()))

@@ -39,15 +39,7 @@ public class RecruitService {
 
         checkDuplicateRecruit(project, userId);
 
-        Recruit projectRecruit = Recruit.builder()
-                .role(recruit.getRole())
-                .introduction(recruit.getIntroduction())
-                .user(user)
-                .project(project)
-                .state(RecruitState.UNREAD)
-                .build();
-
-        this.recruitRepository.save(projectRecruit);
+        this.recruitRepository.save(new Recruit(recruit.getRole(), recruit.getIntroduction(), user, project));
     }
 
     @Transactional(readOnly = true)
@@ -59,17 +51,9 @@ public class RecruitService {
                 .orElseThrow(() -> new EmptyRecruitListException(userId));
 
         List<RecruitDto> projectRecruits = new ArrayList<RecruitDto>();
-        for (Recruit recruit : RecruitList) {
-            RecruitDto recruitDto = RecruitDto.builder()
-                    .introduction(recruit.getIntroduction())
-                    .projectId(recruit.getProject().getProjectId())
-                    .projectName(recruit.getProject().getProjectName())
-                    .role(recruit.getRole())
-                    .state(recruit.getState())
-                    .userName(recruit.getUser().getUserName())
-                    .build();
-            projectRecruits.add(recruitDto);
-        }
+        for (Recruit recruit : RecruitList)
+            projectRecruits.add(new RecruitDto(recruit));
+
         return projectRecruits;
     }
 
@@ -77,14 +61,8 @@ public class RecruitService {
     public RecruitDto getRecruit(String userId, Long projectId, String visitorId) {
         Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
         recruit.markAsRead();
-        return RecruitDto.builder()
-                .introduction(recruit.getIntroduction())
-                .projectId(recruit.getProject().getProjectId())
-                .projectName(recruit.getProject().getProjectName())
-                .role(recruit.getRole())
-                .state(recruit.getState())
-                .userName(recruit.getUser().getUserName())
-                .build();
+
+        return new RecruitDto(recruit);
     }
 
     @Transactional

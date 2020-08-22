@@ -1,18 +1,18 @@
 package com.eskiiimo.repository.projects.model;
 
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
-import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
 import com.eskiiimo.repository.user.model.User;
-import lombok.*;
+import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "applyId")
 @Entity
 @Table(name = "T_APPLY")
@@ -33,6 +33,16 @@ public class ProjectApply {
     @JoinColumn(name = "accountId")
     private User user;
 
+    public ProjectApply(List<String> answers, String introduction, ProjectRole role, User user) {
+        this.answers = new ArrayList<ProjectApplyAnswer>();
+        for (String answer : answers)
+            this.answers.add(new ProjectApplyAnswer(answer));
+        this.introduction = introduction;
+        this.role = role;
+        this.user = user;
+        this.state = ProjectApplyState.UNREAD;
+    }
+
     public void updateApply(String introduction, ProjectRole role, List<String> answers) {
         this.introduction = introduction;
         this.role = role;
@@ -41,12 +51,12 @@ public class ProjectApply {
                 this.answers.get(i).updateAnswer(answers.get(i));
     }
 
-    public void markAsRead(){
-        if(this.state== ProjectApplyState.UNREAD)
+    public void markAsRead() {
+        if (this.state == ProjectApplyState.UNREAD)
             this.state = ProjectApplyState.READ;
     }
 
-    public void setApplyState(ProjectApplyState state){
+    public void setApplyState(ProjectApplyState state) {
         this.state = state;
     }
 

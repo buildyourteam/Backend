@@ -1,23 +1,23 @@
 package com.eskiiimo.repository.projects.dto;
 
-import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import com.eskiiimo.repository.projects.model.ProjectApply;
 import com.eskiiimo.web.projects.enumtype.ProjectApplyState;
-import lombok.*;
+import com.eskiiimo.web.projects.enumtype.ProjectRole;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
-@ToString
 @NoArgsConstructor
 public class ProjectApplicantDto {
     private String userId;
     private String userName;
     private ProjectApplyState state;
     private ProjectRole role;
-    @Builder
-    public ProjectApplicantDto(String userId, String userName, ProjectApplyState state, ProjectRole role){
-        this.userId = userId;
-        this.userName = userName;
-        this.state = state;
-        this.role = role;
+
+    public ProjectApplicantDto(ProjectApply projectApply) {
+        this.userId = projectApply.getUser().getUserId();
+        this.userName = projectApply.getUser().getUserName();
+        this.state = projectApply.getState();
+        this.role = projectApply.getRole();
     }
 }

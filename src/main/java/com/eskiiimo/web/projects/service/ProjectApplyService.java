@@ -4,7 +4,6 @@ import com.eskiiimo.repository.projects.dto.ProjectApplicantDto;
 import com.eskiiimo.repository.projects.dto.ProjectApplyDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectApply;
-import com.eskiiimo.repository.projects.model.ProjectApplyAnswer;
 import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
@@ -37,15 +36,7 @@ public class ProjectApplyService {
         User user = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(ProjectRole.LEADER)
-                .user(user)
-                .project(project)
-                .hide(Boolean.FALSE)
-                .build();
-        projectMember.joinProject(project);
-
-        this.projectMemberRepository.save(projectMember);
+        this.projectMemberRepository.save(new ProjectMember(user, project));
     }
 
     @Transactional
@@ -57,19 +48,7 @@ public class ProjectApplyService {
 
         isDuplicateApply(project, user, visitorId);
 
-        List<ProjectApplyAnswer> answers = new ArrayList<ProjectApplyAnswer>();
-        for (String answer : apply.getAnswers())
-            answers.add(ProjectApplyAnswer.builder().answer(answer).build());
-
-        ProjectApply projectApply = ProjectApply.builder()
-                .answers(answers)
-                .introduction(apply.getIntroduction())
-                .state(ProjectApplyState.UNREAD)
-                .user(user)
-                .role(apply.getRole())
-                .build();
-
-        project.addApply(projectApply);
+        project.addApply(new ProjectApply(apply.getAnswers(), apply.getIntroduction(), apply.getRole(), user));
     }
 
     @Transactional
@@ -87,15 +66,8 @@ public class ProjectApplyService {
 
         List<ProjectApplicantDto> applicants = new ArrayList<ProjectApplicantDto>();
 
-        for (ProjectApply projectApply : projectApplies) {
-            ProjectApplicantDto projectApplicantDto = ProjectApplicantDto.builder()
-                    .state(projectApply.getState())
-                    .userId(projectApply.getUser().getUserId())
-                    .userName(projectApply.getUser().getUserName())
-                    .role(projectApply.getRole())
-                    .build();
-            applicants.add(projectApplicantDto);
-        }
+        for (ProjectApply projectApply : projectApplies)
+            applicants.add(new ProjectApplicantDto(projectApply));
 
         return applicants;
     }
@@ -113,14 +85,7 @@ public class ProjectApplyService {
         ProjectApply projectApply = findApply(project, userId);
         projectApply.markAsRead();
 
-        return ProjectApplyDto.builder()
-                .userName(projectApply.getUser().getUserName())
-                .questions(project.getQuestions())
-                .answers(projectApply.getAnswers())
-                .introduction(projectApply.getIntroduction())
-                .state(projectApply.getState())
-                .role(projectApply.getRole())
-                .build();
+        return new ProjectApplyDto(projectApply, project.getQuestions());
     }
 
     @Transactional
@@ -132,16 +97,7 @@ public class ProjectApplyService {
         projectApply.setApplyState(ProjectApplyState.ACCEPT);
         project.updateApplies(projectApply);
 
-        ProjectMember projectMember = ProjectMember.builder()
-                .role(projectApply.getRole())
-                .user(projectApply.getUser())
-                .project(project)
-                .hide(Boolean.FALSE)
-                .introduction(projectApply.getIntroduction())
-                .build();
-        projectMember.joinProject(project);
-
-        this.projectMemberRepository.save(projectMember);
+        this.projectMemberRepository.save(new ProjectMember(projectApply, project));
     }
 
     @Transactional
@@ -198,19 +154,19 @@ public class ProjectApplyService {
     private void isDuplicateApply(Project project, User user, String visitorId) {
 
         // 프로젝트에서 리더인 경우
-        if(isLeader(project, visitorId)) {
+        if (isLeader(project, visitorId)) {
             throw new DuplicateApplicantException(visitorId);
         }
 
         // 프로젝트에 이미 등록된 사용자인 경우
-        for(ProjectMember projectMember : project.getProjectMembers()) {
-            if(projectMember.getUser().getUserId().equals(visitorId)) {
+        for (ProjectMember projectMember : project.getProjectMembers()) {
+            if (projectMember.getUser().getUserId().equals(visitorId)) {
                 throw new DuplicateApplicantException(visitorId);
             }
         }
 
         // 프로젝트 지원자가 없는 경우에 대한 예외 처리
-        if(project.getApplies() != null) {
+        if (project.getApplies() != null) {
 
             // 프로젝트에 이미 지원한 사용자인 경우
             for (ProjectApply projectApply : project.getApplies()) {
