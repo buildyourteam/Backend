@@ -10,7 +10,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .exposedHeaders("authtoken")	//make client read header("jwt-token")
+                .exposedHeaders("Location")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS",  "HEAD", "TRACE", "CONNECT")
                 .allowCredentials(true);
 
