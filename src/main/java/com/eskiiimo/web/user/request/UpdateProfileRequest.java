@@ -1,5 +1,6 @@
 package com.eskiiimo.web.user.request;
 
+import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import lombok.AllArgsConstructor;
@@ -20,4 +21,15 @@ public class UpdateProfileRequest {
     private String contact;
     private String area;
     private String introduction;
+
+    public ProfileDto toProfileDto(){
+        return new ProfileDto(
+                this.userName,
+                this.role,
+                this.contact,
+                this.area,
+                this.introduction,
+                this.stacks
+        );
+    }
 }

@@ -1,5 +1,6 @@
 package com.eskiiimo.web.projects.request;
 
+import com.eskiiimo.repository.projects.dto.ModifyProjectDto;
 import com.eskiiimo.repository.projects.model.ProjectApplyQuestion;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
@@ -38,5 +39,19 @@ public class ProjectDetailRequest {
         this.applyCanFile = applyCanFile;
         for (ProjectApplyQuestion question : questions)
             this.questions.add(question.getQuestion());
+    }
+
+    public ModifyProjectDto toModifyProjectDto() {
+        return new ModifyProjectDto(
+                this.projectName,
+                this.teamName,
+                this.endDate,
+                this.introduction,
+                this.state,
+                this.projectField,
+                this.applyCanFile,
+                this.questions,
+                this.needMember
+        );
     }
 }

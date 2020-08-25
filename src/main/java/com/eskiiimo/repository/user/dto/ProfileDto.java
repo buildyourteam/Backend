@@ -32,4 +32,14 @@ public class ProfileDto {
         for (UsersStack stack : user.getStacks())
             this.stacks.add(stack.getStack());
     }
+
+    public ProfileDto(String userName, ProjectRole role, String contact, String area, String introduction, List<TechnicalStack> stacks){
+        this.userName = userName;
+        this.role = role;
+        this.contact = contact;
+        this.area = area;
+        this.introduction = introduction;
+        this.stacks = stacks;
+        this.grade = null;
+    }
 }

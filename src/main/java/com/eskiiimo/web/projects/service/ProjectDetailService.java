@@ -34,15 +34,7 @@ public class ProjectDetailService {
 
         Project newProject = this.projectRepository.save(
                 new Project(
-                        projectDetailRequest.getProjectName(),
-                        projectDetailRequest.getTeamName(),
-                        projectDetailRequest.getEndDate(),
-                        projectDetailRequest.getIntroduction(),
-                        projectDetailRequest.getState(),
-                        projectDetailRequest.getProjectField(),
-                        projectDetailRequest.getNeedMember(),
-                        projectDetailRequest.getApplyCanFile(),
-                        projectDetailRequest.getQuestions(),
+                        projectDetailRequest.toModifyProjectDto(),
                         user_id
                 )
         );
@@ -61,17 +53,8 @@ public class ProjectDetailService {
     @Transactional
     public ProjectDetailDto updateProject(Long projectId, ProjectDetailRequest projectDetailRequest, String visitorId) {
         Project project = getProjectForLeader(projectId, visitorId);
-        project.updateProject(
-                projectDetailRequest.getProjectName(),
-                projectDetailRequest.getTeamName(),
-                projectDetailRequest.getEndDate(),
-                projectDetailRequest.getIntroduction(),
-                projectDetailRequest.getState(),
-                projectDetailRequest.getProjectField(),
-                projectDetailRequest.getNeedMember(),
-                projectDetailRequest.getApplyCanFile(),
-                projectDetailRequest.getQuestions()
-        );
+        project.updateProject(projectDetailRequest.toModifyProjectDto());
+
         return new ProjectDetailDto(this.projectRepository.save(project));
     }
 

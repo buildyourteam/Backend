@@ -1,5 +1,6 @@
 package com.eskiiimo.repository.user.model;
 
+import com.eskiiimo.repository.user.dto.ProfileDto;
 import com.eskiiimo.web.projects.enumtype.ProjectRole;
 import com.eskiiimo.web.projects.enumtype.TechnicalStack;
 import com.eskiiimo.web.user.enumtype.UserActivate;
@@ -73,14 +74,14 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public void updateProfile(String userName, ProjectRole role, List<TechnicalStack> stacks, String contact, String area, String introduction) {
+    public void updateProfile(ProfileDto profileDto) {
         List<UsersStack> removeList = new ArrayList<UsersStack>();
         //Compare Stack List and Remove User's Stacks
         if (this.stacks == null)
             this.stacks = new ArrayList<UsersStack>();
         for (UsersStack usersStack : this.stacks) {
             boolean checkRemove = Boolean.TRUE;
-            for (TechnicalStack stack : stacks) {
+            for (TechnicalStack stack : profileDto.getStacks()) {
                 if (usersStack.getStack().equals(stack)) {
                     stacks.remove(stack);
                     checkRemove = Boolean.FALSE;
@@ -96,16 +97,16 @@ public class User {
 
         // add User's Stacks
 
-        for (TechnicalStack stack : stacks) {
+        for (TechnicalStack stack : profileDto.getStacks()) {
             UsersStack usersStack = new UsersStack(stack);
             this.stacks.add(usersStack);
         }
 
-        this.userName = userName;
-        this.role = role;
-        this.contact = contact;
-        this.area = area;
-        this.introduction = introduction;
+        this.userName = profileDto.getUserName();
+        this.role = profileDto.getRole();
+        this.contact = profileDto.getContact();
+        this.area = profileDto.getArea();
+        this.introduction = profileDto.getIntroduction();
     }
 
     public void blockUser() {

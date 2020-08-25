@@ -45,7 +45,7 @@ public class ProfileService {
             throw new NotYourProfileException(userId);
         User profile = userRepository.findByUserIdAndActivate(userId, UserActivate.REGULAR)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        profile.updateProfile(updateData.getUserName(), updateData.getRole(), updateData.getStacks(), updateData.getContact(), updateData.getArea(), updateData.getIntroduction());
+        profile.updateProfile(updateData.toProfileDto());
 
         return new ProfileDto(profile);
     }

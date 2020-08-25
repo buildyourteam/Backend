@@ -1,5 +1,6 @@
 package com.eskiiimo.repository.projects.model;
 
+import com.eskiiimo.repository.projects.dto.ModifyProjectDto;
 import com.eskiiimo.web.projects.enumtype.ProjectField;
 import com.eskiiimo.web.projects.enumtype.ProjectMemberSet;
 import com.eskiiimo.web.projects.enumtype.State;
@@ -85,34 +86,29 @@ public class Project {
         this.applies.set(this.applies.indexOf(apply), apply);
     }
 
-    public void updateProject(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet needMember, Boolean applyCanFile, List<String> newQuestions) {
-        this.projectName = projectName;
-        this.teamName = teamName;
-        this.endDate = endDate;
-        this.introduction = introduction;
-        this.state = state;
-        this.projectField = projectField;
-        this.needMember = needMember;
-        this.applyCanFile = applyCanFile;
-        List<ProjectApplyQuestion> questions = new ArrayList<ProjectApplyQuestion>();
-        for (String question : newQuestions)
-            questions.add(new ProjectApplyQuestion(question));
-        this.questions = questions;
+    public void updateProject(ModifyProjectDto modifyProjectDto) {
+        this.projectName = modifyProjectDto.getProjectName();
+        this.teamName = modifyProjectDto.getTeamName();
+        this.endDate = modifyProjectDto.getEndDate();
+        this.introduction = modifyProjectDto.getIntroduction();
+        this.state = modifyProjectDto.getState();
+        this.projectField = modifyProjectDto.getProjectField();
+        this.needMember = modifyProjectDto.getNeedMember();
+        this.applyCanFile = modifyProjectDto.getApplyCanFile();
+        this.questions = modifyProjectDto.getQuestions();
     }
 
-    public Project(String projectName, String teamName, LocalDateTime endDate, String introduction, State state, ProjectField projectField, ProjectMemberSet needMember, Boolean applyCanFile, List<String> questions, String leaderId) {
-        this.projectName = projectName;
-        this.teamName = teamName;
-        this.endDate = endDate;
-        this.introduction = introduction;
-        this.state = state;
-        this.projectField = projectField;
+    public Project(ModifyProjectDto modifyProjectDto, String leaderId) {
+        this.projectName = modifyProjectDto.getProjectName();
+        this.teamName = modifyProjectDto.getTeamName();
+        this.endDate = modifyProjectDto.getEndDate();
+        this.introduction = modifyProjectDto.getIntroduction();
+        this.state = modifyProjectDto.getState();
+        this.projectField = modifyProjectDto.getProjectField();
         this.currentMember = new ProjectMemberSet(0, 0, 0, 0);
-        this.needMember = needMember;
+        this.needMember = modifyProjectDto.getNeedMember();
         this.leaderId = leaderId;
-        this.applyCanFile = applyCanFile;
-        this.questions = new ArrayList<ProjectApplyQuestion>();
-        for (String question : questions)
-            this.questions.add(new ProjectApplyQuestion(question));
+        this.applyCanFile = modifyProjectDto.getApplyCanFile();
+        this.questions = modifyProjectDto.getQuestions();
     }
 }
