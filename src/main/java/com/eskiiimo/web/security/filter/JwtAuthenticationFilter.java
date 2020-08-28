@@ -69,6 +69,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
      * @param res     response 객체
      * @param error   오류 번호
      * @param message 메시지
+     * @throws  IOException
      */
     private void sendErrorMessage(HttpServletResponse res, String error, String message) throws IOException {
         res.setStatus(HttpServletResponse.SC_FORBIDDEN);
