@@ -4,6 +4,7 @@ import com.eskiiimo.repository.projects.dto.RecruitDto;
 import com.eskiiimo.repository.projects.model.Project;
 import com.eskiiimo.repository.projects.model.ProjectMember;
 import com.eskiiimo.repository.projects.model.Recruit;
+import com.eskiiimo.repository.projects.repository.ProjectMemberRepository;
 import com.eskiiimo.repository.projects.repository.ProjectRepository;
 import com.eskiiimo.repository.projects.repository.RecruitRepository;
 import com.eskiiimo.repository.user.model.User;
@@ -27,6 +28,7 @@ public class RecruitService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final RecruitRepository recruitRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Transactional
     public void recruitProject(String userId, RecruitProjectRequest recruit, String visitorId) {
@@ -70,6 +72,7 @@ public class RecruitService {
         Recruit recruit = getRecruitToMe(userId, projectId, visitorId);
         recruit.setRecruitState(RecruitState.ACCEPT);
         this.recruitRepository.save(recruit);
+        this.projectMemberRepository.save(new ProjectMember(recruit, recruit.getProject()));
     }
 
     @Transactional
