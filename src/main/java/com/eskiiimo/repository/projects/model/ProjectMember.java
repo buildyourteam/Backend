@@ -43,6 +43,14 @@ public class ProjectMember {
         joinProject(project);
     }
 
+    public ProjectMember(Recruit recruit, Project project) {
+        this.role = recruit.getRole();
+        this.user = recruit.getUser();
+        this.introduction = recruit.getIntroduction();
+        this.hide = Boolean.FALSE;
+        joinProject(project);
+    }
+
     public ProjectMember(User user, Project project) {
         this.role = ProjectRole.LEADER;
         this.user = user;
