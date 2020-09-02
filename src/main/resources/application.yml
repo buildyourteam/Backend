@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mariadb://172.17.0.1:3306/Eskimo?useUnicode=true&characterEncoding=utf8
-    username: eskimo
-    password: Eskimo2020Dev!
+    url: ${DB_URL}?useUnicode=true&characterEncoding=utf8
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -42,7 +42,7 @@ management:
     web:
       exposure:
         include: '*'
-        
+
 jwt:
   secretKey: EGLUUSecretKeyV1ThisDataMustBeHide
 
@@ -50,7 +50,7 @@ jwt:
 log:
   slack:
     enabled: true
-    webHookUrl: https://hooks.slack.com/services/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
+    webHookUrl: ${SLACK_URL}
     channel: error-report-bot
   database:
     enabled: true
