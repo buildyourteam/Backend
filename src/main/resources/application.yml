@@ -48,13 +48,15 @@ jwt:
 
 
 log:
+  serverName: "EGLUU API SERVER"
+  level: ERROR
   slack:
     enabled: true
     webHookUrl: ${SLACK_URL}
     channel: error-report-bot
+    userName: "[EGLUU API]ErrorReportBot"
   database:
     enabled: true
-  level: ERROR
 
 
 file:
