@@ -27,7 +27,7 @@ jwt:
 log:
   slack:
     enabled: true
-    webHookUrl: ${SLACK_URL}
+    webHookUrl: NO
     channel: backend_logback
   database:
     enabled: true
