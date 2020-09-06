@@ -24,14 +24,17 @@ spring:
       force: true
 jwt:
   secretKey: EGLUUSecretKeyV1ThisDataMustBeHide
+
 log:
+  serverName: "EGLUU API SERVER"
+  level: ERROR
   slack:
     enabled: true
     webHookUrl: NO
-    channel: backend_logback
+    channel: error-report-bot
+    userName: "[EGLUU API]ErrorReportBot"
   database:
     enabled: true
-  level: ERROR
 
 
 file:

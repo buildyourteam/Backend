@@ -1,31 +1,72 @@
 package com.eskiiimo.web.errorbot.config;
 
 import ch.qos.logback.classic.LoggerContext;
-import com.eskiiimo.web.errorbot.appender.CustomLogbackAppender;
-import com.eskiiimo.web.errorbot.service.ErrorLogService;
+import com.eskiiimo.repository.error.repository.ErrorLogsRepository;
+import com.eskiiimo.web.errorbot.ErrorReportAppender;
+import com.eskiiimo.web.errorbot.filter.CollectRequestDataFilter;
+import com.eskiiimo.web.errorbot.filter.MultiReadableHttpServletRequestFilter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Logback Appender, Http Request정보 수집필터 등록
+ *
+ * @author always0ne
+ * @version 1.0
+ */
 @Configuration
+@RequiredArgsConstructor
 public class LogContextConfig implements InitializingBean {
 
-    @Autowired
-    private LogConfig logConfig;
+    private final LogConfig logConfig;
+    private final ErrorLogsRepository errorLogsRepository;
 
-    @Autowired
-    private ErrorLogService errorLogService;
-
+    /**
+     * LogbackAppender를 등록
+     */
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-        CustomLogbackAppender customLogbackAppender = new CustomLogbackAppender(errorLogService, logConfig);
+        ErrorReportAppender errorReportAppender = new ErrorReportAppender(logConfig, errorLogsRepository);
+        errorReportAppender.setContext(loggerContext);
+        errorReportAppender.setName("customLogbackAppender");
+        errorReportAppender.start();
 
-        customLogbackAppender.setContext(loggerContext);
-        customLogbackAppender.setName("customLogbackAppender");
-        customLogbackAppender.start();
-        loggerContext.getLogger("ROOT").addAppender(customLogbackAppender);
+        loggerContext.getLogger("ROOT").addAppender(errorReportAppender);
+    }
+
+    /**
+     * Request를 여러번 읽을수 있도록 캐싱하는 필터 등록
+     *
+     * @return MultiReadableHttpServletRequestFilter 빈 등록
+     */
+    @Bean
+    public FilterRegistrationBean<MultiReadableHttpServletRequestFilter> multiReadableHttpServletRequestFilterRegistrationBean() {
+        FilterRegistrationBean<MultiReadableHttpServletRequestFilter> registrationBean = new FilterRegistrationBean<>();
+        MultiReadableHttpServletRequestFilter multiReadableHttpServletRequestFilter = new MultiReadableHttpServletRequestFilter();
+        registrationBean.setFilter(multiReadableHttpServletRequestFilter);
+        registrationBean.setOrder(1);
+
+        return registrationBean;
+    }
+
+    /**
+     * Request 정보를 수집하는 필터 등록
+     *
+     * @return CollectRequestDataFilter 빈 등록
+     */
+    @Bean
+    public FilterRegistrationBean<CollectRequestDataFilter> collectRequestDataFilterRegistrationBean() {
+        FilterRegistrationBean<CollectRequestDataFilter> registrationBean = new FilterRegistrationBean<>();
+        CollectRequestDataFilter collectRequestDataFilter = new CollectRequestDataFilter();
+        registrationBean.setFilter(collectRequestDataFilter);
+        registrationBean.setOrder(2);
+
+        return registrationBean;
     }
 }
