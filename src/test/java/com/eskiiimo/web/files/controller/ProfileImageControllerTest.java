@@ -56,6 +56,18 @@ class ProfileImageControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("프로필 이미지 업로드_이미지가 없을 때")
+    @WithMockUser(username="testuser")
+    void uploadProfileImageFailBecause_MissingRequestPart() throws Exception {
+        this.mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/profile/image/{user_id}","testuser")
+            .accept(MediaTypes.HAL_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andDo(print())
+            .andDo(document("304"))
+        ;
+    }
 
 
     @Test

@@ -56,6 +56,17 @@ class ProjectImageControllerTest extends BaseControllerTest {
        ;
     }
 
+    @Test
+    @DisplayName("프로젝트 이미지 업로드_이미지가 없을 때")
+    @WithMockUser(username="testuser")
+    void uploadProjectImageFailBecause_MissingRequestPart() throws Exception {
+        this.mockMvc.perform(RestDocumentationRequestBuilders.fileUpload("/projects/image/{projectid}",1)
+            .accept(MediaTypes.HAL_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andDo(print())
+        ;
+    }
 
     @Test
     @DisplayName("프로젝트 이미지 다운로드")
