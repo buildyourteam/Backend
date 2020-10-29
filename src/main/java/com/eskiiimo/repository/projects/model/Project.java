@@ -103,7 +103,7 @@ public class Project {
         this.teamName = modifyProjectDto.getTeamName();
         this.endDate = modifyProjectDto.getEndDate();
         this.introduction = modifyProjectDto.getIntroduction();
-        this.state = modifyProjectDto.getState();
+        this.state = State.RECRUTING;
         this.projectField = modifyProjectDto.getProjectField();
         this.currentMember = new ProjectMemberSet(0, 0, 0, 0);
         this.needMember = modifyProjectDto.getNeedMember();
