@@ -35,7 +35,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     Page<ProjectListDto> findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(String userId, Boolean hide, State state, Pageable pageable);
 
-    Page<ProjectListDto> findAllByLeaderIdAndProjectMembers_Hide(String leaderId, Boolean hide, Pageable pageable);
+    Page<ProjectListDto> findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStateNot(String userId, Boolean hide, State state, Pageable pageable);
+
+    Page<ProjectListDto> findAllByLeaderIdAndProjectMembers_HideAndProjectMembers_User_UserId(String leaderId, Boolean hide, String userId, Pageable pageable);
 
     Page<ProjectListDto> findAllProjectedBy(Pageable pageable);
 

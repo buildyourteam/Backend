@@ -77,7 +77,8 @@ public class ProfileService {
      */
     @Transactional(readOnly = true)
     public Page<ProjectListDto> getRunning(String userId, Pageable pageable) {
-        return this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.FALSE, State.RUNNING, pageable);
+        return this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStateNot(userId, Boolean.FALSE, State.ENDED, pageable);
+
     }
 
     /**
@@ -101,7 +102,7 @@ public class ProfileService {
      */
     @Transactional(readOnly = true)
     public Page<ProjectListDto> getPlanner(String userId, Pageable pageable) {
-        return this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.FALSE, pageable);
+        return this.projectRepository.findAllByLeaderIdAndProjectMembers_HideAndProjectMembers_User_UserId(userId, Boolean.FALSE, userId, pageable);
     }
 
     /**
@@ -116,7 +117,7 @@ public class ProfileService {
     public Page<ProjectListDto> getHiddenRunning(String userId, String visitorId, Pageable pageable) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);
-        return this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndState(userId, Boolean.TRUE, State.RUNNING, pageable);
+        return this.projectRepository.findAllByProjectMembers_User_UserIdAndProjectMembers_HideAndStateNot(userId, Boolean.TRUE, State.ENDED, pageable);
     }
 
     /**
@@ -146,7 +147,7 @@ public class ProfileService {
     public Page<ProjectListDto> getHiddenPlanner(String userId, String visitorId, Pageable pageable) {
         if (!userId.equals(visitorId))
             throw new NotYourProfileException(userId);
-        return this.projectRepository.findAllByLeaderIdAndProjectMembers_Hide(userId, Boolean.TRUE, pageable);
+        return this.projectRepository.findAllByLeaderIdAndProjectMembers_HideAndProjectMembers_User_UserId(userId, Boolean.TRUE, userId, pageable);
     }
 
     /**
